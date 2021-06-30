@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Image,
   View,
@@ -6,6 +6,8 @@ import {
   Text,
   ScrollView,
   Button,
+  Pressable,
+  AsyncStorage,
 } from "react-native";
 import { Left, Right, Container, H1 } from "native-base";
 import Toast from "react-native-toast-message";
@@ -17,49 +19,88 @@ import * as actions from "../../Redux/Actions/cartActions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import RankTable from "../../Shared/RankTable";
 import * as constants from "../../assets/common/constants";
-
-
+import RankNavigator from "../../Navigators/RankNavigator";
+import AuthGlobal from "../../Context/store/AuthGlobal";
+import Spinner from "../../Shared/Spinner";
+import axios from "axios";
+import baseURL from "../../assets/common/baseUrl";
 
 const DrawDetails = (props) => {
+  const context = useContext(AuthGlobal);
   const [item, setItem] = useState(props.route.params.item);
-  const [availability, setAvailability] = useState(null);
-  const [availabilityText, setAvailabilityText] = useState("");
+  const [btnLabel,setBtnLabel] = useState("Start");
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState();
+
+  const [drawCompletedLabel, setDrawCompletedLabel] = useState();
 
   //id, name, totalSpots, entryPrice, winnersPct, status, image
 
+  const toggleDraw =() => {
+    console.log('toggleDraw',item.id)
+    setLoading(true);
+    const req = {
+      draw: item.id
+    };
+
+    const config = {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      }
+    };
+
+    axios
+    .put(`${baseURL}draws/toggle`, req, config)
+    .then((res) => {
+      setBtnLabel(res.data.status == constants.statuses.started ? "Stop": "Start")
+      setItem(res.data);// draw
+      setLoading(false);
+    })
+    .catch((error) => {
+      setLoading(false);
+      alert(`Error to ${btnLabel} draw`);
+    });
+  }
+
   useEffect(() => {
-    console.log("DrawDetails,use effect");
-    if (props.route.params.item.totalSpots == 0) {
-      setAvailability(<TrafficLight unavailable></TrafficLight>);
-      setAvailabilityText("Unvailable");
-    } else if (props.route.params.item.totalSpots <= 5) {
-      setAvailability(<TrafficLight limited></TrafficLight>);
-      setAvailabilityText("Limited Stock");
-    } else {
-      setAvailability(<TrafficLight available></TrafficLight>);
-      setAvailabilityText("Available");
-    }
+    console.log("DrawDetails,use effect",item.status);
+    AsyncStorage.getItem("jwt")
+    .then((res) => {
+        setToken(res);
+    })
+    .catch((error) => console.log(error));
+    let spotDiff = item.totalSpots - item.joined;
+
+    //label
+    setDrawCompletedLabel(spotDiff == 0 ? `Draw Full` : `${spotDiff} ${spotDiff > 1 ? 'spots' : 'spot'} left`);
 
     return () => {
-      setAvailability(null);
-      setAvailabilityText("");
+      setToken();
+      setDrawCompletedLabel();
     };
   }, []);
 
   return (
     <Container style={styles.container}>
+      <Spinner status={loading}></Spinner>
       <ScrollView style={{ padding: 5 }}>
         <View>
           <Image
             source={{
-              uri: item.image
-                ? item.image
-                : constants.DEFAULT_IMAGE_URL,
+              uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,
             }}
             resizeMode="contain"
             style={styles.image}
           />
         </View>
+        {context.stateUser.user.isAdmin == true && 
+         constants.STATUS_FOR_LIVE.indexOf(item.status) > -1 && (<EasyButton
+            primary
+            medium
+            onPress={() => toggleDraw()}
+          >
+            <Text style={{ color: "white", fontWeight: "bold" }}>{btnLabel}</Text>
+          </EasyButton>)}
         <View style={styles.contentContainer}>
           <H1 style={styles.contentHeader}>{item.name}</H1>
         </View>
@@ -91,27 +132,20 @@ const DrawDetails = (props) => {
             flexDirection: "row",
             backgroundColor: "#F5F5F5",
             padding: 10,
-            marginBottom:5
+            marginBottom: 5,
           }}
         >
           <View style={{ flexDirection: "column", flex: 1 }}>
             <Text style={{ color: "red" }}>
-              {item.totalWinnerSpot}&nbsp;spots
-            </Text>
-          </View>
-          <View style={{ flexDirection: "column", flex: 1 }}>
-            <Text>
-              <Icon name="star" size={15} />
-              {item.winnersPct}%
+              {drawCompletedLabel}
             </Text>
           </View>
           <View style={{ flexDirection: "column" }}>
-            <Text>{item.totalWinnerSpot}&nbsp;spots</Text>
+            <Text>{item.totalSpots}&nbsp;spots</Text>
           </View>
         </View>
-
-          <RankTable item={item}/>
-
+        <RankNavigator item={item}></RankNavigator>
+        {/* <RankTable item={item} /> */}
       </ScrollView>
     </Container>
   );
@@ -175,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(null, mapDispatchToProps)(DrawDetails);
+export default DrawDetails;

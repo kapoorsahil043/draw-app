@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,7 +13,6 @@ import { connect } from "react-redux";
 import * as actions from "../../Redux/Actions/cartActions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as constants from "../../assets/common/constants";
-import { useState } from "react/cjs/react.development";
 import * as Localization from "expo-localization";
 
 var { width } = Dimensions.get("window");
@@ -80,36 +79,78 @@ const DrawCard = (props) => {
     localTime.getHours(); // local hour
   };
 
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [utcTimeOffset, setUtcTimeOffset] = useState(
+  /* const [utcTimeOffset, setUtcTimeOffset] = useState(
     new Date().getTimezoneOffset() / 60
-  );
+  ); */
+
+  const [statusText,setStatusText] = useState();
+  const [statusStyle,setStatusStyle] = useState({borderColor: "grey", color:"grey",backgroundColor: "white", borderWidth: 0.5,  borderRadius: 5, padding:5});
+  const [hideBtn,setHideBtn] = useState(false);
 
   useEffect(() => {
-    console.log("utcTimeOffset, ", utcTimeOffset);
+    if(status == constants.statuses.live){
+      setStatusText("Live");
+      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setHideBtn(true);
+    }else if(status == constants.statuses.active){
+      setStatusText("Available");
+      setStatusStyle({...statusStyle,borderColor:"green",color:"green"})
+    }else if(status == constants.statuses.started){
+      setStatusText("Live");
+      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setHideBtn(true);
+    }else if(status == constants.statuses.stopped){
+      setStatusText("Paused");
+      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setHideBtn(true);
+    }else if(status == constants.statuses.completed){
+      setStatusText("Completed");
+      setHideBtn(true);
+    }
+    if (status == constants.statuses.active && props.totalSpots == props.joined){
+      setStatusText("Draw Full");
+      setStatusStyle({...statusStyle,borderColor:"grey",color:"grey"})
+      setHideBtn(true);
+    }
+    if(timer == "0"){
+      setHideBtn(true);
+    }
+    //console.log("utcTimeOffset, ", utcTimeOffset);
 
-    console.log("formatTimeByOffset, ", formatTimeByOffset(createdOn, -8));
-    console.log("timezone, ", Localization.timezone);
-    console.log("locale, ", Localization.locale);
-    console.log("toLocaleString, ", new Date().toLocaleString("en-US"));
+    //console.log("formatTimeByOffset, ", formatTimeByOffset(createdOn, -8));
+    //console.log("timezone, ", Localization.timezone);
+    //console.log("locale, ", Localization.locale);
+    //console.log("toLocaleString, ", new Date().toLocaleString("en-US"));
     //console.log('convertUTCToLocalTime',convertUTCToLocalTime(createdOn))
-    console.log("--------");
+    //console.log("--------");
+
   }, []);
 
   const [timer, setTimer] = useState();
   useEffect(() => {
     const timee = setInterval(() => {
-      console.log("setInterval>>", dhm(new Date(props.drawDate) - new Date()));
+      console.log("setInterval,", dhm(new Date(props.drawDate) - new Date()));
+
+      //draw not avtive
+      if (props.status != constants.statuses.active){
+        clearInterval(timee);
+        return;
+      }
+
       const _dhm = dhm(new Date(props.drawDate) - new Date());
       if (_dhm[3] < 0) {
         setTimer(0);
+        clearInterval(timee);
         return;
       }
+
       setTimer(
-        (_dhm[0]!==0 ? _dhm[0] + (_dhm[0] < 2 ? " day" : "days") : "") +
-        (_dhm[0]==0 && _dhm[1]!==0 ? _dhm[1] + "h:" : "") +
-        (_dhm[0]==0 && _dhm[2]!==0 ? _dhm[2]+ "m:":"") +
-        (_dhm[0]==0 && _dhm[3]+"s" ? _dhm[3]+"s":""));
+        (_dhm[0]!==0 ? formatDay(_dhm[0],_dhm[1]) : "") +
+        (_dhm[0]==0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") +
+        (_dhm[0]==0 && _dhm[1]==0 && _dhm[2]!==0 ? _dhm[2]+ "m:":"") +
+        (_dhm[0]==0 && _dhm[1]==0 && _dhm[3]+"s" ? _dhm[3]+"s":"") +
+        " left"
+        );
     }, 1000);
     return () => {
       setTimer();
@@ -117,6 +158,13 @@ const DrawCard = (props) => {
     };
   }, []);
 
+  const formatDay = (day,hrs) =>{
+    return day + pluraliseDay(day);
+  }
+
+  const pluraliseDay = (day) =>{
+    return (day < 1 ? " day" : " days")
+  }
   const dhm = (ms) => {
     let days = Math.floor(ms / (24 * 60 * 60 * 1000));
     let daysms = ms % (24 * 60 * 60 * 1000);
@@ -138,30 +186,27 @@ const DrawCard = (props) => {
         }}
       />
       <View style={styles.card} />
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <View style={{ flexDirection: "row", padding: 1, borderRadius: 1,}}>
+      <View style={{   justifyContent: "center",   alignItems: "center",   width: "100%", }}>
+        <View style={{flexDirection:"row"}}>
+            <View style={{flex:1,flexDirection:"row"}}>
+              <Text style={statusStyle}>
+                {statusText}
+              </Text>
+            </View>
+            {status == constants.statuses.active && timer != "0" && (
+                <View style={{flexDirection:"row"}}>
+                  <Text>{timer}</Text>
+                </View>
+              )}
+        </View>
+        <View style={{ flexDirection: "row", padding: 1, borderRadius: 1}}>
           <Text style={styles.title}>
-            {props.name.length > 15
+            {props.name && props.name.length > 15
               ? props.name.substring(0, 15 - 3) + "..."
               : props.name}
           </Text>
-          {status === 2 && (
-            <Text style={{ borderColor: "red", borderWidth: 0.5, backgroundColor: "white", borderRadius: 5, padding:5 }}>
-              Live
-            </Text>
-          )}
         </View>
-        {status !== 2 && (
-          <View>
-            <Text>{timer}</Text>
-          </View>
-        )}
+        
 
         <View
           style={{
@@ -179,19 +224,16 @@ const DrawCard = (props) => {
           }}
         >
           <View style={{ flex: 1, flexDirection: "column" }}>
-            {!(props.totalWinnerSpot == props.joined) && (
-              <Text>{props.totalWinnerSpot - props.joined} left</Text>
-            )}
-            {props.totalWinnerSpot == props.joined && <Text>Draw full</Text>}
+            <Text>Win {props.winnersPct}%</Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
-            <Text>{props.totalWinnerSpot} spots</Text>
+            <Text>{props.totalSpots} spots</Text>
           </View>
         </View>
 
-        {status!==2 && <View>
+        {!hideBtn && <View>
           <EasyButton
-            disabled={hideJoinBtn}
+            disabled={hideBtn}
             primary
             medium
             onPress={() => {
@@ -206,13 +248,10 @@ const DrawCard = (props) => {
             }}
           >
             <Text style={{ color: "white" }}>
-              {hideJoinBtn && "JOINED"}
-              {!hideJoinBtn && (
                 <Text>
                   <Icon style={{ color: "white" }} name="rupee" />{" "}
                   {props.entryPrice}
                 </Text>
-              )}
             </Text>
           </EasyButton>
         </View>}
@@ -231,7 +270,7 @@ const mapDispatchToProps = (dispatch) => {
 const styles = StyleSheet.create({
   container: {
     width: width / 2 - 20,
-    height: width / 1.7,
+    height: width / 1.7 + 15,
     padding: 5,
     borderRadius: 10,
     marginTop: 55,

@@ -17,3 +17,15 @@ git push -u origin main
 git remote add origin https://github.com/kapoorsahil043/draw-app.git
 git branch -M main
 git push -u origin main
+
+# to change remote repo
+git remote -v
+git remote set-url origin https://github.com/kapoorsahil043/draw-app.
+
+
+# git cmd
+git push --set-upstream origin master 
+
+
+# expo cmd
+expo build:android

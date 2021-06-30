@@ -1,10 +1,10 @@
-import React from "react"
+import React, {useState} from "react"
 import { StyleSheet, View, Text, Image } from 'react-native'
 
 const RankTable = (props) => {
-    const { item } = props;
-
-    return (
+  const [item,setItem] = useState(props.route.params.item);
+  let cnt = 0;
+  return (
       <View>
         {/* headers */}
         <View
@@ -31,20 +31,16 @@ const RankTable = (props) => {
         </View>
 
         {/* body */}
-        <View
-          style={{
-            backgroundColor: "#F5F5F5",
-            padding: 10,
-            marginBottom: 10,
-          }}
-        >
-          {item && item.ranks.map((item) => {
+        {
+          item && item.ranks.map((item) => {
+            ++cnt;
             return (
               <View
                 key={item.rankStart}
                 style={{
                   flexDirection: "row",
-                  paddingBottom: 5,
+                  padding: 10,
+                  backgroundColor: cnt % 2 == 0 ?  '#E8E8E8': '',
                 }}
               >
                 <View style={{ flex: 1 }}>
@@ -62,14 +58,13 @@ const RankTable = (props) => {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Image
-                    style={{ height: 50, width: 50, borderRadius: 100 }}
+                    style={{ height: 40, width: 40, borderRadius: 100 }}
                     source={{ uri: item.rankImage }}
                   />
                 </View>
               </View>
             );
           })}
-        </View>
       </View>
     );
 }

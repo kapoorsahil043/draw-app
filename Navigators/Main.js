@@ -49,7 +49,7 @@ const Main = () => {
         }}
       />
 
-      <Tab.Screen
+      {context.stateUser.isAuthenticated && <Tab.Screen
         name="MyDraw"
         component={UserDrawNavigator}
         options={{
@@ -57,9 +57,9 @@ const Main = () => {
             <Icon name="list" color={color} size={30} />
           ),
         }}
-      />
+      />}
 
-      <Tab.Screen
+      {context.stateUser.user.isAdmin == true && <Tab.Screen
         name="Draw"
         component={DrawNavigator}
         options={{
@@ -67,7 +67,7 @@ const Main = () => {
             <Icon name="plus" color={color} size={30} />
           ),
         }}
-      />
+      />}
 
       {/* <Tab.Screen
         name="Cart"

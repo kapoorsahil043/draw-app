@@ -14,7 +14,7 @@ function MyStack() {
                 name='Draw'
                 component={DrawPage}
                 options={{
-                    headerShown: false,
+                    headerShown: true,
                 }}
             />
             <Stack.Screen 

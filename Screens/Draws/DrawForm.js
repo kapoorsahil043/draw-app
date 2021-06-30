@@ -22,7 +22,6 @@ import baseURL from "../../assets/common/baseUrl";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import mime from "mime";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const DrawForm = (props) => {
@@ -170,7 +169,7 @@ const DrawForm = (props) => {
             Toast.show({
               topOffset: 60,
               type: "success",
-              text1: "New Product added",
+              text1: "New Draw added",
               text2: "",
             });
             setTimeout(() => {
@@ -252,25 +251,34 @@ const DrawForm = (props) => {
   const [drawDate, setDrawDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [showTime, setShowTime] = useState(false);
 
   const onDateChange = (event, selectedDate) => {
     console.log('onDateChange',selectedDate)
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || new Date();
     setDrawDate(currentDate);
     setShow(false);
   };
 
+  const onTimeChange = (event, selectedDate) => {
+    console.log('onTimeChange',selectedDate)
+    const currentDate = selectedDate || new Date();
+    setDrawDate(currentDate);
+    setShowTime(false);
+  };
+
   const showMode = (currentMode) => {
-    setShow(true);
     setMode(currentMode);
   };
 
   const showDatepicker = () => {
     showMode('date');
+    setShow(true);
   };
 
   const showTimepicker = () => {
     showMode('time');
+    setShowTime(true);
   };
 
   return (
@@ -393,16 +401,17 @@ const DrawForm = (props) => {
               <Text style={{fontWeight:"700"}}>Draw Time</Text>
               <Text>{(drawDate + "").substr(16)}</Text>
             </View>
-            {show && <DateTimePicker
+            {showTime && <DateTimePicker
               testID="timePicker"
               value={drawDate}
               mode="time"
-              onChange={onDateChange}
+              onChange={onTimeChange}
             />}
           </View>
         </View>
-        <View>
-          <Button onPress={showDatepicker} title="Show date picker!" />
+        <View style={{flex:1, flexDirection:"row", alignContent:"space-around"}}>
+          <Button onPress={showDatepicker} title="Show date!" />
+          <Button onPress={showTimepicker} title="Show time!" />
         </View>
            
         <View

@@ -1,2 +1,7 @@
 
 node_modules/
+
+
+#expo
+.expo/web/cache/development/babel-loader/
+.expo/packager-info.json

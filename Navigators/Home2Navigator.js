@@ -27,6 +27,13 @@ function MyStack() {
     )
 }
 
-export default function Home2Navigator() {
+export default function Home2Navigator(navigation) {
+    //console.log('navigation',navigation);
+    /* if(navigation){
+        navigation.navigation.setOptions({tabBarVisible: true})
+        if(navigation.route && navigation.route.state.index && navigation.route.state.index && navigation.route.state.index==1){
+            navigation.navigation.setOptions({tabBarVisible: false})
+        }
+    } */
     return <MyStack />;
 }
