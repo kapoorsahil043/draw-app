@@ -84,32 +84,33 @@ const DrawCard = (props) => {
   ); */
 
   const [statusText,setStatusText] = useState();
-  const [statusStyle,setStatusStyle] = useState({borderColor: "grey", color:"grey",backgroundColor: "white", borderWidth: 0.5,  borderRadius: 5, padding:5});
+  const [statusStyle,setStatusStyle] = useState({color:"white",alignSelf:"center",padding:5,fontWeight:"600"});
   const [hideBtn,setHideBtn] = useState(false);
 
   useEffect(() => {
     if(status == constants.statuses.live){
       setStatusText("Live");
-      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:"red"})
       setHideBtn(true);
     }else if(status == constants.statuses.active){
       setStatusText("Available");
-      setStatusStyle({...statusStyle,borderColor:"green",color:"green"})
+      setStatusStyle({...statusStyle,backgroundColor:"green"})
     }else if(status == constants.statuses.started){
       setStatusText("Live");
-      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:"red"})
       setHideBtn(true);
     }else if(status == constants.statuses.stopped){
       setStatusText("Paused");
-      setStatusStyle({...statusStyle,borderColor:"red",color:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:"red"})
       setHideBtn(true);
     }else if(status == constants.statuses.completed){
       setStatusText("Completed");
+      setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
     }
     if (status == constants.statuses.active && props.totalSpots == props.joined){
       setStatusText("Draw Full");
-      setStatusStyle({...statusStyle,borderColor:"grey",color:"grey"})
+      setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
     }
     if(timer == "0"){
@@ -129,7 +130,7 @@ const DrawCard = (props) => {
   const [timer, setTimer] = useState();
   useEffect(() => {
     const timee = setInterval(() => {
-      console.log("setInterval,", dhm(new Date(props.drawDate) - new Date()));
+      //console.log("setInterval,", dhm(new Date(props.drawDate) - new Date()));
 
       //draw not avtive
       if (props.status != constants.statuses.active){
@@ -165,6 +166,7 @@ const DrawCard = (props) => {
   const pluraliseDay = (day) =>{
     return (day < 1 ? " day" : " days")
   }
+  
   const dhm = (ms) => {
     let days = Math.floor(ms / (24 * 60 * 60 * 1000));
     let daysms = ms % (24 * 60 * 60 * 1000);
@@ -189,11 +191,13 @@ const DrawCard = (props) => {
       <View style={{   justifyContent: "center",   alignItems: "center",   width: "100%", }}>
         <View style={{flexDirection:"row"}}>
             <View style={{flex:1,flexDirection:"row"}}>
-              <Text style={statusStyle}>
-                {statusText}
-              </Text>
+              <View style={{borderRadius: 10, backgroundColor:statusStyle.backgroundColor,alignContent:"center",padding:5,alignSelf:"center"}}>
+                <Text style={{color:statusStyle.color,fontWeight:statusStyle.fontWeight}}>
+                    {statusText}
+                </Text>
+              </View>
             </View>
-            {status == constants.statuses.active && timer != "0" && (
+            {status === constants.statuses.active && timer != "0" && (
                 <View style={{flexDirection:"row"}}>
                   <Text>{timer}</Text>
                 </View>

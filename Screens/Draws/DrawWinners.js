@@ -1,48 +1,67 @@
-import React, {useCallback, useEffect, useState} from "react"
+import React, {useCallback, useEffect, useState, useContext} from "react"
 import { StyleSheet, View, Text, Image, AsyncStorage } from 'react-native'
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
-import { useFocusEffect } from "@react-navigation/native"
+import AuthGlobal from "../../Context/store/AuthGlobal";
+import * as constants from "../../assets/common/constants";
 
 const DrawWinners = (props) => {
   const [item,setItem] = useState(props.route.params.item);
   const [winners,setWinners] = useState([]);
-  const [token, setToken] = useState();
+  const context = useContext(AuthGlobal);
+  const [userId,setUserId] = useState(context.stateUser.user.userId);
+  const [selfWinnerObj,setSelfWinnerObj] = useState();
+  const [token,setToken] = useState();
+  
+  const loadWinners = (_token) =>{
+      if(!_token){
+        return;
+      }
 
-  const loadWinners = (timer) =>{
-    AsyncStorage.getItem("jwt")
-        .then((res) => {
-          axios
-          .get(`${baseURL}winners/draw/${item.id}`,{headers: {Authorization: `Bearer ${res}`}})
-          .then((resp) => {setWinners(resp.data); console.log('winner count -> '+winners.length)})
-          .catch((error) => {
-            clearInterval(timer);
-            alert("Error to load winners");
-            })
+      axios
+      .get(`${baseURL}winners/draw/${item.id}`,{headers: {Authorization: `Bearer ${_token}`}})
+      .then((resp) => {
+         setWinners(resp.data);
+            if(resp.data.status!==constants.statuses.completed){
+              if(resp.data.status === constants.statuses.started){
+                setTimeout(() => {
+                  loadWinners(_token);  
+                }, 2000);
+              }
+            }
+          }
+         )
+         
+      .catch((error) => {
+          //alert("Error to load winners");
         })
-        .catch((error) => {console.log(error);clearInterval(timer);});
-        if(winners.length && (item.totalWinnerSpot == winners.length)){
-            clearInterval(timer);
+
+        if(winners.length && (item.totalSpots == winners.length)){
+        }
+        if(item.totalSpots > 0 && item.drawCount == 0 ){
         }
   }
  
-  (useEffect(() => {
-    console.log('DrawWinners,useFocusEffect')
-    const timer =  setInterval(() => {
-      AsyncStorage.getItem("jwt")
-      .then((res) => {
-          setToken(res);
-          loadWinners(timer);
+  useEffect(() => {
+    console.log('DrawWinners, usesEffect');
+
+    AsyncStorage.getItem("jwt")
+      .then((jwt) => {
+          setToken(jwt);
+          loadWinners(jwt);
       })
       .catch((error) => console.log(error));
-    }, 2000);
       
     return () => {
       setWinners();
-      clearInterval(timer);
       setToken();
     }
-  },[]));
+  },[]);
+
+  const userFound = (_item) => {
+    setSelfWinnerObj(_item);
+    return null;
+  }
 
   return (
       <View>
@@ -65,28 +84,65 @@ const DrawWinners = (props) => {
         </View>
 
         {/* body */}
-        {winners && winners.map((item) => {
+
+        {
+          winners && winners.map((_item) => {
             return (
-              <View
-                key={item.rank}
-                style={{
-                  flexDirection: "row",
-                  padding: 10,
-                  backgroundColor: item.rank % 2 == 0 ?  '#E8E8E8': '',
-                  height:60
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text>#{item.rank}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text>{item.user.name}</Text>
-                </View>
-              </View>
+              (_item.user._id === userId) ? rowFn(item,_item,true) :
+              rowFn(item,_item)
             );
-          })}
+          })
+        }
       </View>
     );
+}
+
+const loadRankImage = (winnerItem) =>{
+  if(!winnerItem || !winnerItem.draw || !winnerItem.draw.ranks){
+    return constants.DEFAULT_USER_IMAGE_URL;
+  }
+  let img = constants.DEFAULT_USER_IMAGE_URL;
+  winnerItem.draw.ranks.forEach((rank)=>{
+    if(winnerItem.rank >=rank.rankStart && winnerItem.rank <= rank.rankEnd){
+      img = rank.rankImage;
+      return;
+    }
+  });
+  return img;
+}
+
+const rowFn = (item,_item,isUserFound)=>{
+  return (
+      <View
+          key={_item.rank}
+          style={{
+            flexDirection: "row",
+            padding: 5,
+            backgroundColor: isUserFound ? '#f0d8bf' : (_item.rank % 2 == 0 ?  '#E8E8E8': ''),
+            height:70
+          }}
+        >
+          <View style={{ flex: 1}}>
+            <View style={{flex:1,flexDirection:"row"}}>
+              <View style={{justifyContent:"center", padding:5}}>
+                <Text>#{_item.rank}</Text>
+              </View>
+              <View style={{}}>
+                <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: loadRankImage(_item) }} />
+              </View>
+            </View>
+          </View>
+          <View style={{ flex: 1,flexDirection:"row"}}>
+            <View style={{}}>
+              <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: _item.user.image ? _item.user.image : constants.DEFAULT_USER_IMAGE_URL}} />
+            </View>
+            <View style={{justifyContent:"center", padding:5}}>
+              <Text style={{}}>{_item.user.name}</Text>
+              <Text style={{color:"green"}}>{item.totalWinnerSpot >= _item.rank ? 'Winner!!':''}</Text>
+            </View>
+          </View>
+        </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -98,6 +154,6 @@ const styles = StyleSheet.create({
     text: {
         color: 'red'
     }
-})
+});
 
 export default DrawWinners;

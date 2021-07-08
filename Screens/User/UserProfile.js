@@ -1,113 +1,269 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Button, StyleSheet } from 'react-native';
-import { Container } from "native-base"
-import { useFocusEffect } from "@react-navigation/native"
-import AsyncStorage from "@react-native-community/async-storage"
-import OrderCard from "../../Shared/OrderCard"
+import React, { useContext, useState, useCallback, useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Button,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { Container } from "native-base";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-community/async-storage";
 
-import axios from "axios"
-import baseURL from "../../assets/common/baseUrl"
+import axios from "axios";
+import baseURL from "../../assets/common/baseUrl";
+import baseUrlResourceServer from "../../assets/common/baseUrlResourceServer";
+import Spinner from "../../Shared/Spinner";
 
-import AuthGlobal from "../../Context/store/AuthGlobal"
-import { logoutUser } from "../../Context/actions/Auth.actions"
+import { logoutUser } from "../../Context/actions/Auth.actions";
+import * as ImagePicker from "expo-image-picker";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Toast from "react-native-toast-message";
+import EasyButton from "../../Shared/StyledComponents/EasyButton";
+import mime from "mime";
+import * as constants from '../../assets/common/constants';
+
+import AuthGlobal from "../../Context/store/AuthGlobal";
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/userProfileActions';
 
 const UserProfile = (props) => {
-    const context = useContext(AuthGlobal)
-    const [userProfile, setUserProfile] = useState()
-    const [orders, setOrders] = useState()
+  const context = useContext(AuthGlobal);
+  const [userProfile, setUserProfile] = useState();
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState();
+  const [mainImage, setMainImage] = useState();
+  const [token, setToken] = useState();
+  const [error, setError] = useState();
 
-    useFocusEffect(
-        useCallback(() => {
-        if (
-            context.stateUser.isAuthenticated === false || 
-            context.stateUser.isAuthenticated === null
-        ) {
-            props.navigation.navigate("Login")
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setMainImage(result.uri);
+      setImage(result.uri);
+    }
+  };
+
+  const saveProfile = async (user) =>{
+    console.log('saveProfile');
+    AsyncStorage.setItem("usr", JSON.stringify({image:user.image}));
+    props.updateUserProfile({image:user.image});
+  }
+  
+  useFocusEffect(
+    useCallback(() => {
+      console.log('UserProfile,useCallback')
+      if (
+        context.stateUser.isAuthenticated === false ||
+        context.stateUser.isAuthenticated === null
+      ) {
+        props.navigation.navigate("SignIn");
+      }
+      
+      // Image Picker
+    (async () => {
+        if (Platform.OS !== "web") {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+          }
         }
+      })();
 
-        // AsyncStorage.getItem("jwt")
-        //     .then((res) => {
-        //         console.log('context.stateUser.user.sub',context.stateUser.user);
-        //         axios
-        //             .get(`${baseURL}users/${context.stateUser.user.sub.userId}`, {
-        //                 headers: { Authorization: `Bearer ${res}` },
-        //             })
-        //             .then((user) => setUserProfile(user.data))
-        //     })
-        //     .catch((error) => console.log(error))
-
-        // axios
-        // .get(`${baseURL}orders`)
-        // .then((x) => {
-        //     const data = x.data;
-        //     console.log(data)
-        //     const userOrders = data.filter(
-        //         (order) => order.user._id === context.stateUser.user.sub
-        //     );
-        //     setOrders(userOrders);
-        // })
-        // .catch((error) => console.log(error))
+      AsyncStorage.getItem("jwt")
+        .then((res) => {
+          setLoading(true);
+          setToken(res);
+          axios
+            .get(`${baseURL}users/${context.stateUser.user.userId}`, {
+              headers: { Authorization: `Bearer ${res}` },
+            })
+            .then((user) => [saveProfile(user.data),setUserProfile(user.data),setLoading(false)])
+            .catch((err) => {
+              setLoading(false);
+            });
+        })
+        .catch((error) => [console.log(error), setLoading(false)]);
 
         return () => {
-            setUserProfile();
-            setOrders();
-        }
+        setUserProfile();
+        setMainImage();
+        setImage();
+        setError();
+        setLoading();
+      };
+    }, [context.stateUser.isAuthenticated])
+  );
 
-    }, [context.stateUser.isAuthenticated]))
+  const updateProfile = () => {
+    setLoading(true);
+    if (!image) {
+      setLoading(false);
+      setError("Please select image correclty!!");
+      alert("Please select image correclty!!");
+      return;
+    }
+    if(!token){
+        setLoading(false);
+        alert("Please login again!!");
+        return;
+    }
 
-    return (
-       <Container style={styles.container}>
-           <ScrollView contentContainerStyle={styles.subContainer}>
-               <Text style={{ fontSize: 30 }}>
-                   {userProfile ? userProfile.name : "" }
-               </Text>
-               <View style={{ marginTop: 20 }}>
-                    <Text style={{ margin: 10 }}>
-                        Email: {userProfile ? userProfile.email : ""}
-                    </Text>
-                    <Text style={{ margin: 10 }}>
-                        Phone: {userProfile ? userProfile.phone : ""}
-                    </Text>
-               </View>
-               <View style={{ marginTop: 80 }}>
-                    <Button title={"Sign Out"} onPress={() => [
-                        AsyncStorage.removeItem("jwt"),
-                        logoutUser(context.dispatch)
-                    ]}/>
-               </View>
-               <View style={styles.order}>
-                   <Text style={{ fontSize: 20 }}></Text>
-                   <View>
-                       {orders ? (
-                           orders.map((x) => {
-                               return <OrderCard key={x.id} {...x} />;
-                           })
-                       ) : (
-                           <View style={styles.order}>
-                               <Text></Text>
-                           </View>
-                       )}
-                   </View>
-               </View>
-           </ScrollView>
-       </Container>
-    )
-}
+    setError("");
+    let formData = new FormData();
+    const newImageUri = "file:///" + image.split("file:/").join("");
+    formData.append("image", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
+    //formData.append("name", name);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+      axios
+        .post(`${baseUrlResourceServer}users/updateProfile`, formData, config)
+        .then((res) => {
+          setLoading(false);
+          setUserProfile(res.data);
+          setMainImage();
+          if (res.status == 200 || res.status == 201) {
+            Toast.show({
+              topOffset: 60,
+              type: "success",
+              text1: "Profile Updated Successfully!!",
+              text2: "",
+            });
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          Toast.show({
+            topOffset: 60,
+            type: "error",
+            text1: "Something went wrong",
+            text2: "Please try again",
+          });
+        });
+  };
+
+  const getImageSource = () =>{
+    if(mainImage){
+      return mainImage;
+    }
+    if(userProfile && userProfile.image){
+      return userProfile.image;
+    }
+
+    return constants.DEFAULT_USER_IMAGE_URL;
+  }
+
+
+  return (
+    <>
+      <Spinner status={loading}></Spinner>
+      {userProfile && 
+      <Container style={styles.container}>
+        <ScrollView contentContainerStyle={styles.subContainer}>
+          <View style={{ flex: 1 }}>
+            <Image style={styles.imageContainer} source={{ uri: getImageSource()}} />
+            <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+              <Icon style={{ color: "white" }} name="camera" />
+            </TouchableOpacity>
+          </View>
+          <Text style={{ fontSize: 30 }}>
+            {userProfile ? userProfile.name : ""}
+          </Text>
+          <View style={{ margin: 10,flex:1,flexDirection:"column",width:'90%',backgroundColor:"white",borderRadius:5 }}>
+              <View>
+                <Text style={{ margin: 10 }}>
+                    Email: {userProfile ? userProfile.email : ""}
+                </Text>
+              </View>
+              <View>
+                <Text style={{ margin: 10 }}>
+                    Phone: {userProfile ? userProfile.phone : ""}
+                </Text>
+              </View>
+                <View style={{alignSelf:"center"}}>
+                    <EasyButton large primary onPress={() => updateProfile()} disabled={!mainImage}>
+                        <Text style={{color:"white"}}>Update Profile</Text>
+                    </EasyButton>
+                </View>
+          </View>
+          <View style={{ marginTop: 50,marginBottom:50 }}>
+            <EasyButton large danger onPress={() => [
+                AsyncStorage.removeItem("jwt"),
+                logoutUser(context.dispatch),
+                props.clearUserProfile()
+              ]}>
+                <Text style={{color:"white"}}>SIGN OUT</Text>
+            </EasyButton>
+            {/* <Button
+              title={"Sign Out"}
+              onPress={() => [
+                AsyncStorage.removeItem("jwt"),
+                logoutUser(context.dispatch),
+              ]}
+            /> */}
+          </View>
+        </ScrollView>
+      </Container>}
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center"
-    },
-    subContainer: {
-        alignItems: "center",
-        marginTop: 60
-    },
-    order: {
-        marginTop: 20,
-        alignItems: "center",
-        marginBottom: 60
-    }
-})
+  container: {
+    flex: 1,
+    //alignItems: "center"
+    backgroundColor: "gainsboro",   
+    flexDirection:"row",
+  },
+  subContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  imageContainer: {
+    width: 200,
+    height: 200,
+    //borderStyle: "solid",
+    borderWidth: 5,
+    padding: 0,
+    justifyContent: "center",
+    borderRadius: 100,
+    borderColor: "#E0E0E0",
+    backgroundColor:"white"
+    //elevation: 10,
+  },
+  imagePicker: {
+    position: "absolute",
+    right: 25,
+    bottom: 10,
+    backgroundColor: "grey",
+    padding: 8,
+    borderRadius: 100,
+    //elevation: 10,
+  },
+});
 
-export default UserProfile;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      updateUserProfile: (image) => dispatch(actions.updateUserProfile(image)),
+      clearUserProfile: () => dispatch(actions.clearUserProfile()),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(UserProfile);

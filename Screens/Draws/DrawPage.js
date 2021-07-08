@@ -96,11 +96,14 @@ const DrawPage = (props) => {
 
   return (
     <>
-      <Container>
+      <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          <View style={{backgroundColor:"lightgrey",marginTop:10,marginBottom:20}}>
+          <View style={{flexDirection:"row",marginTop:10,marginBottom:20}}>
             <EasyButton large primary onPress={() => props.navigation.navigate("Add",{item:null})}>
-              <Text style={styles.buttonText}><Icon name="plus" size={15} />&nbsp;Add Draw</Text>
+              <Text style={styles.buttonText}><Icon name="plus" size={15} />&nbsp;Draw</Text>
+            </EasyButton>
+            <EasyButton large primary onPress={() => props.navigation.navigate("Images",{item:null})}>
+              <Text style={styles.buttonText}><Icon name="plus" size={15} />&nbsp;Images</Text>
             </EasyButton>
           </View>
 
@@ -109,13 +112,7 @@ const DrawPage = (props) => {
               <View style={styles.listContainer}>
                 {draws.map((item) => {
                   return (
-                    <DrawList
-                      navigation={props.navigation}
-                      key={item.id}
-                      item={item}
-                      join={edit}
-                      
-                    />
+                    null
                   );
                 })}
               </View>
@@ -141,7 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     flexWrap: "wrap",
-    backgroundColor: "gainsboro",
     paddingBottom: 20,
   },
   center: {
@@ -156,6 +152,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     elevation: 2,
+  },
+  buttonText: {
+    color: "white",
   },
 });
 

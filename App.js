@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { LogBox, Pressable, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -19,6 +19,10 @@ import Header from "./Shared/Header";
 
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
+import AsyncStorage from "@react-native-community/async-storage";
+
+//context
+import AuthGlobal from "./Context/store/AuthGlobal";
 
 LogBox.ignoreAllLogs(true);
 
@@ -33,6 +37,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
+  const context = useContext(AuthGlobal);
 
   const checkPermissionsForiOS = () => {
     Permissions.getAsync(Permissions.NOTIFICATIONS)
@@ -55,6 +60,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    console.log('App,useEffect');
     checkPermissionsForiOS();
     
     const backgroundSub = Notifications.addNotificationResponseReceivedListener(
@@ -79,7 +85,12 @@ export default function App() {
 
   const gotoWalletHandler = () =>{
     console.log('gotoWalletHandler');
-    navigationRef.current?.navigate('Wallet');
+    navigationRef.current?.navigate('Me');
+  };
+
+  const gotoProfileHandler = () =>{
+    console.log('gotoProfileHandler');
+    navigationRef.current?.navigate('Me');
   };
 
   const onReadyHandler = () => {
@@ -90,7 +101,7 @@ export default function App() {
     <Auth>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef} onReady={onReadyHandler}>
-        <Header wallet={gotoWalletHandler}/>
+        <Header wallet={gotoWalletHandler} profile={gotoProfileHandler}/>
           <Main />
           <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>

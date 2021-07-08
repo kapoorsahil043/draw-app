@@ -20,7 +20,7 @@ git push -u origin main
 
 # to change remote repo
 git remote -v
-git remote set-url origin https://github.com/kapoorsahil043/draw-app.
+git remote set-url origin https://github.com/kapoorsahil043/draw-app.git
 
 
 # git cmd

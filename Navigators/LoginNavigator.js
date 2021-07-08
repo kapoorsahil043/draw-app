@@ -15,16 +15,23 @@ function MyStack() {
 
     return (
         <Stack.Navigator>
-             <Stack.Screen 
-                name="User Profile"
-                component={UserProfile}
+            <Stack.Screen 
+                name="Login"
+                component={Login}
                 options={{
                     headerShown: false
                 }}
             />
-              <Stack.Screen 
-                name="Wallet"
-                component={Wallet}
+             <Stack.Screen 
+                name="Register"
+                component={Register}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <Stack.Screen 
+                name="Forgot Password"
+                component={ForgotPasswordNavigator}
                 options={{
                     headerShown: false
                 }}
@@ -33,6 +40,6 @@ function MyStack() {
     )
 }
 
-export default function UserNavigator() {
+export default function LoginNavigator() {
     return <MyStack />
 }

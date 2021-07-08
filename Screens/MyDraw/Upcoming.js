@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import DrawList from "../Draws/DrawList";
+import * as constants from "../../assets/common/constants";
 
 var { height } = Dimensions.get("window");
 
@@ -41,7 +42,7 @@ const Upcoming = (props) => {
   };
 
   const callMethod = () => {
-    console.log("Upcoming, callMethod");
+    //console.log("Upcoming, callMethod");
     setLoading(true);
     setTimeout(() => {
       AsyncStorage.getItem("jwt")
@@ -85,20 +86,21 @@ const Upcoming = (props) => {
         <Text style={styles.textStyle}>Show Modal</Text>
     </Pressable> */}
       <Spinner status={loading}></Spinner>
-      <Container>
+      <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
           {
             <View>
               {draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
+                    if (item.status !== constants.statuses.active)
+                    {return}
                     return (
                       <DrawList
                         navigation={props.navigation}
                         key={item.id ? item.id : item._id}
                         item={item}
                         join={joinHandler}
-                        hideJoinBtn={true}
                       />
                     );
                   })}
@@ -126,7 +128,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     flexWrap: "wrap",
-    backgroundColor: "gainsboro",
     paddingBottom: 20,
   },
   center: {

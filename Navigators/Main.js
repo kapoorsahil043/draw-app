@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -14,11 +14,44 @@ import AdminNavigator from "./AdminNavigator";
 import CartIcon from "../Shared/CartIcon";
 import AuthGlobal from "../Context/store/AuthGlobal";
 import UserDrawNavigator from "./UserDrawNavigator";
+import LoginNavigator from "./LoginNavigator";
+
+import { checkUserStatus } from "../Context/actions/Auth.actions";
+import AsyncStorage from "@react-native-community/async-storage";
+
 
 const Tab = createBottomTabNavigator();
 
 const Main = () => {
   const context = useContext(AuthGlobal);
+
+  const succussCallBack =()=>{
+    console.log('succussCallBack')
+   // props.navigation.navigate("Me");  
+  }
+
+  const errorCallBack =()=>{
+    console.log('errorCallBack')
+    //setLoading(false);  
+  }
+
+  const userStatus = ()=>{
+    console.log('userStatus',context.dispatch)
+    //checkUserStatus(context.dispatch);
+    AsyncStorage.getItem("jwt")
+    .then((jwt) => {
+      //const decoded = jwt_decode(jwt)
+      //console.log('decoded',decoded);
+      //dispatch(setCurrentUser(decoded, {userId:decoded.userId}))
+      //succussCallBack();
+    })
+    .catch((error) => [console.log(error)]);
+  }
+
+  useEffect(()=>{
+    console.log('Main,useEffect',new Date())
+    userStatus();
+  })
 
   return (
     <Tab.Navigator
@@ -50,7 +83,7 @@ const Main = () => {
       />
 
       {context.stateUser.isAuthenticated && <Tab.Screen
-        name="MyDraw"
+        name="My Draw"
         component={UserDrawNavigator}
         options={{
           tabBarIcon: ({ color }) => (
@@ -94,15 +127,24 @@ const Main = () => {
         />
       ) : null} */}
 
-      <Tab.Screen
-        name="User"
+     { !context.stateUser.isAuthenticated && <Tab.Screen
+        name="SignIn"
+        component={LoginNavigator}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="user" color={color} size={30} />
+          ),
+        }}
+      />}
+     {context.stateUser.isAuthenticated && <Tab.Screen
+        name="Me"
         component={UserNavigator}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="user" color={color} size={30} />
           ),
         }}
-      />
+      />}
     </Tab.Navigator>
   );
 };

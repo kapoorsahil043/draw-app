@@ -8,44 +8,50 @@ import EasyButton from "../../Shared/StyledComponents/EasyButton";
 // Context
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import { loginUser } from "../../Context/actions/Auth.actions";
+
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/userProfileActions';
+
 import Spinner from "../../Shared/Spinner";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Login = (props) => {
   const context = useContext(AuthGlobal);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
-    if (context.stateUser.isAuthenticated === true) {
-      props.navigation.navigate("User Profile");
-    }
-  }, [context.stateUser.isAuthenticated]);
+    console.log('Login,useEffect')
+    /* if (context.stateUser.isAuthenticated === true) {
+        props.navigation.navigate("User Profile");
+      } */
+      //context.stateUser.isAuthenticated
+  }, []);
 
   useEffect(() => {
     setLoading(false);
 
     return () => {
-      setLoading(false);
+      setLoading();
     }
   });
   const succussCallBack =()=>{
     console.log('succussCallBack')
-    setTimeout(() => {
-      setLoading(false);  
-    }, 1000);
-    
+    //setLoading(false);
+    props.updateUserProfile();
+    props.navigation.navigate("Home");  
   }
   const errorCallBack =()=>{
     console.log('errorCallBack')
-    setTimeout(() => {
-      setLoading(false);  
-    }, 1000);
+    //setLoading(false);  
   }
+  
   const handleSubmit = () => {
     console.log("handleSubmit");
-    setLoading(true);
+    //setLoading(true);
     const user = {
       email,
       password,
@@ -82,9 +88,12 @@ const Login = (props) => {
           <EasyButton large primary onPress={() => handleSubmit()}>
             <Text style={{ color: "white" }}>Login</Text>
           </EasyButton>
+          <TouchableOpacity large primary onPress={() => props.navigation.navigate("Forgot Password")}>
+            <Text style={{ color: "black" }}>Forgot password?</Text>
+          </TouchableOpacity>
         </View>
         <View style={[{ marginTop: 40 }, styles.buttonGroup]}>
-          <Text style={styles.middleText}>Don't have an account yet?</Text>
+          <Text style={{}}>Don't have an account yet?</Text>
           <EasyButton
             large
             secondary
@@ -109,4 +118,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      updateUserProfile: (image) => dispatch(actions.updateUserProfile(image)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(Login);

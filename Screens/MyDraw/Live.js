@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import DrawList from "../Draws/DrawList";
+import * as constants from "../../assets/common/constants";
 
 var { height } = Dimensions.get("window");
 
@@ -35,140 +36,47 @@ const Live = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
 
-  const joinContest = (drawId) => {
-    setLoading(true);
-    const req = {
-      draw: drawId,
-    };
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
 
-    axios
-      .post(`${baseURL}participants/list`, req, config)
-      .then((res) => {
-        if (res.status == 200 || res.status == 201) {
-          setLoading(false);
-          Toast.show({
-            topOffset: 60,
-            type: "success",
-            text1: "Contest Joined",
-            text2: "",
-          });
-          setTimeout(() => {
-            //props.navigation.navigate("Draw");
-          }, 0);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log("Error:", error.response.data.message);
-        let msg = error.response.data.message
-          ? error.response.data.message
-          : "Something went wrong";
-        Toast.show({
-          topOffset: 60,
-          type: "error",
-          text1: msg,
-          text2: "Please try new one",
-        });
-      });
-  };
-
-  const loginAlert = () => {
-    console.log("context.stateUser.user", context.stateUser.user);
-    Alert.alert("Login Required", "Proceed to Login ?", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => props.navigation.navigate("User") },
-    ]);
-  };
-  const join = (drawId) => {
+  const joinHandler = (drawId) => {
     console.log("join draw container", drawId);
-    if (context.stateUser.user.userId == null) {
-      loginAlert();
-      return;
-    }
-
-    joinContest(drawId);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      setFocus(false);
-      setActive(-1);
-      setTimeout(() => {
-        AsyncStorage.getItem("jwt")
+  const callMethod = () => {
+    //console.log("Live, callMethod");
+    setLoading(true);
+    setTimeout(() => {
+      AsyncStorage.getItem("jwt")
+        .then((jwt) => {
+          axios
+          .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
           .then((res) => {
-            console.log("token", token);
-            setToken(res);
-          })
-          .catch((error) => console.log(error));
-      }, 0);
-      // Draws
-      setTimeout(() => {
-        axios
-          .get(`${baseURL}draws`)
-          .then((res) => {
+            setToken(jwt);
             setDraws(res.data);
             setInitialState(res.data);
             setLoading(false);
           })
-          .catch((error) => {
-            console.log("Api call error");
-          });
-      }, 10);
+          .catch((error) => {setLoading(false);console.log("Participants Api call error");});
+        })
+        .catch((error) => console.log(error));
+    }, 0);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Live, useCallBack");
+      callMethod();
+      setFocus(false);
+      setActive(-1);
 
       return () => {
         setDraws([]);
         setFocus();
         setActive();
         setInitialState();
-        setToken();
         setLoading(false);
       };
     }, [])
   );
-
-  // Product Methods
-  const searchProduct = (text) => {
-    setProductsFiltered(
-      products.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
-    );
-  };
-
-  const openList = () => {
-    setFocus(true);
-  };
-
-  const onBlur = () => {
-    setFocus(false);
-  };
-
-  // Categories
-  const changeCtg = (ctg) => {
-    {
-      ctg === "all"
-        ? [setProductsCtg(initialState), setActive(true)]
-        : [
-            setProductsCtg(
-              products.filter((i) => i.category._id === ctg),
-              setActive(true)
-            ),
-          ];
-    }
-  };
-
-  const modalHandler = (value) => {
-    console.log("modalHandler", value);
-    setModalVisible(value);
-  };
-
   return (
     <>
       {/* <Pressable
@@ -177,13 +85,34 @@ const Live = (props) => {
         <Text style={styles.textStyle}>Show Modal</Text>
     </Pressable> */}
       <Spinner status={loading}></Spinner>
-      <Container>
+      <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          <View>
-            <View style={[styles.center, { height: height / 2 }]}>
-              <Text>No draws available at the moment!!</Text>
+          {
+            <View>
+              {draws.length > 0 ? (
+                <View style={styles.listContainer}>
+                  {draws.map((item) => {
+                    if (item.status === constants.statuses.live ||
+                      item.status === constants.statuses.started)
+                    {}else{return}
+                    return (
+                      <DrawList
+                        navigation={props.navigation}
+                        key={item.id ? item.id : item._id}
+                        item={item}
+                        join={joinHandler}
+                        hideJoinBtn={true}
+                      />
+                    );
+                  })}
+                </View>
+              ) : (
+                <View style={[styles.center, { height: height / 2 }]}>
+                  <Text>No draws available at the moment!!</Text>
+                </View>
+              )}
             </View>
-          </View>
+          }
         </ScrollView>
       </Container>
     </>
@@ -200,7 +129,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     flexWrap: "wrap",
-    backgroundColor: "gainsboro",
     paddingBottom: 20,
   },
   center: {

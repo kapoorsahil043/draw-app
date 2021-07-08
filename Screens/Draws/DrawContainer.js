@@ -259,7 +259,7 @@ const DrawContainer = (props) => {
         modalHandler={modalHandler}
       ></ModalScreen>
       <Spinner status={loading}></Spinner>
-      <Container>
+      <Container style={{backgroundColor: "gainsboro",}}>
         <ScrollView>
           <View>
             <View>
@@ -275,9 +275,6 @@ const DrawContainer = (props) => {
                       key={item.id}
                       item={item}
                       join={joinHanlder}
-                      hideJoinBtn={
-                        item.totalWinnerSpot - item.joined == 0 ? true : false
-                      }
                     />
                   );
                 })}
@@ -304,7 +301,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     flexWrap: "wrap",
-    backgroundColor: "gainsboro",
     paddingBottom: 20,
   },
   center: {
