@@ -47,8 +47,8 @@ const DrawImageUpload = (props) => {
         //console.log('token',res);
         setToken(jwt);
         axios
-        .get(`${baseUrl}images`,{  headers: {Authorization: `Bearer ${jwt}`}})
-        .then((res) => setImages(res.data))
+        .get(`${baseUrl}images`)
+        .then((res) => [setImages(res.data),console.log(res.data)])
         .catch((error) => alert("Error to load images"));
       })
       .catch((error) => console.log(error));
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   imagePicker: {
     position: "absolute",
-    right: 30,
+    right: 10,
     bottom: 1,
     backgroundColor: "grey",
     padding: 4,

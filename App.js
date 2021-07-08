@@ -85,12 +85,12 @@ export default function App() {
 
   const gotoWalletHandler = () =>{
     console.log('gotoWalletHandler');
-    navigationRef.current?.navigate('Me');
+    navigationRef.current?.navigate('Me',{goto:"Wallet"});
   };
 
   const gotoProfileHandler = () =>{
     console.log('gotoProfileHandler');
-    navigationRef.current?.navigate('Me');
+    navigationRef.current?.navigate('Me',{goto:"User Profile"});
   };
 
   const onReadyHandler = () => {
@@ -101,7 +101,7 @@ export default function App() {
     <Auth>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef} onReady={onReadyHandler}>
-        <Header wallet={gotoWalletHandler} profile={gotoProfileHandler}/>
+          <Header wallet={gotoWalletHandler} profile={gotoProfileHandler}/>
           <Main />
           <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>

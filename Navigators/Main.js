@@ -1,6 +1,15 @@
 import React, { useContext, useEffect } from "react";
+import {
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  View,
+  Text,
+  Pressable,
+} from "react-native";
+
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 // Stacks
@@ -19,6 +28,8 @@ import LoginNavigator from "./LoginNavigator";
 import { checkUserStatus } from "../Context/actions/Auth.actions";
 import AsyncStorage from "@react-native-community/async-storage";
 
+import * as constants from '../assets/common/constants';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -35,22 +46,8 @@ const Main = () => {
     //setLoading(false);  
   }
 
-  const userStatus = ()=>{
-    console.log('userStatus',context.dispatch)
-    //checkUserStatus(context.dispatch);
-    AsyncStorage.getItem("jwt")
-    .then((jwt) => {
-      //const decoded = jwt_decode(jwt)
-      //console.log('decoded',decoded);
-      //dispatch(setCurrentUser(decoded, {userId:decoded.userId}))
-      //succussCallBack();
-    })
-    .catch((error) => [console.log(error)]);
-  }
-
   useEffect(()=>{
-    console.log('Main,useEffect',new Date())
-    userStatus();
+    console.log('Main,useEffect')
   })
 
   return (
@@ -59,7 +56,7 @@ const Main = () => {
       tabBarOptions={{
         keyboardHidesTabBar: true,
         showLabel: true,
-        activeTintColor: "#e91e63",
+        activeTintColor: constants.COLOR_RED,
       }}
     >
       {/* <Tab.Screen
@@ -87,7 +84,13 @@ const Main = () => {
         component={UserDrawNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="list" color={color} size={30} />
+            <View>
+              <Image
+            source={require("../assets/youth_icon.png")}
+            resizeMode="contain"
+            style={{height: 30, width: 30 }}
+          />
+            </View>
           ),
         }}
       />}
@@ -97,8 +100,14 @@ const Main = () => {
         component={DrawNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="plus" color={color} size={30} />
+            <View>
+                <Image
+                source={require("../assets/dashboard_icon.png")}
+                style={{height: 30, width: 30 }}
+                />
+            </View>
           ),
+          showLabel: false,
         }}
       />}
 
@@ -141,7 +150,13 @@ const Main = () => {
         component={UserNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="user" color={color} size={30} />
+            <View>
+              <Image
+            source={require("../assets/updateprofile_icon.png")}
+            resizeMode="contain"
+            style={{height: 30, width: 30 }}
+          />
+            </View>
           ),
         }}
       />}

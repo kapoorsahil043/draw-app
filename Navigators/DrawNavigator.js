@@ -15,14 +15,14 @@ function MyStack() {
                 name='Draw'
                 component={DrawPage}
                 options={{
-                    headerShown: true,
+                    headerShown: false,
                 }}
             />
             <Stack.Screen 
                 name='Draw Detail'
                 component={DrawDetails}
                 options={{
-                    headerShown: true,
+                    headerShown: false,
                 }}
             />
             <Stack.Screen 

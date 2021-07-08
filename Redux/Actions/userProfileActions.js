@@ -4,7 +4,7 @@ import {
 } from '../constants';
 
 export const updateUserProfile = (payload) => {
-    console.log('updateUserProfile',payload);
+    console.log('updateUserProfile');
 
     return {
         type: UPDATE_USER_PROFILE,

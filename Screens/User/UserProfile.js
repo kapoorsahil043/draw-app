@@ -60,7 +60,7 @@ const UserProfile = (props) => {
   
   useFocusEffect(
     useCallback(() => {
-      console.log('UserProfile,useCallback')
+      //console.log('UserProfile,useCallback',props.route)
       if (
         context.stateUser.isAuthenticated === false ||
         context.stateUser.isAuthenticated === null
@@ -104,6 +104,7 @@ const UserProfile = (props) => {
   );
 
   const updateProfile = () => {
+    console.log('updateProfile');
     setLoading(true);
     if (!image) {
       setLoading(false);
@@ -136,9 +137,11 @@ const UserProfile = (props) => {
       axios
         .post(`${baseUrlResourceServer}users/updateProfile`, formData, config)
         .then((res) => {
-          setLoading(false);
           setUserProfile(res.data);
+          saveProfile(res.data);
           setMainImage();
+          setLoading(false);
+          
           if (res.status == 200 || res.status == 201) {
             Toast.show({
               topOffset: 60,
@@ -174,6 +177,17 @@ const UserProfile = (props) => {
   return (
     <>
       <Spinner status={loading}></Spinner>
+       {!userProfile && !loading &&
+         <View style={{ marginTop: 50,marginBottom:50, justifyContent:"center",flexDirection:"row" }}>
+          <EasyButton large danger onPress={() => [
+              AsyncStorage.removeItem("jwt"),
+              logoutUser(context.dispatch),
+              props.clearUserProfile()
+            ]}>
+              <Text style={{color:"white"}}>SIGN OUT</Text>
+          </EasyButton>
+       </View>
+      }
       {userProfile && 
       <Container style={styles.container}>
         <ScrollView contentContainerStyle={styles.subContainer}>

@@ -5,9 +5,10 @@ import {
 import * as constants from '../../assets/common/constants';
 
 const userProfileReducer = (state = [], action) => {
+    console.log('userProfileReducer');
     switch (action.type) {
         case UPDATE_USER_PROFILE:
-            return [action.payload];
+            return state = [action.payload];
             
         case CLEAR_USER_PROFILE:
             return state = {image:constants.DEFAULT_USER_IMAGE_URL};    

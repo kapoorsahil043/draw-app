@@ -8,6 +8,7 @@ export const DEFAULT_IMAGE_URL = HOSTNAME_RESOURCE_SERVER + "/public/uploads/def
 export const DEFAULT_USER_IMAGE_URL = HOSTNAME_RESOURCE_SERVER + "/public/uploads/default/user-icon.png";
 
 export const COLOR_WHITE_SMOKE = "#F5F5F5";
+export const COLOR_RED = "#f40105";
 
 export const statuses = {
     active: 1,

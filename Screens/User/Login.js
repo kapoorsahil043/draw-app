@@ -38,10 +38,10 @@ const Login = (props) => {
       setLoading();
     }
   });
-  const succussCallBack =()=>{
+  const succussCallBack =(user)=>{
     console.log('succussCallBack')
     //setLoading(false);
-    props.updateUserProfile();
+    props.updateUserProfile(user.image);
     props.navigation.navigate("Home");  
   }
   const errorCallBack =()=>{

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { createStackNavigator } from '@react-navigation/stack'
 
 import Login from '../Screens/User/Login'
@@ -11,7 +11,9 @@ import AuthGlobal from "../Context/store/AuthGlobal"
 const Stack = createStackNavigator();
 
 function MyStack() {
-    const context = useContext(AuthGlobal);
+    useEffect(()=>{
+        
+    });
 
     return (
         <Stack.Navigator>
@@ -33,6 +35,8 @@ function MyStack() {
     )
 }
 
-export default function UserNavigator() {
-    return <MyStack />
+export default function UserNavigator(navigation) {
+    console.log('UserNavigator',navigation?.route?.params?.goto);
+    //let goto = navigation.route.params.goto;
+    return <MyStack/>
 }

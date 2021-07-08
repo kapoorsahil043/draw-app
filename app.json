@@ -4,11 +4,11 @@
     "slug": "my-draw",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/rewards_icon.png",
     "splash": {
-      "image": "./assets/Logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/rewards_icon_hover.png",
+      "backgroundColor": "#f40105",
+      "resizeMode": "native"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,14 +21,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/rewards_icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "l.d",
       "useNextNotificationsApi":true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/rewards_icon.png"
     }
   }
 }
