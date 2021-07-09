@@ -144,7 +144,7 @@ const DrawPage = (props) => {
                       <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>
                         <View>
                           <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name}</Text>
-                          <Text style={{color:"grey"}}>Draw Date: {new Date (item.drawDate).toLocaleString()}</Text>
+                          <Text style={{fontSize:12,color:"grey"}}>Draw Date: {new Date (item.drawDate).toLocaleString()}</Text>
                         </View>
                         <View style={{flexDirection:"row",alignSelf:"center",padding:5}}>
                           <EasyButton primary medium onPress={() => props.navigation.navigate("Edit",{id:item.id})}>

@@ -112,7 +112,7 @@ const DrawContainer = (props) => {
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "OK", onPress: () => props.navigation.navigate("User") },
+      { text: "OK", onPress: () => props.navigation.navigate("SignIn") },
     ]);
   };
 
@@ -241,6 +241,7 @@ const DrawContainer = (props) => {
                       key={item.id}
                       item={item}
                       join={joinHanlder}
+                      loginAlert={loginAlert}
                     />
                   );
                 })}

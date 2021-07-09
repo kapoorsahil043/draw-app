@@ -38,7 +38,7 @@ const DrawDetails = (props) => {
 
   const [timer, setTimer] = useState();
   const [statusText,setStatusText] = useState();
-  const [statusStyle,setStatusStyle] = useState({color:"white",alignSelf:"center",padding:5,fontWeight:"600",borderRadius: 10});
+  const [statusStyle,setStatusStyle] = useState({color:"white",padding:5,});
   const [hideBtn,setHideBtn] = useState(false);
 
   //id, name, totalSpots, entryPrice, winnersPct, status, image
@@ -223,16 +223,16 @@ const DrawDetails = (props) => {
        <View style={styles.contentContainer}>
          <H1 style={styles.contentHeader}>{item.name}</H1>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center"}}>
+       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center"}}>
          <View style={{ flexDirection: "column", flex: 1}}>
            <Text>Pool Price</Text>
            <Text style={styles.contentText}>
              <Icon name="rupee" size={15} />
              {item.totalAmtAvlForDistribution}
            </Text>
-           <View style={{ flexDirection: "row", flex: 1 }}>
-             <View style={{ borderRadius: 10, backgroundColor:statusStyle.backgroundColor,alignContent:"center",padding:5,alignSelf:"center"}}>
-               <Text style={{ color:statusStyle.color,fontWeight:statusStyle.fontWeight}}>
+           <View style={{ flexDirection: "row"}}>
+             <View>
+               <Text style={{color:statusStyle.color,backgroundColor:statusStyle.backgroundColor,borderRadius:5,padding:5}}>
                    {statusText}
                </Text>
              </View>
@@ -249,7 +249,7 @@ const DrawDetails = (props) => {
            }
          </View>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center"}}>
+       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center"}}>
          <View style={{ flexDirection: "row", flex: 1 }}>
            <Text>Win {item.winnersPct}%</Text>
          </View>
@@ -260,7 +260,7 @@ const DrawDetails = (props) => {
            </Text>
          </View>
        </View>
-       <View style={{ flexDirection: "row", padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center", marginBottom:20}}>
+       <View style={{ flexDirection: "row", padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center", marginBottom:20}}>
           <RankNavigator item={item}></RankNavigator>
        </View>
      </ScrollView>

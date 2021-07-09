@@ -29,6 +29,7 @@ const DrawCard = (props) => {
     join,
     hideJoinBtn,
     createdOn,
+    extendCount
   } = props;
 
   const formatTimeByOffset = (dateString, offset) => {
@@ -90,24 +91,29 @@ const DrawCard = (props) => {
   useEffect(() => {
     if(status == constants.statuses.live){
       setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
       setHideBtn(true);
     }else if(status == constants.statuses.active){
       setStatusText("Available");
       setStatusStyle({...statusStyle,backgroundColor:"green"})
     }else if(status == constants.statuses.started){
       setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
       setHideBtn(true);
     }else if(status == constants.statuses.stopped){
       setStatusText("Paused");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
+      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
       setHideBtn(true);
     }else if(status == constants.statuses.completed){
       setStatusText("Completed");
       setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
+    }else if(status == constants.statuses.cancelled){
+      setStatusText("Cancelled");
+      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
+      setHideBtn(true);
     }
+
     if (status == constants.statuses.active && props.totalSpots == props.joined){
       setStatusText("Draw Full");
       setStatusStyle({...statusStyle,backgroundColor:"orange"})
@@ -193,15 +199,15 @@ const DrawCard = (props) => {
       <View style={{   justifyContent: "center",   alignItems: "center",   width: "100%", }}>
         <View style={{flexDirection:"row"}}>
             <View style={{flex:1,flexDirection:"row"}}>
-              <View style={{borderRadius: 10, backgroundColor:statusStyle.backgroundColor,alignContent:"center",padding:5,alignSelf:"center"}}>
-                <Text style={{color:statusStyle.color,fontWeight:statusStyle.fontWeight}}>
+              <View>
+                <Text style={{color:statusStyle.color,backgroundColor:statusStyle.backgroundColor,borderRadius:5,padding:5}}>
                     {statusText}
                 </Text>
               </View>
             </View>
             {status === constants.statuses.active && timer != "0" && (
                 <View style={{flexDirection:"row"}}>
-                  {<Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>E.</Text>}
+                  <Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>{extendCount && extendCount > 0 ? "E." : ""}</Text>
                   <Text>{timer}</Text>
                 </View>
               )}
