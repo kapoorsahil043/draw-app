@@ -51,7 +51,7 @@ const DrawParticipants = (props) => {
                     {item.image==="" && <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: constants.DEFAULT_USER_IMAGE_URL }} />}
                   </View>
                   <View style={{justifyContent:"center"}}>
-                      <Text style={{fontWeight:"500",textAlign:"center",padding:5}}>{item.name}</Text>
+                      <Text style={styles.textValue}>{item.name}</Text>
                   </View>
                 </View>
     </View>);
@@ -81,6 +81,13 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'red'
+    },
+    textLabel:{
+      color:"grey",fontSize:12
+    },
+    textValue:{
+      fontSize:12,
+      color:"black"
     }
 })
 

@@ -50,6 +50,7 @@ const Upcoming = (props) => {
           axios
           .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
           .then((res) => {
+            console.log("res.data",res.data.length);
             setToken(jwt);
             setDraws(res.data);
             setInitialState(res.data);
@@ -88,12 +89,10 @@ const Upcoming = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          {
-            <View>
               {draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
-                    if (item.status !== constants.statuses.active)
+                    if (!item || item.status !== constants.statuses.active)
                     {return}
                     return (
                       <DrawList
@@ -110,8 +109,6 @@ const Upcoming = (props) => {
                   <Text>No draws available at the moment!!</Text>
                 </View>
               )}
-            </View>
-          }
         </ScrollView>
       </Container>
     </>

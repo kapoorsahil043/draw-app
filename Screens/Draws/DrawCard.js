@@ -113,7 +113,7 @@ const DrawCard = (props) => {
       setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
     }
-    if(timer == "0"){
+    if(timer == "0" || timer === 0){
       setHideBtn(true);
     }
     //console.log("utcTimeOffset, ", utcTimeOffset);
@@ -146,8 +146,10 @@ const DrawCard = (props) => {
       }
 
       setTimer(
-        (_dhm[0]!==0 ? formatDay(_dhm[0],_dhm[1]) : "") +
-        (_dhm[0]==0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") +
+        //(_dhm[0]!==0 ? formatDay(_dhm[0],_dhm[1]) : "") + // only d
+        (_dhm[0]!==0 ? _dhm[0]+"d " : "") + // only d
+        (_dhm[0]!=0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") + // only d and h
+        (_dhm[0]==0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") + // only h
         (_dhm[0]==0 && _dhm[1]==0 && _dhm[2]!==0 ? _dhm[2]+ "m:":"") +
         (_dhm[0]==0 && _dhm[1]==0 && _dhm[3]+"s" ? _dhm[3]+"s":"") +
         " left"
@@ -164,7 +166,7 @@ const DrawCard = (props) => {
   }
 
   const pluraliseDay = (day) =>{
-    return (day < 1 ? " day" : " days")
+    return (day < 1 ? "d" : "d")
   }
   
   const dhm = (ms) => {
@@ -199,6 +201,7 @@ const DrawCard = (props) => {
             </View>
             {status === constants.statuses.active && timer != "0" && (
                 <View style={{flexDirection:"row"}}>
+                  {<Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>E.</Text>}
                   <Text>{timer}</Text>
                 </View>
               )}

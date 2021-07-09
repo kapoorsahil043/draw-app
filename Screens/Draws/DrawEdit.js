@@ -25,33 +25,32 @@ import mime from "mime";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as constants from '../../assets/common/constants';
 
-const DrawForm = (props) => {
+const DrawEdit = (props) => {
   const [brand, setBrand] = useState();
 
   const [image, setImage] = useState();
   const [mainImage, setMainImage] = useState();
   const [name, setName] = useState();
-  const [totalSpots, setTotalSpots] = useState(0);
-  const [entryPrice, setEntryPrice] = useState(0);
-  const [winnersPct, setWinnersPct] = useState(0);
-  const [companysPct, setCompanysPct] = useState(0);
+  const [totalSpots, setTotalSpots] = useState();
+  const [entryPrice, setEntryPrice] = useState();
+  const [winnersPct, setWinnersPct] = useState();
+  const [companysPct, setCompanysPct] = useState();
 
-  const [description, setDescription] = useState();
-
-  const [category, setCategory] = useState();
   const [token, setToken] = useState();
   const [err, setError] = useState();
-
-  const [item, setItem] = useState(null);
 
   const [ranks, setRanks] = useState([]);
   const [rank, setRank] = useState({ rankStart: 1, rankImage:"",rankType:"",imageId:"" });
   const [drawImage, setDrawImage] = useState();
   const [images, setImages] = useState([]);
+
+  const [drawId,setDrawId] = useState(props.route.params.id);
+  const [drawState,setDrawState] = useState();
+  
   let cnt = 0;
   
   useEffect(() => {
-    console.log("DrawForm, useEffect");
+    console.log("DrawEdit, useEffect",drawId);
 
     AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -64,7 +63,23 @@ const DrawForm = (props) => {
           .then((resp) => {
             setImages(resp.data);
           })
-          .catch((error) => alert("Error to images categories"));
+          .catch((error) => alert("Error to load images"));
+      })
+      .catch((error) => console.log(error));
+
+      AsyncStorage.getItem("jwt")
+      .then((jwt) => {
+        setToken(jwt);
+        axios
+          .get(`${baseURL}draws/${drawId}`, {
+            headers: { Authorization: `Bearer ${jwt}` },
+          })
+          .then((resp) => {
+            setDrawState(resp.data);
+            setName(resp.data.name);
+            setEntryPrice(resp.data.entryPrice);
+          })
+          .catch((error) => alert("Error to load draw"));
       })
       .catch((error) => console.log(error));
 
@@ -80,6 +95,7 @@ const DrawForm = (props) => {
 
     return () => {
       setImages();
+      setDrawState();
     };
   }, []);
 
@@ -110,7 +126,7 @@ const DrawForm = (props) => {
     }
   };
 
-  const createDraw = () => {
+  const handleSubmit = () => {
     if (!drawImage || name == "" || entryPrice == "" || totalSpots == "") {
       setError("Please fill in the form correctly");
       return;
@@ -134,6 +150,7 @@ const DrawForm = (props) => {
       companysPct: companysPct,
       drawDate: drawDate + "",
       ranks: ranks,
+      drawId:drawId
     };
 
     const config = {
@@ -144,13 +161,13 @@ const DrawForm = (props) => {
 
     {
       axios
-        .post(`${baseURL}draws`, req, config)
+        .put(`${baseURL}draws`, req, config)
         .then((res) => {
           if (res.status == 200 || res.status == 201) {
             Toast.show({
               topOffset: 60,
               type: "success",
-              text1: "New Draw added",
+              text1: "Draw updated successfully!!",
               text2: "",
             });
             setTimeout(() => {
@@ -159,6 +176,7 @@ const DrawForm = (props) => {
           }
         })
         .catch((error) => {
+          console.log(error)
           Toast.show({
             topOffset: 60,
             type: "error",
@@ -276,18 +294,19 @@ const DrawForm = (props) => {
 
   return (
     <Container style={{backgroundColor:"gainsboro"}}>
-      <FormContainer title="Create Draw">
+      {drawState && <View style={{margin: 5}}>
+        <FormContainer title="Update Draw">
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: drawImage }} />
           {/* <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
             <Icon style={{ color: "white" }} name="camera" />
           </TouchableOpacity> */}
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"column"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"column"}}>
           <View style={styles.label}>
             <Text>Select Image</Text>
           </View>
-          <Item picker style={{width: "93%"}}>
+          <Item picker style={{width: "100%"}}>
             <Picker
               mode="dropdown"
               iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
@@ -307,26 +326,22 @@ const DrawForm = (props) => {
             </Picker>
           </Item>        
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"column"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"column"}}>
           <View style={styles.label}>
             <Text>Draw Name</Text>
           </View>
-          <Input placeholder="Name" name="name" id="name" 
-          value={name} onChangeText={(text) => setName(text)}/>
+          <View style={styles.label}>
+            <Text>{drawState.name}</Text>
+          </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
           <View style={{ width: "50%" }}>
             <View style={styles.label}>
               <Text>Entry Price</Text>
             </View>
-            <Input
-              placeholder="Entry Pr.."
-              name="price"
-              id="price"
-              value={entryPrice}
-              keyboardType={"numeric"}
-              onChangeText={(text) => setEntryPrice(text)}
-            />
+            <View style={styles.label}>
+              <Text>{drawState.entryPrice}</Text>
+            </View>
           </View>
 
           <View style={{ width: "50%" }}>
@@ -337,13 +352,13 @@ const DrawForm = (props) => {
               placeholder="Total Spot"
               name="totalSpots"
               id="totalSpots"
-              value={totalSpots}
+              value={totalSpots || drawState.totalSpots}
               keyboardType={"numeric"}
               onChangeText={(text) => setTotalSpots(text)}
             />
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
           <View style={{ width: "50%" }}>
             <View style={styles.label}>
               <Text>Win %</Text>
@@ -372,7 +387,7 @@ const DrawForm = (props) => {
             />
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View style={{ width: "50%" }}>
             <View style={styles.label}>
               <Text style={{ fontWeight: "700" }}>Draw Date</Text>
@@ -404,7 +419,7 @@ const DrawForm = (props) => {
             )}
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View>
             <EasyButton large primary onPress={() => showDatepicker()}>
                   <Text style={styles.buttonText}>Show date!</Text>
@@ -416,7 +431,7 @@ const DrawForm = (props) => {
             </EasyButton>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
           <View style={{ flex: 1 }}>
             <Text>Total Amt</Text>
             <Text>{totalSpots * entryPrice}</Text>
@@ -435,7 +450,7 @@ const DrawForm = (props) => {
             <Text>{totalSpots * (winnersPct / 100)}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
           <View style={{ flex: 1 }}>
             <Text>Sum of Price</Text>
             <Text>
@@ -474,7 +489,7 @@ const DrawForm = (props) => {
 
         {err ? <Error message={err} /> : null}
 
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"93%"}}>
+        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"100%"}}>
           <View>
             <View style={{ flexDirection: "row", height: 40 }}>
               <Text>Rank Start - </Text>
@@ -559,7 +574,7 @@ const DrawForm = (props) => {
             </View>
           </View>
         </View>
-        <View style={{   backgroundColor: "white",   width: "93%",   margin: 10,   borderRadius:10 }}>
+        <View style={{   backgroundColor: "white",   width: "100%",   margin: 10,   borderRadius:10 }}>
           <View style={{backgroundColor:constants.COLOR_WHITE_SMOKE,borderTopRightRadius:10,borderTopLeftRadius:10,padding:10}}><Text style={{textAlign:"center"}}>Rank Details</Text></View>
           <View
             style={{
@@ -615,22 +630,23 @@ const DrawForm = (props) => {
           })}
         </View>
         <View style={styles.buttonContainer}>
-          <EasyButton large primary onPress={() => createDraw()}>
-            <Text style={styles.buttonText}>Create</Text>
+          <EasyButton large primary onPress={() => handleSubmit()}>
+            <Text style={styles.buttonText}>Update</Text>
           </EasyButton>
         </View>
       </FormContainer>
-    </Container>
+      </View>}
+     </Container>
   );
 };
 
 const styles = StyleSheet.create({
   label: {
-    width: "93%",
+    width: "100%",
     marginTop: 10,
   },
   buttonContainer: {
-    width: "93%",
+    width: "100%",
     marginBottom: 80,
     marginTop: 20,
     alignItems: "center",
@@ -666,4 +682,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawForm;
+export default DrawEdit;

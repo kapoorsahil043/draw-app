@@ -192,9 +192,7 @@ const DrawContainer = (props) => {
         axios
           .get(`${baseURL}draws`)
           .then((res) => {
-            setLoading(false);
             setDraws(res.data);
-            setInitialState(res.data);
             setLoading(false);
           })
           .catch((error) => {
@@ -204,43 +202,11 @@ const DrawContainer = (props) => {
       }, 10);
 
       return () => {
-        setDraws([]);
-        setFocus();
-        setActive();
-        setInitialState();
         setLoading(false);
+        setDraws([]);
       };
     }, [])
   );
-
-  // Product Methods
-  const searchProduct = (text) => {
-    setProductsFiltered(
-      products.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
-    );
-  };
-
-  const openList = () => {
-    setFocus(true);
-  };
-
-  const onBlur = () => {
-    setFocus(false);
-  };
-
-  // Categories
-  const changeCtg = (ctg) => {
-    {
-      ctg === "all"
-        ? [setProductsCtg(initialState), setActive(true)]
-        : [
-            setProductsCtg(
-              products.filter((i) => i.category._id === ctg),
-              setActive(true)
-            ),
-          ];
-    }
-  };
 
   const modalHandler = (value) => {
     console.log("modalHandler", value);

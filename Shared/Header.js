@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { Icon } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Image,
@@ -11,9 +10,12 @@ import {
 } from "react-native";
 import * as constants from "../assets/common/constants";
 import { connect } from "react-redux";
+import AuthGlobal from "../Context/store/AuthGlobal";
+import IconSimple from "react-native-vector-icons/SimpleLineIcons";
 
 const Header = (props) => {
   const [userImage, setUserImage] = useState(constants.DEFAULT_USER_IMAGE_URL);
+  const context = useContext(AuthGlobal);
 
   const loadProfileImage = () => {
     AsyncStorage.getItem("usr")
@@ -37,12 +39,12 @@ const Header = (props) => {
     <SafeAreaView style={styles.header}>
       <View style={{   flexDirection: "row",   justifyContent: "space-between",   alignItems: "center", padding:5 }}>
         <View style={{}}>
-          <Pressable style={{}} onPress={props.profile} style={{ borderRadius: 100}}>
+          {context.stateUser.isAuthenticated && <Pressable style={{}} onPress={props.profile} style={{ borderRadius: 100}}>
             <Image
               style={{ height: 30, width: 30, borderRadius: 100 }}
               source={{ uri: props.userProfileReducer.image || userImage }}
             />
-          </Pressable>
+          </Pressable>}
         </View>
         <View>
           <Image
@@ -51,11 +53,12 @@ const Header = (props) => {
           />
         </View>
         <View>
-          <Pressable style={{}} onPress={props.wallet}>
+          {context.stateUser.isAuthenticated && <Pressable style={{}} onPress={props.wallet}>
             <View>
-              <Image source={require("../assets/account_icon.png")} style={{height: 30, width: 30 }}/>
+              {/* <Image source={require("../assets/account_icon.png")} style={{height: 30, width: 30 }}/> */}
+              <IconSimple name="wallet" size={25} />
             </View>
-          </Pressable>
+          </Pressable>}
         </View>
       </View>
     </SafeAreaView>

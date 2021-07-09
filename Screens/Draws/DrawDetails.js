@@ -24,6 +24,7 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const DrawDetails = (props) => {
   const context = useContext(AuthGlobal);
@@ -120,6 +121,10 @@ const DrawDetails = (props) => {
       setStatusText("Completed");
       setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
+    }else if(item.status == constants.statuses.cancelled){
+      setStatusText("Cancelled");
+      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
+      setHideBtn(true);
     }
 
     if (item && item.status == constants.statuses.active && item.totalSpots && item.totalSpots === item.joined){
@@ -151,7 +156,9 @@ const DrawDetails = (props) => {
       }
 
       setTimer(
-        (_dhm[0]!==0 ? formatDay(_dhm[0],_dhm[1]) : "") +
+        //(_dhm[0]!==0 ? formatDay(_dhm[0],_dhm[1]) : "") + // only d
+        (_dhm[0]!==0 ? _dhm[0]+"d " : "") + // only d
+        (_dhm[0]!=0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") + // only d and h
         (_dhm[0]==0 && _dhm[1]!==0 ? _dhm[1] + "h" : "") +
         (_dhm[0]==0 && _dhm[1]==0 && _dhm[2]!==0 ? _dhm[2]+ "m:":"") +
         (_dhm[0]==0 && _dhm[1]==0 && _dhm[3]+"s" ? _dhm[3]+"s":"") +
@@ -189,7 +196,7 @@ const DrawDetails = (props) => {
     <>
     <Spinner status={loading}></Spinner>
     <Container style={styles.container}>
-     {item && <ScrollView style={{ padding: 10 }}>
+     {item && <ScrollView style={{ padding: 5 }}>
        <View> 
          {item.status === constants.statuses.live && 
          <View style={{position:"absolute",flex:1,elevation:10,marginTop:'20%',backgroundColor:"#C0C0C0",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
@@ -216,7 +223,7 @@ const DrawDetails = (props) => {
        <View style={styles.contentContainer}>
          <H1 style={styles.contentHeader}>{item.name}</H1>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", margin: 5, borderRadius:10,alignContent:"center"}}>
+       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center"}}>
          <View style={{ flexDirection: "column", flex: 1}}>
            <Text>Pool Price</Text>
            <Text style={styles.contentText}>
@@ -237,10 +244,12 @@ const DrawDetails = (props) => {
              <Icon name="rupee" size={15} />
              {item.entryPrice}
            </Text>
-           {timer!==0 && item.status === constants.statuses.active && <Text>{timer}</Text>}
+           {timer!==0 && item.status === constants.statuses.active && 
+            <Text>{item.extendCount && item.extendCount > 0 && <TouchableOpacity onPress={()=>Toast.show({topOffset: 60,type: "info",text1: "Draw date extended!!",text2: ""})}><Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>E.</Text></TouchableOpacity>}{timer}</Text>
+           }
          </View>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", margin: 5, borderRadius:10,alignContent:"center"}}>
+       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center"}}>
          <View style={{ flexDirection: "row", flex: 1 }}>
            <Text>Win {item.winnersPct}%</Text>
          </View>
@@ -251,7 +260,7 @@ const DrawDetails = (props) => {
            </Text>
          </View>
        </View>
-       <View style={{ flexDirection: "row", padding: 5, backgroundColor: "white", margin: 5, borderRadius:10,alignContent:"center"}}>
+       <View style={{ flexDirection: "row", padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:10,alignContent:"center", marginBottom:20}}>
           <RankNavigator item={item}></RankNavigator>
        </View>
      </ScrollView>

@@ -11,6 +11,7 @@ import {
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome";
+import IconSimple from "react-native-vector-icons/SimpleLineIcons";
 
 // Stacks
 import HomeNavigator from "./HomeNavigator";
@@ -55,7 +56,7 @@ const Main = () => {
       initialRouteName="Home"
       tabBarOptions={{
         keyboardHidesTabBar: true,
-        showLabel: true,
+        //showLabel: true,
         activeTintColor: constants.COLOR_RED,
       }}
     >
@@ -74,7 +75,7 @@ const Main = () => {
         component={Home2Navigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="home" color={color} size={30} />
+            <Icon name="home" color={color!=constants.COLOR_RED ? "black" : color } size={30} />
           ),
         }}
       />

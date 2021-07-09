@@ -87,32 +87,28 @@ const Live = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          {
-            <View>
-              {draws.length > 0 ? (
-                <View style={styles.listContainer}>
-                  {draws.map((item) => {
-                    if (item.status === constants.statuses.live ||
-                      item.status === constants.statuses.started)
-                    {}else{return}
-                    return (
-                      <DrawList
-                        navigation={props.navigation}
-                        key={item.id ? item.id : item._id}
-                        item={item}
-                        join={joinHandler}
-                        hideJoinBtn={true}
-                      />
-                    );
-                  })}
-                </View>
-              ) : (
-                <View style={[styles.center, { height: height / 2 }]}>
-                  <Text>No draws available at the moment!!</Text>
-                </View>
-              )}
+          {draws.length > 0 ? (
+            <View style={styles.listContainer}>
+              {draws.map((item) => {
+                if (!item || item.status === constants.statuses.live ||
+                  item.status === constants.statuses.started)
+                {}else{return}
+                return (
+                  <DrawList
+                    navigation={props.navigation}
+                    key={item.id ? item.id : item._id}
+                    item={item}
+                    join={joinHandler}
+                    hideJoinBtn={true}
+                  />
+                );
+              })}
             </View>
-          }
+          ) : (
+            <View style={[styles.center, { height: height / 2 }]}>
+              <Text>No draws available at the moment!!</Text>
+            </View>
+          )}
         </ScrollView>
       </Container>
     </>

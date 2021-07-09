@@ -3,8 +3,10 @@ import { createStackNavigator } from "@react-navigation/stack"
 
 import DrawDetails from "../Screens/Draws/DrawDetails"
 import DrawPage from '../Screens/Draws/DrawPage';
-import DrawForm from '../Screens/Draws/DrawForm';
+import DrawAdd from '../Screens/Draws/DrawAdd';
+import DrawEdit from '../Screens/Draws/DrawEdit';
 import DrawImageUpload from '../Screens/Draws/DrawImageUpload';
+import DrawExtend from '../Screens/Draws/DrawExtend';
 
 const Stack = createStackNavigator()
 
@@ -27,7 +29,7 @@ function MyStack() {
             />
             <Stack.Screen 
                 name='Add'
-                component={DrawForm}
+                component={DrawAdd}
                 options={{
                     headerShown: true,
                 }}
@@ -35,6 +37,20 @@ function MyStack() {
             <Stack.Screen 
                 name='Images'
                 component={DrawImageUpload}
+                options={{
+                    headerShown: true,
+                }}
+            />
+            <Stack.Screen 
+                name='Edit'
+                component={DrawEdit}
+                options={{
+                    headerShown: true,
+                }}
+            />
+             <Stack.Screen 
+                name='Extend'
+                component={DrawExtend}
                 options={{
                     headerShown: true,
                 }}

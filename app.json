@@ -6,9 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/rewards_icon.png",
     "splash": {
-      "image": "./assets/rewards_icon_hover.png",
+      "image": "./assets/splash-1.png",
       "backgroundColor": "#f40105",
-      "resizeMode": "native"
+      "resizeMode": "contain"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

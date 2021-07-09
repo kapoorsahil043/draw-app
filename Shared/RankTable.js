@@ -10,16 +10,16 @@ const RankTable = (props) => {
         {/* headers */}
         <View style={{ flex: 1, flexDirection: "row", alignContent: "space-around", padding: 10, backgroundColor: "#E8E8E8",}}>
           <View style={{ flex: 1 }}>
-            <Text>Rank</Text>
+            <Text style={styles.textLabel}>#Rank</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text>*Price Amt</Text>
+            <Text style={styles.textLabel}>*Amount</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text>Name</Text>
+            <Text style={styles.textLabel}>Name</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text>Price</Text>
+            <Text style={styles.textLabel}>Price</Text>
           </View>
         </View>
 
@@ -30,15 +30,15 @@ const RankTable = (props) => {
             return (
               <View key={item.rankStart} style={{   flexDirection: "row",   height: 70,   backgroundColor: cnt % 2 == 0 ?  '#E8E8E8': '',alignItems:"center",padding: 10, }} >
                 <View style={{ flex: 1, }}>
-                  <Text> 
+                  <Text style={styles.textValue}> 
                     {item.rankStart == item.rankEnd ? "#" + item.rankStart : "#" + item.rankStart + " - " + item.rankEnd}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text>{item.rankPrice}</Text>
+                  <Text style={styles.textValue}>{item.rankPrice}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text>{item.rankType}</Text>
+                  <Text style={styles.textValue}>{item.rankType}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Image
@@ -61,6 +61,13 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'red'
+    },
+    textLabel:{
+      color:"grey",fontSize:12
+    },
+    textValue:{
+      fontSize:12,
+      color:"black"
     }
 })
 

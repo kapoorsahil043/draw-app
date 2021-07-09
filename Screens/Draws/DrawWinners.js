@@ -76,10 +76,10 @@ const DrawWinners = (props) => {
           }}
         >
           <View style={{ flex: 1 }}>
-            <Text>Rank</Text>
+            <Text style={styles.textLabel}>#Rank</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text>Name</Text>
+            <Text style={styles.textLabel}>Name</Text>
           </View>
         </View>
 
@@ -125,7 +125,7 @@ const rowFn = (item,_item,isUserFound)=>{
           <View style={{ flex: 1}}>
             <View style={{flex:1,flexDirection:"row"}}>
               <View style={{justifyContent:"center", padding:5}}>
-                <Text>#{_item.rank}</Text>
+                <Text style={styles.textValue}>#{_item.rank}</Text>
               </View>
               <View style={{}}>
                 <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: loadRankImage(_item) }} />
@@ -137,8 +137,8 @@ const rowFn = (item,_item,isUserFound)=>{
               <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: _item.user.image ? _item.user.image : constants.DEFAULT_USER_IMAGE_URL}} />
             </View>
             <View style={{justifyContent:"center", padding:5}}>
-              <Text style={{}}>{_item.user.name}</Text>
-              <Text style={{color:"green"}}>{item.totalWinnerSpot >= _item.rank ? 'Winner!!':''}</Text>
+              <Text style={styles.textValue}>{_item.user.name}</Text>
+              <Text style={{color:"green",fontSize:10}}>{item.totalWinnerSpot >= _item.rank ? 'Winner!!':''}</Text>
             </View>
           </View>
         </View>
@@ -153,6 +153,13 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'red'
+    },
+    textLabel:{
+      color:"grey",fontSize:12
+    },
+    textValue:{
+      color:"black",
+      fontSize:12
     }
 });
 

@@ -17,7 +17,21 @@ export const statuses = {
     stopped: 4,
     completed: 5,
     drawFull: 6,
+    cancelled: 7
 };
 
 export const STATUS_FOR_LIVE = [statuses.live , statuses.started , statuses.stopped];
 export const STATUS_FOR_ACTIVE = [statuses.active,statuses.drawFull];
+
+export const styleTextLabel = { color:"grey",fontSize:12};
+
+export const dhm = (ms) => {
+    let days = Math.floor(ms / (24 * 60 * 60 * 1000));
+    let daysms = ms % (24 * 60 * 60 * 1000);
+    let hours = Math.floor(daysms / (60 * 60 * 1000));
+    let hoursms = ms % (60 * 60 * 1000);
+    let minutes = Math.floor(hoursms / (60 * 1000));
+    let minutesms = ms % (60 * 1000);
+    let sec = Math.floor(minutesms / 1000);
+    return [days, hours, minutes, sec];
+  };

@@ -88,12 +88,10 @@ const Completed = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          {
-            <View>
               {draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
-                    if (item.status === constants.statuses.completed)
+                    if (!item || item.status === constants.statuses.completed)
                     {}else{return}
                     return (
                       <DrawList
@@ -111,8 +109,6 @@ const Completed = (props) => {
                   <Text>No draws available at the moment!!</Text>
                 </View>
               )}
-            </View>
-          }
         </ScrollView>
       </Container>
     </>
