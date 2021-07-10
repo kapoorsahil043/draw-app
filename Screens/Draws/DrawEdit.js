@@ -171,8 +171,8 @@ const DrawEdit = (props) => {
               text2: "",
             });
             setTimeout(() => {
-              //props.navigation.navigate("Draw");
-            }, 500);
+              props.navigation.navigate("Draw");
+            }, 10);
           }
         })
         .catch((error) => {
@@ -302,9 +302,9 @@ const DrawEdit = (props) => {
             <Icon style={{ color: "white" }} name="camera" />
           </TouchableOpacity> */}
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"column"}}>
-          <View style={styles.label}>
-            <Text>Select Image</Text>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"column"}}>
+          <View>
+            <Text style={constants.styleTextLabel}>Select Image</Text>
           </View>
           <Item picker style={{width: "100%"}}>
             <Picker
@@ -326,18 +326,18 @@ const DrawEdit = (props) => {
             </Picker>
           </Item>        
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"column"}}>
-          <View style={styles.label}>
-            <Text>Draw Name</Text>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"column"}}>
+          <View>
+            <Text style={constants.styleTextLabel}>Draw Name</Text>
           </View>
           <View style={styles.label}>
             <Text>{drawState.name}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row"}}>
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text>Entry Price</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Entry Price</Text>
             </View>
             <View style={styles.label}>
               <Text>{drawState.entryPrice}</Text>
@@ -345,8 +345,8 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text>Total Spots</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Total Spots</Text>
             </View>
             <Input
               placeholder="Total Spot"
@@ -358,13 +358,13 @@ const DrawEdit = (props) => {
             />
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row"}}>
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text>Win %</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Winning %</Text>
             </View>
             <Input
-              placeholder="Win.. %"
+              placeholder="Winning.. %"
               name="winnersPct"
               id="winnersPct"
               value={winnersPct}
@@ -374,8 +374,8 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text>Company's %</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Company's %</Text>
             </View>
             <Input
               placeholder="Company's %"
@@ -387,10 +387,10 @@ const DrawEdit = (props) => {
             />
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text style={{ fontWeight: "700" }}>Draw Date</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Draw Date</Text>
               <Text>{(drawDate + "").substr(0, 15)}</Text>
             </View>
             {show && (
@@ -405,8 +405,8 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ width: "50%" }}>
-            <View style={styles.label}>
-              <Text style={{ fontWeight: "700" }}>Draw Time</Text>
+            <View>
+              <Text style={constants.styleTextLabel}>Draw Time</Text>
               <Text>{(drawDate + "").substr(16)}</Text>
             </View>
             {showTime && (
@@ -419,7 +419,7 @@ const DrawEdit = (props) => {
             )}
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View>
             <EasyButton large primary onPress={() => showDatepicker()}>
                   <Text style={styles.buttonText}>Show date!</Text>
@@ -431,14 +431,14 @@ const DrawEdit = (props) => {
             </EasyButton>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row"}}>
           <View style={{ flex: 1 }}>
-            <Text>Total Amt</Text>
+            <Text style={constants.styleTextLabel}>Total Amount</Text>
             <Text>{totalSpots * entryPrice}</Text>
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text>Price Pool</Text>
+            <Text style={constants.styleTextLabel}>Price Pool</Text>
             <Text>
               {totalSpots * entryPrice -
                 (totalSpots * entryPrice * companysPct) / 100}
@@ -446,13 +446,13 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text>Total Winner</Text>
+            <Text style={constants.styleTextLabel}>Total Winner</Text>
             <Text>{totalSpots * (winnersPct / 100)}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row"}}>
           <View style={{ flex: 1 }}>
-            <Text>Sum of Price</Text>
+            <Text style={constants.styleTextLabel}>Sum of Price</Text>
             <Text>
               {ranks.reduce((total, rank) => {
                 return (
@@ -465,7 +465,7 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text>Amt Left</Text>
+            <Text style={constants.styleTextLabel}>Amount Left</Text>
             <Text>
               {totalSpots * entryPrice -
                 (totalSpots * entryPrice * companysPct) / 100 -
@@ -480,7 +480,7 @@ const DrawEdit = (props) => {
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text>Avail Winner(s)</Text>
+            <Text style={constants.styleTextLabel}>Available Winners</Text>
             <Text>
               {totalSpots * (winnersPct / 100) - (rank.rankStart - 1)}
             </Text>
@@ -489,111 +489,83 @@ const DrawEdit = (props) => {
 
         {err ? <Error message={err} /> : null}
 
-        <View style={{backgroundColor: "white",padding: 10, margin: 5, borderRadius:10,width:"100%"}}>
-          <View>
-            <View style={{ flexDirection: "row", height: 40 }}>
-              <Text>Rank Start - </Text>
-              <Text>{rank.rankStart}</Text>
+        <View style={{flexDirection:"column",backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%"}}>
+          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+            <View>
+              <Text style={constants.styleTextLabel}>#Start</Text>
+              <Text style={[{color:"black",fontSize:12}]}>{rank.rankStart}</Text>
             </View>
-            <View style={{ flexDirection: "row", height: 40 }}>
-              <Text>Rank End - </Text>
-              <TextInput
-                style={{ borderBottomColor: "red", width: "70%", height: 20 }}
-                value={rank.rankEnd}
-                onChangeText={(text) => setRank({ ...rank, rankEnd: text })}
-                placeholder="Rank End"
-                keyboardType="numeric"
-              ></TextInput>
+            <View>
+              <Text style={constants.styleTextLabel}>#End</Text>
+              <TextInput value={rank.rankEnd} onChangeText={(text) => setRank({ ...rank, rankEnd: text })} placeholder="Enter rank #end" keyboardType="numeric"></TextInput>
             </View>
-            <View style={{ flexDirection: "row", height: 40 }}>
-              <Text>Rank Price - </Text>
-              <TextInput
-                style={{ borderBottomColor: "red", width: "70%", height: 20 }}
-                value={rank.rankPrice}
-                onChangeText={(text) => setRank({ ...rank, rankPrice: text })}
-                placeholder="Rank Price"
-                keyboardType="numeric"
-              ></TextInput>
+            <View>
+              <Text style={constants.styleTextLabel}>Price</Text>
+              <TextInput  value={rank.rankPrice}  onChangeText={(text) => setRank({ ...rank, rankPrice: text })}  placeholder="Enter price"  keyboardType="numeric"></TextInput>
             </View>
-            <Text>Price Name - {rank.rankType}</Text>
-            <View style={{ height: "auto" }}>
+            <View>
+              <Text style={constants.styleTextLabel}>Name</Text>
+              <Text style={[constants.styleTextLabel,{color:"black",fontSize:12}]}>{rank.rankType}</Text> 
               <View>
-              <Image
-                    style={{ height: 50, width: 50, borderRadius: 100 }}
-                    source={{ uri: rank.rankImage }}/>
+                  <Image  style={{ height: 50, width: 50, borderRadius: 100 }}  source={{ uri: rank.rankImage }}/>
               </View>
-
-              <View style={styles.label}>
-                <Text>Select Image</Text>
-              </View>
-              <Item picker>
-                <Picker
-                  mode="dropdown"
-                  iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
-                  style={{ width: undefined }}
-                  placeholder="Select your image"
-                  selectedValue={rank.imageId}
-                  placeholderStyle={{ color: "#007aff" }}
-                  placeholderIconColor="#007aff"
-                  onValueChange={(e) =>
-                    rankImageFn(e)
-                  }
-                >
-                  {images &&
-                    images.map((c) => {
-                      return (
-                        <Picker.Item
-                          key={c.id}
-                          label={c.name}
-                          value={c.id}
-                        />
-                      );
-                    })}
-                </Picker>
+            </View>
+          </View>
+          <View style={{flexDirection:"column"}}>
+              <Text style={[constants.styleTextLabel]}>Select Rank Image</Text>
+              <Item picker style={{}}>
+                  <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
+                    style={{ width: undefined }}
+                    placeholder="Select your image"
+                    selectedValue={rank.imageId}
+                    placeholderStyle={{ color: "#007aff" }}
+                    placeholderIconColor="#007aff"
+                    onValueChange={(e) =>
+                      rankImageFn(e)
+                    }
+                  >
+                    {images &&
+                      images.map((c) => {
+                        return (
+                          <Picker.Item
+                            key={c.id}
+                            label={c.name}
+                            value={c.id}
+                          />
+                        );
+                      })}
+                  </Picker>
               </Item>
-            </View>
           </View>
-
-          <View
-            style={{
-              marginTop: 20,
-              alignItems: "center",
-              alignSelf: "center",
-              flexDirection: "row",
-            }}
-          >
-            <View>
-              <EasyButton large primary onPress={() => addRank()}>
-                <Text style={styles.buttonText}>Add Rank</Text>
-              </EasyButton>
-            </View>
-            <View>
-              <EasyButton large primary onPress={() => resetRank()}>
-                <Text style={styles.buttonText}>Reset Rank</Text>
-              </EasyButton>
-            </View>
-          </View>
+          <View style={{flexDirection:"row",justifyContent:"space-between",paddingTop:10}}>
+                <View>
+                  <EasyButton large primary onPress={() => addRank()}>
+                    <Text style={styles.buttonText}>Add Rank</Text>
+                  </EasyButton>
+                </View>
+                <View>
+                  <EasyButton large primary onPress={() => resetRank()}>
+                    <Text style={styles.buttonText}>Reset Rank</Text>
+                  </EasyButton>
+                </View>
         </View>
-        <View style={{   backgroundColor: "white",   width: "100%",   margin: 10,   borderRadius:10 }}>
+        </View>        
+        <View style={{   backgroundColor: "white",   width: "100%",   margin: 10,   borderRadius:5 }}>
           <View style={{backgroundColor:constants.COLOR_WHITE_SMOKE,borderTopRightRadius:10,borderTopLeftRadius:10,padding:10}}><Text style={{textAlign:"center"}}>Rank Details</Text></View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              padding: 5,
-            }}
-          >
+          <View  style={{    flex: 1,    flexDirection: "row",    padding: 5,  }}>
             <View style={{ flex: 1 }}>
-              <Text>Rank</Text>
+              <Text style={constants.styleTextLabel}>#Rank</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text>Price</Text>
+              <Text style={constants.styleTextLabel}>Price</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text>Type</Text>
+              <Text style={constants.styleTextLabel}>Type</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text>Image</Text>
+              <Text style={constants.styleTextLabel}>Image</Text>
             </View>
           </View>
           {ranks.map((item) => {
@@ -629,6 +601,7 @@ const DrawEdit = (props) => {
             );
           })}
         </View>
+        
         <View style={styles.buttonContainer}>
           <EasyButton large primary onPress={() => handleSubmit()}>
             <Text style={styles.buttonText}>Update</Text>

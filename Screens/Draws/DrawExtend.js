@@ -129,7 +129,7 @@ const DrawExtend = (props) => {
     {drawState && 
       <View style={{margin: 5}}>
         <FormContainer title="Extend Draw">
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"column"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"column"}}>
           <View style={styles.label}>
             <Text>Draw Name</Text>
           </View>
@@ -137,7 +137,7 @@ const DrawExtend = (props) => {
             <Text>{drawState.name}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View style={{ width: "50%" }}>
             <View style={styles.label}>
               <Text style={{ fontWeight: "700" }}>Draw Date</Text>
@@ -169,7 +169,7 @@ const DrawExtend = (props) => {
             )}
           </View>
         </View>
-        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:10,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
+        <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"row",justifyContent:"space-between"}}>
           <View>
             <EasyButton large primary onPress={() => showDatepicker()}>
                   <Text style={styles.buttonText}>Show date!</Text>

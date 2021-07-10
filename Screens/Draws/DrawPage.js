@@ -119,8 +119,8 @@ const DrawPage = (props) => {
             <View style={{backgroundColor:"white",margin:5,borderRadius:5,padding:15,marginTop:10}}>
               <TouchableOpacity onPress={() => props.navigation.navigate("Add",{item:null})}>
                   <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:20}}>Create Draw</Text>
-                    <Icon name="arrow-right" size={20} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
+                    <Text style={{flex:1,fontSize:15}}>Create Draw</Text>
+                    <Icon name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
                   </View>
               </TouchableOpacity>
             </View>
@@ -128,17 +128,18 @@ const DrawPage = (props) => {
             <View style={{backgroundColor:"white",margin:5,borderRadius:5,padding:15}}>
               <TouchableOpacity onPress={() => props.navigation.navigate("Images",{item:null})}>
                 <View style={{flexDirection:"row"}}>
-                  <Text style={{flex:1,fontSize:20}}>Upload Image</Text>
-                  <Icon name="arrow-right" size={20} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
+                  <Text style={{flex:1,fontSize:15}}>Upload Image</Text>
+                  <Icon name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
                 </View>
               </TouchableOpacity>
             </View>
           </View>
 
           <View>
-            <Text style={{padding:5}}>Active Draw(s)</Text>
+            
             {draws.length > 0 ? (
               <View style={styles.listContainer}>
+                <Text style={{padding:5}}>Active Draw(s)</Text>
                 {draws.map((item) => {
                   return (
                       <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>

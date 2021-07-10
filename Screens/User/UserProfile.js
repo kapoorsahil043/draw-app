@@ -53,14 +53,14 @@ const UserProfile = (props) => {
   };
 
   const saveProfile = async (user) =>{
-    console.log('saveProfile');
+    console.log('saveProfile',user);
     AsyncStorage.setItem("usr", JSON.stringify({image:user.image}));
     props.updateUserProfile({image:user.image});
   }
   
   useFocusEffect(
     useCallback(() => {
-      //console.log('UserProfile,useCallback',props.route)
+      console.log('UserProfile,useCallback')
       if (
         context.stateUser.isAuthenticated === false ||
         context.stateUser.isAuthenticated === null
@@ -88,6 +88,7 @@ const UserProfile = (props) => {
             })
             .then((user) => [saveProfile(user.data),setUserProfile(user.data),setLoading(false)])
             .catch((err) => {
+              console.log(err),
               setLoading(false);
             });
         })
