@@ -5,3 +5,4 @@ export const CLEAR_CART = "CLEAR_CART";
 
 export const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export const CLEAR_USER_PROFILE = "CLEAR_USER_PROFILE";
+export const HIDE_HEADER = "HIDE_HEADER";

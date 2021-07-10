@@ -21,6 +21,11 @@ import axios from "axios";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as constants from '../../assets/common/constants';
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+
+
 const DrawExtend = (props) => {
   const [name, setName] = useState();
   const [token, setToken] = useState();
@@ -31,6 +36,8 @@ const DrawExtend = (props) => {
   
   useEffect(() => {
     console.log("DrawExtend, useEffect",drawId);
+
+    props.hideHeader({hide:true});
 
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -49,6 +56,7 @@ const DrawExtend = (props) => {
     
 
     return () => {
+      props.hideHeader({hide:false});
       setDrawState();
     };
   }, []);
@@ -237,4 +245,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawExtend;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawExtend);

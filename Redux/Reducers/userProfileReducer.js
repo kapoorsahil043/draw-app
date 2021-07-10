@@ -1,6 +1,6 @@
 import {
     CLEAR_USER_PROFILE,
-    UPDATE_USER_PROFILE
+    UPDATE_USER_PROFILE,
 } from '../constants';
 import * as constants from '../../assets/common/constants';
 

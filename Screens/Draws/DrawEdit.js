@@ -25,6 +25,11 @@ import mime from "mime";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as constants from '../../assets/common/constants';
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+
+
 const DrawEdit = (props) => {
   const [brand, setBrand] = useState();
 
@@ -51,6 +56,8 @@ const DrawEdit = (props) => {
   
   useEffect(() => {
     console.log("DrawEdit, useEffect",drawId);
+
+    props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -94,6 +101,7 @@ const DrawEdit = (props) => {
     })();
 
     return () => {
+      props.hideHeader({hide:false});
       setImages();
       setDrawState();
     };
@@ -655,4 +663,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawEdit;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawEdit);

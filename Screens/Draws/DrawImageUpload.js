@@ -29,6 +29,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Spinner from "../../Shared/Spinner";
 import * as constants from "../../assets/common/constants";
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+
+
 var { width } = Dimensions.get("window");
 const DrawImageUpload = (props) => {
   const [image, setImage] = useState();
@@ -41,6 +46,8 @@ const DrawImageUpload = (props) => {
 
   useEffect(() => {
     console.log("DrawImageUpload, useEffect");
+    
+    props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -64,6 +71,7 @@ const DrawImageUpload = (props) => {
     })();
 
     return () => {
+      props.hideHeader({hide:false});
       setImages();
     };
   }, []);
@@ -271,4 +279,10 @@ const styles = StyleSheet.create({
 },
 });
 
-export default DrawImageUpload;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawImageUpload);

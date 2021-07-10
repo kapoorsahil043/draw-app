@@ -13,9 +13,8 @@ import { Left, Right, Container, H1 } from "native-base";
 import Toast from "react-native-toast-message";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
 import TrafficLight from "../../Shared/StyledComponents/TrafficLight";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { connect } from "react-redux";
-import * as actions from "../../Redux/Actions/cartActions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import RankTable from "../../Shared/RankTable";
 import * as constants from "../../assets/common/constants";
@@ -24,7 +23,10 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
 
 const DrawDetails = (props) => {
   const context = useContext(AuthGlobal);
@@ -69,7 +71,6 @@ const DrawDetails = (props) => {
     });
   }
 
-
   const formatDay = (day,hrs) =>{
     return day + pluraliseDay(day);
   }
@@ -95,6 +96,9 @@ const DrawDetails = (props) => {
 
   useEffect(() => {
     console.log("DrawDetails,use effect",item.status);
+    
+    props.hideHeader({hide:true});
+    
     AsyncStorage.getItem("jwt")
     .then((res) => {
         setToken(res);
@@ -167,6 +171,7 @@ const DrawDetails = (props) => {
     }, 1000);
 
     return () => {
+      props.hideHeader({hide:false});
       setToken();
       setDrawCompletedLabel();
       setTimer();
@@ -316,4 +321,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawDetails;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawDetails);

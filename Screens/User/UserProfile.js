@@ -28,6 +28,7 @@ import * as constants from '../../assets/common/constants';
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/userProfileActions';
+import * as headerActions from '../../Redux/Actions/headerActions';
 
 const UserProfile = (props) => {
   const context = useContext(AuthGlobal);
@@ -60,7 +61,10 @@ const UserProfile = (props) => {
   
   useFocusEffect(
     useCallback(() => {
-      console.log('UserProfile,useCallback')
+      console.log('UserProfile,useCallback');
+
+      props.hideHeader({hide:true});
+
       if (
         context.stateUser.isAuthenticated === false ||
         context.stateUser.isAuthenticated === null
@@ -95,6 +99,7 @@ const UserProfile = (props) => {
         .catch((error) => [console.log(error), setLoading(false)]);
 
         return () => {
+        props.hideHeader({hide:false});
         setUserProfile();
         setMainImage();
         setImage();
@@ -278,6 +283,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
       updateUserProfile: (image) => dispatch(actions.updateUserProfile(image)),
       clearUserProfile: () => dispatch(actions.clearUserProfile()),
+      hideHeader: (value) => dispatch(headerActions.hideHeader(value)),
   }
 }
 

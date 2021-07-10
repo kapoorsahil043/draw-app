@@ -25,6 +25,11 @@ import mime from "mime";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as constants from '../../assets/common/constants';
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+
+
 const DrawAdd = (props) => {
   const [brand, setBrand] = useState();
 
@@ -53,6 +58,8 @@ const DrawAdd = (props) => {
   useEffect(() => {
     console.log("DrawAdd, useEffect");
 
+    props.hideHeader({hide:true});
+
     AsyncStorage.getItem("jwt")
       .then((jwt) => {
         //console.log('token',res);
@@ -79,6 +86,7 @@ const DrawAdd = (props) => {
     })();
 
     return () => {
+      props.hideHeader({hide:false});
       setImages();
     };
   }, []);
@@ -641,4 +649,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawAdd;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawAdd);

@@ -57,7 +57,10 @@ const Main = () => {
       tabBarOptions={{
         keyboardHidesTabBar: true,
         //showLabel: true,
-        activeTintColor: constants.COLOR_RED,
+        inactiveTintColor: "black",
+        activeTintColor:"white",
+        activeBackgroundColor:constants.COLOR_RED,
+        
       }}
     >
       {/* <Tab.Screen
@@ -75,7 +78,7 @@ const Main = () => {
         component={Home2Navigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="home" color={color!=constants.COLOR_RED ? "black" : color } size={30} />
+            <Icon name="home" color={color} size={25} />
           ),
         }}
       />
@@ -84,12 +87,12 @@ const Main = () => {
         name="My Draw"
         component={UserDrawNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color,focused }) => (
             <View>
               <Image
-            source={require("../assets/youth_icon.png")}
+            source={focused ? require("../assets/youth_icon_hover.png") : require("../assets/youth_icon.png") }
             resizeMode="contain"
-            style={{height: 30, width: 30 }}
+            style={{height: 25, width: 25 }}
           />
             </View>
           ),
@@ -100,11 +103,11 @@ const Main = () => {
         name="Draw"
         component={DrawNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color,focused }) => (
             <View>
                 <Image
-                source={require("../assets/dashboard_icon.png")}
-                style={{height: 30, width: 30 }}
+                source={focused ? require("../assets/dashboard_icon_hover.png") : require("../assets/dashboard_icon.png")}
+                style={{height: 25, width: 25 }}
                 />
             </View>
           ),
@@ -142,7 +145,7 @@ const Main = () => {
         component={LoginNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="user" color={color} size={30} />
+            <Icon name="user" color={color} size={25} />
           ),
         }}
       />}
@@ -150,12 +153,12 @@ const Main = () => {
         name="Me"
         component={UserNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color,focused }) => (
             <View>
               <Image
-            source={require("../assets/updateprofile_icon.png")}
+            source={focused ? require("../assets/updateprofile_icon_hover.png") : require("../assets/updateprofile_icon.png") }
             resizeMode="contain"
-            style={{height: 30, width: 30 }}
+            style={{height: 25, width: 25 }}
           />
             </View>
           ),
