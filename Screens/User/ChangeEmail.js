@@ -20,7 +20,7 @@ const ChangeEmail = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [counter, setCounter] = useState(0);
   const [token, setToken] = useState();
 
@@ -30,7 +30,6 @@ const ChangeEmail = (props) => {
   }, []);
 
   useEffect(() => {
-    setLoading(false);
     AsyncStorage.getItem("jwt")
     .then((res) => {
       setToken(res);
@@ -38,7 +37,7 @@ const ChangeEmail = (props) => {
     .catch((error) => [console.log('token,error',error)]);
 
     return () => {
-      setLoading();
+      //setLoading();
       //setToken();
     }
   });
@@ -57,7 +56,7 @@ const ChangeEmail = (props) => {
       }
     }
   )
-  .catch((err) => {[console.log(err),setLoading(false)]});
+  .catch((err) => {[console.log(err),setLoading(false),Toast.show({  topOffset: 60,  type: "error",  text1: "Something wen wrong, please try again later!!",  text2: ""})]});
 
   }
 

@@ -20,7 +20,7 @@ const ChangeEmailVerifyOtp = (props) => {
   const context = useContext(AuthGlobal);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [counter, setCounter] = useState(0);
   const [token, setToken] = useState();
   const [otp, setOtp] = useState();
@@ -39,13 +39,12 @@ const ChangeEmailVerifyOtp = (props) => {
     .catch((error) => [console.log('token,error',error)]);
 
     return () => {
-      setLoading();
+      //setLoading();
       //setToken();
     }
   });
 
   const verifyOtp = () =>{
-    setLoading(true);
     let req = {
       email:param.email,
       otp:otp
@@ -60,7 +59,7 @@ const ChangeEmailVerifyOtp = (props) => {
       }
       }
     )
-    .catch((err) => {[console.log(err),setLoading(false),Toast.show({  topOffset: 60,  type: "error",  text1: "Something went wrong, please try again later",  text2: "",})]});
+    .catch((err) => {[console.log(err),setLoading(false),Toast.show({  topOffset: 60,  type: "error",  text1: "Something wen wrong, please try again later!!",  text2: ""})]});
 
   }
 

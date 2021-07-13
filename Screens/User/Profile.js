@@ -96,6 +96,11 @@ const Profile = (props) => {
               </View>
 
               <View style={{borderBottomWidth:1,borderBottomColor:"lightgrey",marginTop:10}}>
+                <Label text="Contact No." type="form"/>
+                <Text style={styles.text}>{userProfile.phone}</Text>
+              </View>
+
+              <View style={{borderBottomWidth:1,borderBottomColor:"lightgrey",marginTop:10}}>
                 <View>
                   <Label text="Email" type="form"/>
                   <View style={{flexDirection:"row"}}>

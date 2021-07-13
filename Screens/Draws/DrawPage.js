@@ -50,19 +50,9 @@ const DrawPage = (props) => {
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
         setToken(jwt);
+        loadActiveDraws(jwt);
       })
       .catch((error) => console.log(error));
-
-      axios
-          .get(`${baseURL}draws/status/1`)
-          .then((res) => {
-            setDraws(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log("Api call error");
-            setLoading(false);
-          });
 
       return () => {
         setDraws([]);
@@ -72,6 +62,23 @@ const DrawPage = (props) => {
     }, [])
   );
 
+
+  const loadActiveDraws = (jwt)=>{
+    const config = {
+      headers: {
+        Authorization: `Bearer ${jwt || token}`,
+      },
+    };
+
+    axios
+    .get(`${baseURL}draws/status/1`,config)
+    .then((res) => {
+      setDraws(res.data);
+    })
+    .catch((error) => {
+      console.log("Api call error");
+    });
+  }
 
   const loginAlert = () => {
     Alert.alert("Login Required", "Proceed to Login ?", [
@@ -83,6 +90,18 @@ const DrawPage = (props) => {
       { text: "OK", onPress: () => [logoutUser(context.dispatch)] },
     ]);
   };
+
+  const confirmAlert = (id) => {
+    Alert.alert("Confirmation", "Do you want to cancel this draw?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => handleCancel(id) },
+    ]);
+  };
+
 
   const handleCancel = (drawId) => {
     console.log("handleCancel", drawId);
@@ -108,13 +127,13 @@ const DrawPage = (props) => {
           if (res.status == 200 || res.status == 201) {
             Toast.show({topOffset: 60,type: "success",text1: "Draw cancelled successfully!!",text2: "",});
           }
+          loadActiveDraws();
         })
         .catch((error) => {
           console.log(error);
           Toast.show({   topOffset: 60,   type: "error",   text1: "Something went wrong",   text2: "Please try again", });
         });
     }
-
   };
 
   return (
@@ -160,7 +179,7 @@ const DrawPage = (props) => {
                           <EasyButton primary medium onPress={() => props.navigation.navigate("Extend",{id:item.id})}>
                             <Text style={{ color: "white"}}>Extend</Text>
                           </EasyButton>
-                          <EasyButton primary medium onPress={() => handleCancel(item.id)}>
+                          <EasyButton primary medium onPress={() => confirmAlert(item.id)}>
                             <Text style={{ color: "white"}}>Cancel</Text>
                           </EasyButton>
                         </View>
