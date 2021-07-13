@@ -11,6 +11,7 @@ export const COLOR_WHITE_SMOKE = "#F5F5F5";
 export const COLOR_RED = "#f40105";
 
 export const statuses = {
+    inactive: 0,
     active: 1,
     live: 2,
     started: 3,
@@ -34,4 +35,11 @@ export const dhm = (ms) => {
     let minutesms = ms % (60 * 1000);
     let sec = Math.floor(minutesms / 1000);
     return [days, hours, minutes, sec];
-  };
+};
+
+export const isValidateValue = (value) =>{
+    if(value && value!==""){
+        return true;
+    }
+    return false;
+}

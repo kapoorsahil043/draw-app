@@ -132,7 +132,7 @@ const DrawDetails = (props) => {
     }
 
     if (item && item.status == constants.statuses.active && item.totalSpots && item.totalSpots === item.joined){
-        setStatusText("Draw Full");
+        setStatusText("Full");
         setStatusStyle({...statusStyle,backgroundColor:"orange"})
         setHideBtn(true);
     }
@@ -250,17 +250,20 @@ const DrawDetails = (props) => {
              {item.entryPrice}
            </Text>
            {timer!==0 && item.status === constants.statuses.active && 
-            <Text>{item.extendCount && item.extendCount > 0 && <TouchableOpacity onPress={()=>Toast.show({topOffset: 60,type: "info",text1: "Draw date extended!!",text2: ""})}><Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>E.</Text></TouchableOpacity>}{timer}</Text>
+            <View style={{flexDirection:"row"}}>
+                  <TouchableOpacity onPress={()=>Toast.show({topOffset: 60,type: "info",text1: "Draw date extended!!",text2: ""})}><View style={{paddingRight:3}}>{item.extendCount && item.extendCount > 0 ? (<Text style={{fontSize:8,color:constants.COLOR_RED,borderColor:constants.COLOR_RED,borderWidth:1,borderRadius:100,textAlign:"center",paddingLeft:3,paddingRight:3}}>E</Text>) : ( null)}</View></TouchableOpacity>
+                  <Text style={{fontSize:12,color:"black"}}>{timer}</Text>
+            </View>
            }
          </View>
        </View>
        <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center"}}>
          <View style={{ flexDirection: "row", flex: 1 }}>
-           <Text>Win {item.winnersPct}%</Text>
+           <Text style={{fontSize:12}}>Winning {item.winnersPct}%</Text>
          </View>
          <View style={{ flexDirection: "column" }}>
-           <Text>{item.totalSpots}&nbsp;spots</Text>
-           <Text style={{ color: "red",paddingTop:2 }}>
+           <Text style={{fontSize:12,color:"black"}}>{item.totalSpots}&nbsp;spots</Text>
+           <Text style={{ color: constants.COLOR_RED,fontSize:12,paddingTop:2 }}>
              {drawCompletedLabel}
            </Text>
          </View>

@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 // Redux
-import { Provider } from "react-redux";
+import { Provider } from "react-redux"; // makes the Redux store available to the rest of your app
 import store from "./Redux/store";
 
 // Context API
@@ -90,7 +90,7 @@ export default function App() {
 
   const gotoProfileHandler = () =>{
     console.log('gotoProfileHandler');
-    navigationRef.current?.navigate('Me',{goto:"User Profile"});
+    navigationRef.current?.navigate('Me',{goto:"Settings"});
   };
 
   const onReadyHandler = () => {

@@ -21,17 +21,17 @@ import Spinner from "../../Shared/Spinner";
 import DrawList from "../Draws/DrawList";
 import * as constants from "../../assets/common/constants";
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+import DefaultMessage from "../../Shared/DefaultMessage";
+
+
 var { height } = Dimensions.get("window");
 
 const Upcoming = (props) => {
   const context = useContext(AuthGlobal);
   const [draws, setDraws] = useState([]);
-  const [productsFiltered, setProductsFiltered] = useState([]);
-  const [focus, setFocus] = useState();
-  const [categories, setCategories] = useState([]);
-  const [productsCtg, setProductsCtg] = useState([]);
-  const [active, setActive] = useState();
-  const [initialState, setInitialState] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
@@ -53,7 +53,6 @@ const Upcoming = (props) => {
             console.log("res.data",res.data.length);
             setToken(jwt);
             setDraws(res.data);
-            setInitialState(res.data);
             setLoading(false);
           })
           .catch((error) => {setLoading(false);console.log("Participants Api call error");});
@@ -65,15 +64,12 @@ const Upcoming = (props) => {
   useFocusEffect(
     useCallback(() => {
       console.log("Upcoming, useCallBack");
+
+      props.hideHeader({hide:false});
       callMethod();
-      setFocus(false);
-      setActive(-1);
 
       return () => {
         setDraws([]);
-        setFocus();
-        setActive();
-        setInitialState();
         setLoading(false);
       };
     }, [])
@@ -92,8 +88,7 @@ const Upcoming = (props) => {
               {draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
-                    if (!item || item.status !== constants.statuses.active)
-                    {return}
+                    if(!item || item.status !== constants.statuses.active){return}
                     return (
                       <DrawList
                         navigation={props.navigation}
@@ -105,9 +100,7 @@ const Upcoming = (props) => {
                   })}
                 </View>
               ) : (
-                <View style={[styles.center, { height: height / 2 }]}>
-                  <Text>No draws available at the moment!!</Text>
-                </View>
+                <DefaultMessage/>
               )}
         </ScrollView>
       </Container>
@@ -142,4 +135,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Upcoming;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(Upcoming);

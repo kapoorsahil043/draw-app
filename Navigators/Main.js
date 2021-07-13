@@ -25,10 +25,6 @@ import CartIcon from "../Shared/CartIcon";
 import AuthGlobal from "../Context/store/AuthGlobal";
 import UserDrawNavigator from "./UserDrawNavigator";
 import LoginNavigator from "./LoginNavigator";
-
-import { checkUserStatus } from "../Context/actions/Auth.actions";
-import AsyncStorage from "@react-native-community/async-storage";
-
 import * as constants from '../assets/common/constants';
 
 

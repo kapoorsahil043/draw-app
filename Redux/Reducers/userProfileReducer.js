@@ -5,7 +5,7 @@ import {
 import * as constants from '../../assets/common/constants';
 
 const userProfileReducer = (state = [], action) => {
-    console.log('userProfileReducer');
+    //console.log('userProfileReducer');
     switch (action.type) {
         case UPDATE_USER_PROFILE:
             return state = [action.payload];

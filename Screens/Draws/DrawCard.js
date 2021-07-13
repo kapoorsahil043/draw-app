@@ -115,7 +115,7 @@ const DrawCard = (props) => {
     }
 
     if (status == constants.statuses.active && props.totalSpots == props.joined){
-      setStatusText("Draw Full");
+      setStatusText("Full");
       setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
     }
@@ -207,15 +207,15 @@ const DrawCard = (props) => {
             </View>
             {status === constants.statuses.active && timer != "0" && (
                 <View style={{flexDirection:"row"}}>
-                  <Text style={{fontSize:12,paddingRight:5,color:constants.COLOR_RED,fontWeight:"700"}}>{extendCount && extendCount > 0 ? "E." : ""}</Text>
-                  <Text>{timer}</Text>
+                  <View style={{paddingRight:3}}>{extendCount && extendCount > 0 ? (<Text style={{fontSize:8,color:constants.COLOR_RED,borderColor:constants.COLOR_RED,borderWidth:1,borderRadius:100,textAlign:"center",paddingLeft:3,paddingRight:3}}>E</Text>) : ( null)}</View>
+                  <Text style={{fontSize:10,color:"black"}}>{timer}</Text>
                 </View>
               )}
         </View>
         <View style={{ flexDirection: "row", padding: 1, borderRadius: 1}}>
           <Text style={styles.title}>
-            {props.name && props.name.length > 15
-              ? props.name.substring(0, 15 - 3) + "..."
+            {props.name && props.name.length > 12
+              ? props.name.substring(0, 12 - 3) + "..."
               : props.name}
           </Text>
         </View>
@@ -237,10 +237,10 @@ const DrawCard = (props) => {
           }}
         >
           <View style={{ flex: 1, flexDirection: "column" }}>
-            <Text>Win {props.winnersPct}%</Text>
+            <Text style={{fontSize:12}}>Winning {props.winnersPct}%</Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
-            <Text>{props.totalSpots} spots</Text>
+            <Text style={{fontSize:12}}>{props.totalSpots} spots</Text>
           </View>
         </View>
 

@@ -32,12 +32,12 @@ const Header = (props) => {
   };
 
   useEffect(() => {
-    console.log("Header,useEffect");
+    //console.log("Header,useEffect");
     loadProfileImage();
   });
 
   useEffect(() => {
-    console.log("Header,useEffect",props.headerReducer);
+    //console.log("Header,useEffect,2");
     if(props.headerReducer && props.headerReducer.hide){
       setHideHeader(true);
     }else{
@@ -61,7 +61,7 @@ const Header = (props) => {
         </View>
         <View>
           <Image
-            source={require("../assets/rewards_icon_hover.png")}
+            source={require("../assets/rewards_icon.png")}
             style={{height: 30, width: 30 }}
           />
         </View>
@@ -69,7 +69,7 @@ const Header = (props) => {
           {context.stateUser.isAuthenticated && <Pressable style={{}} onPress={props.wallet}>
             <View>
               {/* <Image source={require("../assets/account_icon.png")} style={{height: 30, width: 30 }}/> */}
-              <IconSimple name="wallet" size={25} color="white"/>
+              <IconSimple name="wallet" size={25} color={constants.COLOR_RED}/>
             </View>
           </Pressable>}
         </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     //width: "100%",
     //flexDirection: "row",
     marginTop: 25,
-    backgroundColor:constants.COLOR_RED
+    //backgroundColor:constants.COLOR_RED
   },
 });
 

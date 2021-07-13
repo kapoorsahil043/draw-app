@@ -55,11 +55,7 @@ const Register = (props) => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      viewIsInsideTabBar={true}
-      extraHeight={200}
-      enableOnAndroid={true}
-    >
+    <KeyboardAwareScrollView viewIsInsideTabBar={true} extraHeight={200} enableOnAndroid={true}>
       <FormContainer title={"Register"}>
         <Input
           placeholder={"Email"}

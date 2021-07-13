@@ -20,6 +20,11 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import DrawList from "../Draws/DrawList";
 import * as constants from "../../assets/common/constants";
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+import DefaultMessage from "../../Shared/DefaultMessage";
+
 
 var { height } = Dimensions.get("window");
 
@@ -64,6 +69,7 @@ const Completed = (props) => {
   useFocusEffect(
     useCallback(() => {
       console.log("Completed, useCallBack");
+      props.hideHeader({hide:false});
       callMethod();
       setFocus(false);
       setActive(-1);
@@ -105,9 +111,7 @@ const Completed = (props) => {
                   })}
                 </View>
               ) : (
-                <View style={[styles.center, { height: height / 2 }]}>
-                  <Text>No draws available at the moment!!</Text>
-                </View>
+                <DefaultMessage/>
               )}
         </ScrollView>
       </Container>
@@ -142,4 +146,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Completed;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(Completed);

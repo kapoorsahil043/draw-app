@@ -25,6 +25,12 @@ import Spinner from "../../Shared/Spinner";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+import DefaultMessage from "../../Shared/DefaultMessage";
+
+
 var { height } = Dimensions.get("window");
 
 const DrawContainer = (props) => {
@@ -175,7 +181,8 @@ const DrawContainer = (props) => {
     useCallback(() => {
 
       //checkPermissionsForiOS();
-      
+      props.hideHeader({hide:false});
+
       setFocus(false);
       setActive(-1);
       setTimeout(() => {
@@ -247,9 +254,7 @@ const DrawContainer = (props) => {
                 })}
               </View>
             ) : (
-              <View style={[styles.center, { height: height / 2 }]}>
-                <Text>No draws available at the moment!!</Text>
-              </View>
+              <DefaultMessage/>
             )}
           </View>
         </ScrollView>
@@ -285,4 +290,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DrawContainer;
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(DrawContainer);

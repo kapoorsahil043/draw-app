@@ -1,13 +1,11 @@
 import React from 'react'
-import { createStackNavigator } from "@react-navigation/stack"
 
-import DrawContainer from "../Screens/Draws/DrawContainer";
-import DrawDetails from "../Screens/Draws/DrawDetails"
-import MyDrawContainer from '../Screens/MyDraw/Live';
+import { createStackNavigator } from "@react-navigation/stack"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Upcoming from '../Screens/MyDraw/Upcoming';
-import Live from '../Screens/MyDraw/Live';
-import Completed from '../Screens/MyDraw/Completed';
+
+import UpcomingNavigator from './UpcomingNavigator';
+import LiveNavigator from './LiveNavigator';
+import CompletedNavigator from './CompletedNavigator';
 
 
 const Stack = createStackNavigator();
@@ -16,9 +14,9 @@ const TabTop = createMaterialTopTabNavigator();
 function MyStack() {
     return (
       <TabTop.Navigator>
-        <TabTop.Screen name="Upcoming" component={Upcoming} />
-        <TabTop.Screen name="Live" component={Live} />
-        <TabTop.Screen name="Completed" component={Completed} />
+        <TabTop.Screen name="Upcoming" component={UpcomingNavigator} />
+        <TabTop.Screen name="Live" component={LiveNavigator} />
+        <TabTop.Screen name="Completed" component={CompletedNavigator} />
       </TabTop.Navigator>
     );
 }

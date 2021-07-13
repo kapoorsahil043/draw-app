@@ -31,9 +31,8 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/userProfileActions';
 import * as headerActions from '../../Redux/Actions/headerActions';
-import CardBox from "../../Shared/Form/CardBox";
 
-const UserProfile = (props) => {
+const ProfileImage = (props) => {
   const context = useContext(AuthGlobal);
   const [userProfile, setUserProfile] = useState();
   const [loading, setLoading] = useState(false);
@@ -41,6 +40,20 @@ const UserProfile = (props) => {
   const [mainImage, setMainImage] = useState();
   const [token, setToken] = useState();
   const [error, setError] = useState();
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setMainImage(result.uri);
+      setImage(result.uri);
+    }
+  };
 
   const saveProfile = async (user) =>{
     console.log('UserProfile,saveProfile',);
@@ -60,6 +73,16 @@ const UserProfile = (props) => {
       ) {
         props.navigation.navigate("SignIn");
       }
+      
+      // Image Picker
+    (async () => {
+        if (Platform.OS !== "web") {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+          }
+        }
+      })();
 
       AsyncStorage.getItem("jwt")
         .then((res) => {
@@ -88,6 +111,65 @@ const UserProfile = (props) => {
     }, [context.stateUser.isAuthenticated])
   );
 
+  const updateProfile = () => {
+    console.log('updateProfile');
+    setLoading(true);
+    if (!image) {
+      setLoading(false);
+      setError("Please select image correclty!!");
+      alert("Please select image correclty!!");
+      return;
+    }
+    if(!token){
+        setLoading(false);
+        alert("Please login again!!");
+        return;
+    }
+
+    setError("");
+    let formData = new FormData();
+    const newImageUri = "file:///" + image.split("file:/").join("");
+    formData.append("image", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
+    //formData.append("name", name);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+      axios
+        .post(`${baseUrlResourceServer}users/updateProfile`, formData, config)
+        .then((res) => {
+          setUserProfile(res.data);
+          saveProfile(res.data);
+          setMainImage();
+          setLoading(false);
+          
+          if (res.status == 200 || res.status == 201) {
+            Toast.show({
+              topOffset: 60,
+              type: "success",
+              text1: "Profile Updated Successfully!!",
+              text2: "",
+            });
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          Toast.show({
+            topOffset: 60,
+            type: "error",
+            text1: "Something went wrong",
+            text2: "Please try again",
+          });
+        });
+  };
+
   const getImageSource = () =>{
     if(mainImage){
       return mainImage;
@@ -99,10 +181,6 @@ const UserProfile = (props) => {
     return constants.DEFAULT_USER_IMAGE_URL;
   }
 
-  const navigateTo = ()=>{
-    console.log("navigateTo");
-    props.navigation.navigate("Profile Image");
-  }
 
   return (
     <>
@@ -114,69 +192,26 @@ const UserProfile = (props) => {
               logoutUser(context.dispatch),
               props.clearUserProfile()
             ]}>
-              <Text style={{color:"white",fontWeight:"500"}}>SIGN OUT</Text>
+              <Text style={{color:"white"}}>SIGN OUT</Text>
           </EasyButton>
         </View>
       }
       {userProfile && 
       <Container style={styles.container}>
         <ScrollView contentContainerStyle={styles.subContainer}>
-          <View>
-            <CardBox styles={{flexDirection:"row"}}>
-              <TouchableOpacity onPress={()=>navigateTo()}>
-                <View style={{flex:1}}>
-                    <Image style={styles.imageContainer} source={{ uri: getImageSource()}} />  
-                </View>
-                <View style={styles.imagePicker}>
-                    <Icon style={{ color: "white" }} name="refresh" size={10}/>
-                </View>
+          <View style={{flexDirection:"column",alignItems:"center"}}>
+            <View style={{padding:40}}>
+              <Image style={styles.imageContainer} source={{ uri: getImageSource()}} />
+              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                <Icon style={{ color: "white" }} name="camera" />
               </TouchableOpacity>
-              <Text style={{alignSelf:"center",padding:20,fontSize:17,fontWeight:"500"}}>
-                {userProfile ? userProfile.name : ""}
-              </Text>
-            </CardBox>
+            </View>
             
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Profile")}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Profile</Text>
-                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                  </View>
-              </TouchableOpacity>
-            </CardBox>
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Address",{userProfile:userProfile})}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Address</Text>
-                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                  </View>
-              </TouchableOpacity>
-            </CardBox>
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Wallet")}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Wallet</Text>
-                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                  </View>
-              </TouchableOpacity>
-            </CardBox>
-            
-            <View style={{ marginTop: 5,marginBottom:50,alignItems:"center" }}>
-              <EasyButton large danger onPress={() => [
-                  AsyncStorage.removeItem("jwt"),
-                  logoutUser(context.dispatch),
-                  props.clearUserProfile()
-                ]}>
-                  <Text style={{color:"white",fontWeight:"500"}}>SIGN OUT</Text>
-              </EasyButton>
-              {/* <Button
-                title={"Sign Out"}
-                onPress={() => [
-                  AsyncStorage.removeItem("jwt"),
-                  logoutUser(context.dispatch),
-                ]}
-              /> */}
-          </View>
+            <View style={{alignSelf:"center"}}>
+                <EasyButton large primary onPress={() => updateProfile()} disabled={!mainImage}>
+                    <Text style={{color:"white",fontWeight:"500"}}>SAVE IMAGE</Text>
+                </EasyButton>
+            </View>
           </View>
         </ScrollView>
       </Container>}
@@ -192,13 +227,13 @@ const styles = StyleSheet.create({
     flexDirection:"row",
   },
   subContainer: {
-    //marginTop: 20,
+    marginTop: 20,
   },
   imageContainer: {
-    width: 80,
-    height: 80,
+    width: 200,
+    height: 200,
     //borderStyle: "solid",
-    borderWidth: 2,
+    borderWidth: 1,
     padding: 0,
     justifyContent: "center",
     borderRadius: 100,
@@ -208,10 +243,12 @@ const styles = StyleSheet.create({
   },
   imagePicker: {
     position: "absolute",
-    left: 59,
-    bottom: 5,
+    //left: 100,
+    right:75,
+    //top:0,
+    bottom: 45,
     backgroundColor: "grey",
-    padding: 2,
+    padding: 5,
     borderRadius: 100,
     //elevation: 10,
   },
@@ -225,4 +262,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null,mapDispatchToProps)(UserProfile);
+export default connect(null,mapDispatchToProps)(ProfileImage);

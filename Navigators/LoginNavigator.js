@@ -3,8 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Login from '../Screens/User/Login'
 import Register from '../Screens/User/Register'
-import UserProfile from '../Screens/User/UserProfile'
-import Wallet from "../Screens/User/Wallet"
 import ForgotPasswordNavigator from "./ForgotPasswordNavigator"
 import AuthGlobal from "../Context/store/AuthGlobal"
 

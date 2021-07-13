@@ -22,12 +22,17 @@ import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
 import Icon from "react-native-vector-icons/FontAwesome";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import * as constants from '../../assets/common/constants';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
 import { logoutUser } from "../../Context/actions/Auth.actions";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import Toast from "react-native-toast-message";
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+import DefaultMessage from "../../Shared/DefaultMessage";
 
 var { height } = Dimensions.get("window");
 
@@ -40,6 +45,7 @@ const DrawPage = (props) => {
   useFocusEffect(
     useCallback(() => {
       // pull only active Draws
+      props.hideHeader({hide:false});
 
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -120,7 +126,7 @@ const DrawPage = (props) => {
               <TouchableOpacity onPress={() => props.navigation.navigate("Add",{item:null})}>
                   <View style={{flexDirection:"row"}}>
                     <Text style={{flex:1,fontSize:15}}>Create Draw</Text>
-                    <Icon name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
+                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
                   </View>
               </TouchableOpacity>
             </View>
@@ -129,7 +135,7 @@ const DrawPage = (props) => {
               <TouchableOpacity onPress={() => props.navigation.navigate("Images",{item:null})}>
                 <View style={{flexDirection:"row"}}>
                   <Text style={{flex:1,fontSize:15}}>Upload Image</Text>
-                  <Icon name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
+                  <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
                 </View>
               </TouchableOpacity>
             </View>
@@ -164,9 +170,7 @@ const DrawPage = (props) => {
                 })}
               </View>
             ) : (
-              <View style={[styles.center, { height: height / 2 }]}>
-                <Text>No draws available at the moment!!</Text>
-              </View>
+              <DefaultMessage/>
             )}
           </View>
         </ScrollView>
@@ -202,5 +206,10 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
 
-export default DrawPage;
+export default connect(null,mapDispatchToProps)(DrawPage);

@@ -20,6 +20,11 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
 import DrawList from "../Draws/DrawList";
 import * as constants from "../../assets/common/constants";
+//redux
+import { connect } from "react-redux";
+import * as actions from '../../Redux/Actions/headerActions';
+import DefaultMessage from "../../Shared/DefaultMessage";
+
 
 var { height } = Dimensions.get("window");
 
@@ -35,6 +40,7 @@ const Live = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
+
 
 
   const joinHandler = (drawId) => {
@@ -64,6 +70,7 @@ const Live = (props) => {
   useFocusEffect(
     useCallback(() => {
       console.log("Live, useCallBack");
+      props.hideHeader({hide:false});
       callMethod();
       setFocus(false);
       setActive(-1);
@@ -105,9 +112,7 @@ const Live = (props) => {
               })}
             </View>
           ) : (
-            <View style={[styles.center, { height: height / 2 }]}>
-              <Text>No draws available at the moment!!</Text>
-            </View>
+            <DefaultMessage/>
           )}
         </ScrollView>
       </Container>
@@ -141,5 +146,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 });
+const mapDispatchToProps = (dispatch) => {
+  return {
+      hideHeader: (value) => dispatch(actions.hideHeader(value)),
+  }
+}
 
-export default Live;
+export default connect(null,mapDispatchToProps)(Live);
