@@ -138,7 +138,8 @@ const rowFn = (item,_item,isUserFound)=>{
             </View>
             <View style={{justifyContent:"center", padding:5}}>
               <Text style={styles.textValue}>{_item.user.name}</Text>
-              <Text style={{color:"green",fontSize:10}}>{item.totalWinnerSpot >= _item.rank ? 'Winner!!':''}</Text>
+              {_item.remarks && _item.remarks.indexOf('Winn')>-1 && <Text style={{color:"green",fontSize:10}}>{_item.remarks}</Text>}
+              {_item.remarks && _item.remarks.indexOf('Winn')< 0 && <Text style={{color:"grey",fontSize:10}}>{_item.remarks}</Text>}
             </View>
           </View>
         </View>

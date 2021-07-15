@@ -164,7 +164,7 @@ const AddressAdd = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
         { 
-        <>
+        <ScrollView>
          <CardBox>
             <Label text="Recipient Name" type="form"/>
             <Input placeholder={"Enter Recipient Name"} name={"recipientName"} id={"recipientName"} value={recipientName} onChangeText={(text) => setRecipientName(text)}/>
@@ -205,7 +205,7 @@ const AddressAdd = (props) => {
             <Text style={styles.buttonText}>Save</Text>
           </EasyButton>
         </View>
-        </>
+        </ScrollView>
         }
       </Container>
     </KeyboardAwareScrollView>

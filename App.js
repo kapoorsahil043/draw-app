@@ -65,13 +65,13 @@ export default function App() {
     
     const backgroundSub = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        console.log("notification", notification);
+        //console.log("notification", notification);
       }
     );
 
     const foregroundSub = Notifications.addNotificationReceivedListener(
       (notification) => {
-        console.log("notification", notification);
+        //console.log("notification", notification);
       }
     );
 
@@ -85,7 +85,7 @@ export default function App() {
 
   const gotoWalletHandler = () =>{
     console.log('gotoWalletHandler');
-    navigationRef.current?.navigate('Me',{goto:"Wallet"});
+    navigationRef.current?.navigate('Me',{goto:"Accounts"});
   };
 
   const gotoProfileHandler = () =>{

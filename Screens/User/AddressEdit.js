@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, Alert, ScrollView } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input from "../../Shared/Form/Input";
@@ -160,7 +160,7 @@ const AddressEdit = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
         { 
-        <>
+        <ScrollView>
          <CardBox>
          <Label text="Recipient Name" type="form"/>
             <Input placeholder={"Enter Recipient Name"} name={"recipientName"} id={"recipientName"} value={recipientName} onChangeText={(text) => setRecipientName(text)}/>
@@ -198,7 +198,7 @@ const AddressEdit = (props) => {
             <Text style={styles.buttonText}>Save</Text>
           </EasyButton>
         </View>
-        </>
+        </ScrollView>
         }
       </Container>
     </KeyboardAwareScrollView>

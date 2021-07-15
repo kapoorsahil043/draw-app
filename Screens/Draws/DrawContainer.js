@@ -45,6 +45,7 @@ const DrawContainer = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
+  const [message, setMessage] = useState("loading..");
 
   const joinContest = (drawId) => {
     setLoading(true);
@@ -87,15 +88,8 @@ const DrawContainer = (props) => {
       .catch((error) => {
         setLoading(false);
         console.log("Error:", error.response.data.message);
-        let msg = error.response.data.message
-          ? error.response.data.message
-          : "Something went wrong";
-        Toast.show({
-          topOffset: 60,
-          type: "error",
-          text1: msg,
-          text2: "Please try new one",
-        });
+        let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
+        Toast.show({topOffset: 60,type: "error",text1: msg,text2: "Please try new one",});
 
         Notifications.scheduleNotificationAsync({
           content: {
@@ -179,7 +173,7 @@ const DrawContainer = (props) => {
  */
   useFocusEffect(
     useCallback(() => {
-
+      console.log("DrawContainer,useCallback");
       //checkPermissionsForiOS();
       props.hideHeader({hide:false});
 
@@ -188,7 +182,6 @@ const DrawContainer = (props) => {
       setTimeout(() => {
         AsyncStorage.getItem("jwt")
           .then((res) => {
-            console.log("token", token != undefined);
             setToken(res);
           })
           .catch((error) => console.log(error));
@@ -204,6 +197,7 @@ const DrawContainer = (props) => {
           })
           .catch((error) => {
             setLoading(false);
+            setMessage("");
             console.log("Api call error");
           });
       }, 10);
@@ -254,7 +248,7 @@ const DrawContainer = (props) => {
                 })}
               </View>
             ) : (
-              <DefaultMessage/>
+              <DefaultMessage message={message}/>
             )}
           </View>
         </ScrollView>

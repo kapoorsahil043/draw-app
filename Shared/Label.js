@@ -22,7 +22,7 @@ const Label = (props) => {
 
     })
     return (
-        <>{isLoaded && <Text style={styles}>{props.text}</Text>}</>
+        <>{isLoaded && <Text style={[styles,props.styles]}>{props.text}</Text>}</>
     )
 }
 

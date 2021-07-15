@@ -50,7 +50,7 @@ const DrawAdd = (props) => {
   const [item, setItem] = useState(null);
 
   const [ranks, setRanks] = useState([]);
-  const [rank, setRank] = useState({ rankStart: 1, rankImage:"",rankType:"",imageId:"" });
+  const [rank, setRank] = useState({ rankStart: 1, rankImage:"",rankType:"",imageId:"", rankEnd:0 });
   const [drawImage, setDrawImage] = useState();
   const [images, setImages] = useState([]);
   let cnt = 0;
@@ -119,6 +119,7 @@ const DrawAdd = (props) => {
   };
 
   const createDraw = () => {
+    setError("");
     if (!drawImage || name == "" || entryPrice == "" || totalSpots == "") {
       setError("Please fill in the form correctly");
       return;
@@ -130,7 +131,16 @@ const DrawAdd = (props) => {
       Number(winnersPct) > 100 ||
       Number(winnersPct) < 0
     ) {
-      setError("Error in Winn%");
+      setError("Error in Winning%");
+    }
+
+    if(!ranks || !ranks.length){
+      setError("Please add rank details!!");
+      return;
+    }
+    if(ranks[ranks.length-1].rankEnd !== (totalSpots * (winnersPct / 100))){
+      setError(`Please complete rank list till rank end ${(totalSpots * (winnersPct / 100))}!!`);
+      return;
     }
 
     let req = {
@@ -179,13 +189,17 @@ const DrawAdd = (props) => {
 
   const resetRank = () => {
     console.log("reset..");
-    setRank({ rankStart: 1 });
+    setRank({ rankStart: 1,rankPrice:"",rankEnd:"",rankType:"" });
     setRanks([]);
     setError("");
   };
 
   const addRank = () => {
     let totalWinners = totalSpots * (winnersPct / 100);
+    if(!rank.rankType){
+      setError("Please select Rank Image from the dropdown!!");
+      return;
+    }
     if (
       !rank ||
       !rank.rankEnd ||
@@ -193,7 +207,7 @@ const DrawAdd = (props) => {
       Number(rank.rankEnd) > totalWinners ||
       Number(rank.rankEnd) < Number(rank.rankStart)
     ) {
-      setError("Rank Error(s)");
+      setError(`Rank Error(s) - rank ${!rank}, rankEnd ${!rank.rankEnd} , isNotNumber(rank.rankEnd) ${isNaN(rank.rankEnd)}, (rank.rankEnd) > totalWinners ${Number(rank.rankEnd) > totalWinners}, (rank.rankEnd) < (rank.rankStart) ${Number(rank.rankEnd) < Number(rank.rankStart)}`);
       return;
     }
     let pricePool =
@@ -204,7 +218,10 @@ const DrawAdd = (props) => {
       Number(rank.rankPrice) < 1 ||
       Number(rank.rankPrice) > pricePool
     ) {
-      setError("Price Error(s)");
+      setError(`Price Error(s) - (!rank.rankPrice) ${(!rank.rankPrice)}, 
+      (isNotNumber(rank.rankPrice)) ${isNaN(rank.rankPrice)}, 
+      ((rank.rankPrice) < 1) ${(rank.rankPrice) < 1}, 
+      ((rank.rankPrice) > pricePool) ${(Number(rank.rankPrice) > pricePool)}`);
       return;
     }
 
@@ -284,10 +301,9 @@ const DrawAdd = (props) => {
 
   return (
     <Container style={{backgroundColor:"gainsboro"}}>
-      <View style={{margin:5}}>
       <FormContainer title="Add Draw">
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: drawImage }} />
+          <Image style={styles.image} source={{ uri: drawImage  || constants.DEFAULT_IMAGE_URL}} />
           {/* <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
             <Icon style={{ color: "white" }} name="camera" />
           </TouchableOpacity> */}
@@ -300,7 +316,6 @@ const DrawAdd = (props) => {
             <Picker
               mode="dropdown"
               iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
-              style={{ width: undefined }}
               placeholder="Select your image"
               selectedValue={drawImage}
               placeholderStyle={{ color: "#007aff" }}
@@ -334,7 +349,7 @@ const DrawAdd = (props) => {
               id="price"
               value={entryPrice}
               keyboardType={"numeric"}
-              onChangeText={(text) => setEntryPrice(text)}
+              onChangeText={(text) => setEntryPrice(Number(text))}
             />
           </View>
 
@@ -348,7 +363,7 @@ const DrawAdd = (props) => {
               id="totalSpots"
               value={totalSpots}
               keyboardType={"numeric"}
-              onChangeText={(text) => setTotalSpots(text)}
+              onChangeText={(text) => setTotalSpots(Number(text))}
             />
           </View>
         </View>
@@ -363,7 +378,7 @@ const DrawAdd = (props) => {
               id="winnersPct"
               value={winnersPct}
               keyboardType={"numeric"}
-              onChangeText={(text) => setWinnersPct(text)}
+              onChangeText={(text) => setWinnersPct(Number(text))}
             />
           </View>
 
@@ -377,7 +392,7 @@ const DrawAdd = (props) => {
               id="companysPct"
               value={companysPct}
               keyboardType={"numeric"}
-              onChangeText={(text) => setCompanysPct(text)}
+              onChangeText={(text) => setCompanysPct(Number(text))}
             />
           </View>
         </View>
@@ -491,17 +506,17 @@ const DrawAdd = (props) => {
             </View>
             <View>
               <Text style={constants.styleTextLabel}>#End</Text>
-              <TextInput value={rank.rankEnd} onChangeText={(text) => setRank({ ...rank, rankEnd: text })} placeholder="Enter rank #end" keyboardType="numeric"></TextInput>
+              <TextInput value={rank.rankEnd} onChangeText={(text) => setRank({ ...rank, rankEnd: Number(text) || 0 })} placeholder="Enter rank #end" keyboardType="numeric"></TextInput>
             </View>
             <View>
               <Text style={constants.styleTextLabel}>Price</Text>
-              <TextInput  value={rank.rankPrice}  onChangeText={(text) => setRank({ ...rank, rankPrice: text })}  placeholder="Enter price"  keyboardType="numeric"></TextInput>
+              <TextInput  value={rank.rankPrice}  onChangeText={(text) => setRank({ ...rank, rankPrice: Number(text) })}  placeholder="Enter price"  keyboardType="numeric"></TextInput>
             </View>
             <View>
               <Text style={constants.styleTextLabel}>Name</Text>
               <Text style={[constants.styleTextLabel,{color:"black",fontSize:12}]}>{rank.rankType}</Text> 
               <View>
-                  <Image  style={{ height: 50, width: 50, borderRadius: 100 }}  source={{ uri: rank.rankImage }}/>
+                  <Image  style={{ height: 50, width: 50, borderRadius: 100 }}  source={{ uri: rank.rankImage || constants.DEFAULT_IMAGE_URL }}/>
               </View>
             </View>
           </View>
@@ -511,7 +526,6 @@ const DrawAdd = (props) => {
                   <Picker
                     mode="dropdown"
                     iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
-                    style={{ width: undefined }}
                     placeholder="Select your image"
                     selectedValue={rank.imageId}
                     placeholderStyle={{ color: "#007aff" }}
@@ -588,7 +602,7 @@ const DrawAdd = (props) => {
                 <View style={{ flex: 1 }}>
                   <Image
                     style={{ height: 50, width: 50, borderRadius: 100 }}
-                    source={{ uri: item.rankImage }}
+                    source={{ uri: item.rankImage || constants.DEFAULT_IMAGE_URL }}
                   />
                 </View>
               </View>
@@ -602,7 +616,6 @@ const DrawAdd = (props) => {
           </EasyButton>
         </View>
       </FormContainer>
-      </View>
      </Container>
   );
 };

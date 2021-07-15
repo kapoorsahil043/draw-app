@@ -50,7 +50,6 @@ const Upcoming = (props) => {
           axios
           .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
           .then((res) => {
-            console.log("res.data",res.data.length);
             setToken(jwt);
             setDraws(res.data);
             setLoading(false);

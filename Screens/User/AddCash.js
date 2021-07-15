@@ -19,7 +19,7 @@ import * as headerActions from "../../Redux/Actions/headerActions";
 import CardBox from "../../Shared/Form/CardBox";
 import Label from "../../Shared/Label";
 import Icon from "react-native-vector-icons/FontAwesome";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/core";
@@ -29,8 +29,9 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Toast from "react-native-toast-message";
 
 
-const Wallet = (props) => {
+const AddCash = (props) => {
   const context = useContext(AuthGlobal);
+  const [amount, setAmount] = useState(0);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState();
@@ -38,7 +39,7 @@ const Wallet = (props) => {
 
  useFocusEffect( 
    useCallback(() => {
-    console.log('Wallet,useEffect');
+    console.log('AddCash,useEffect');
     props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")
@@ -51,6 +52,7 @@ const Wallet = (props) => {
 
     return () => {
       setLoading(false);
+      setError();
     };
   },[]));
 
@@ -77,7 +79,36 @@ const Wallet = (props) => {
     ]);
   };
 
-  
+  const addAmount = () =>{
+    setLoading(true);
+    setError("");
+
+    if(!amount || isNaN(amount)){
+      setError("Please enter valid amount!!");
+      setLoading(false)
+      return;
+    }
+    
+    if(amount < 50){
+      setError("Mininum 50 rupees are Allowed!!");
+      setLoading(false)
+      return;
+    }
+    
+    let req = {amount:Number(amount),transactionId:new Date().getMilliseconds()}
+
+    axios.post(`${baseURL}w/m/add`,req, {headers: { Authorization: `Bearer ${token}` },})
+    .then((resp) => {
+      setLoading(false)
+      Toast.show({  topOffset: 60,  type: resp.data.success ? "success" : "error",  text1: resp.data.message,  text2: "",})
+      if(resp.data.success){
+        setAmount();
+        loadBalance();
+      }
+    })
+    .catch((err) => {console.log(err),setLoading(false);Toast.show({  topOffset: 60,  type: "error",  text1: "Something went wrong, please try again later!!",  text2: "",})});
+  }
+
   return (
     <>
       <Spinner status={loading}></Spinner>
@@ -85,44 +116,28 @@ const Wallet = (props) => {
           <ScrollView style={{ backgroundColor: "gainsboro" }}>
             <CardBox>
               {balances && 
-                <View style={{flexDirection:"column",alignItems:"center",padding:20,borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
-                  <Label text="TOTAL BALANCE" type="form" styles={{}}/>
+                <View style={{flexDirection:"row"}}>
+                  <Label text="Current Balance" type="form" styles={{flex:1,alignSelf:"center"}}/>
                   <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBalance}</Text>
-                  <EasyButton large danger onPress={() => [props.navigation.navigate('Add Cash')]}>
-                        <Text style={{color:"white",fontWeight:"500"}}>ADD CASH</Text>
-                  </EasyButton>
-                  <Label text={"Note: The winnings and bonus balance already included in the total balance"} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
-                </View>
-                
-                
-              }
-              {balances && 
-                <View style={{flexDirection:"column",alignItems:"center",borderBottomWidth:1,borderBottomColor:"lightgrey",padding:20}}>
-                  <Label text="WINNING BALANCE" type="form" styles={{}}/>
-                  <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalWinningBalance}</Text>
-                  <EasyButton large danger onPress={() => [props.navigation.navigate('Withdraw Winnings')]}>
-                        <Text style={{color:"white",fontWeight:"500"}}>WITHDRAW</Text>
-                  </EasyButton>
-                  <Label text={balances ? balances.notesWithdraw : ""} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
-                </View>
-              }
-              {balances && 
-                <View style={{flexDirection:"row",borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
-                  <Label text="BONUS BALANCE" type="form" styles={{flex:1,alignSelf:"center"}}/>
-                  <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBonusBalance}</Text>
                 </View>
               }
             </CardBox>
-
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Transaction History")}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Transaction History</Text>
-                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                  </View>
-              </TouchableOpacity>
-            </CardBox>
-
+            <CardBox styles={{flexDiection:"row",alignItems:"center"}}>
+              <Input
+                  placeholder={"Enter amount to be loaded in wallet"}
+                  name={"amount"}
+                  id={"amount"}
+                  value={amount}
+                  keyboardType={"numeric"}
+                  onChangeText={(text) => setAmount(text)}
+                />
+                {error ? <Error message={error} /> : null}
+                
+                <EasyButton large danger onPress={() => [addAmount()]}>
+                    <Text style={{color:"white",fontWeight:"500"}}>ADD CASH</Text>
+                </EasyButton>
+                <Label text={balances ? balances.notesAddCash : ""} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
+              </CardBox>    
           </ScrollView>
       </Container>
     </>
@@ -152,4 +167,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Wallet);
+export default connect(null, mapDispatchToProps)(AddCash);

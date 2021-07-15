@@ -153,9 +153,9 @@ const UserProfile = (props) => {
               </TouchableOpacity>
             </CardBox>
             <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Wallet")}>
+              <TouchableOpacity onPress={() => props.navigation.navigate("Accounts")}>
                   <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Wallet</Text>
+                    <Text style={{flex:1,fontSize:15}}>Accounts</Text>
                     <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
                   </View>
               </TouchableOpacity>

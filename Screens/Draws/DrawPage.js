@@ -44,6 +44,7 @@ const DrawPage = (props) => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log('DrawPage,useFocusEffect')
       // pull only active Draws
       props.hideHeader({hide:false});
 

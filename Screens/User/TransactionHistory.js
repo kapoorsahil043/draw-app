@@ -29,16 +29,16 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Toast from "react-native-toast-message";
 
 
-const Wallet = (props) => {
+const TransactionHistory = (props) => {
   const context = useContext(AuthGlobal);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState();
-  const [balances, setBalances] = useState();
+  const [transactions, setTransactions] = useState();
 
  useFocusEffect( 
    useCallback(() => {
-    console.log('Wallet,useEffect');
+    console.log('TransactionHistory,useEffect');
     props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")
@@ -47,20 +47,20 @@ const Wallet = (props) => {
     })
     .catch((error) => [console.log(error)]);
     
-    loadBalance();
+    loadTransactions();
 
     return () => {
       setLoading(false);
     };
   },[]));
 
-  const loadBalance = ()=>{
+  const loadTransactions = ()=>{
     AsyncStorage.getItem("jwt")
     .then((res) => {
       setLoading(true);
       setToken(res);
-      axios.get(`${baseURL}w/balance`, {headers: { Authorization: `Bearer ${res}` },})
-        .then((resp) => [setBalances(resp.data),setLoading(false)])
+      axios.get(`${baseURL}w/list`, {headers: { Authorization: `Bearer ${res}` },})
+        .then((resp) => [setTransactions(resp.data),setLoading(false)])
         .catch((err) => {console.log(err),setLoading(false);});
     })
     .catch((error) => [console.log(error), setLoading(false)]);
@@ -83,46 +83,25 @@ const Wallet = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
           <ScrollView style={{ backgroundColor: "gainsboro" }}>
-            <CardBox>
-              {balances && 
-                <View style={{flexDirection:"column",alignItems:"center",padding:20,borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
-                  <Label text="TOTAL BALANCE" type="form" styles={{}}/>
-                  <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBalance}</Text>
-                  <EasyButton large danger onPress={() => [props.navigation.navigate('Add Cash')]}>
-                        <Text style={{color:"white",fontWeight:"500"}}>ADD CASH</Text>
-                  </EasyButton>
-                  <Label text={"Note: The winnings and bonus balance already included in the total balance"} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
-                </View>
-                
-                
-              }
-              {balances && 
-                <View style={{flexDirection:"column",alignItems:"center",borderBottomWidth:1,borderBottomColor:"lightgrey",padding:20}}>
-                  <Label text="WINNING BALANCE" type="form" styles={{}}/>
-                  <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalWinningBalance}</Text>
-                  <EasyButton large danger onPress={() => [props.navigation.navigate('Withdraw Winnings')]}>
-                        <Text style={{color:"white",fontWeight:"500"}}>WITHDRAW</Text>
-                  </EasyButton>
-                  <Label text={balances ? balances.notesWithdraw : ""} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
-                </View>
-              }
-              {balances && 
-                <View style={{flexDirection:"row",borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
-                  <Label text="BONUS BALANCE" type="form" styles={{flex:1,alignSelf:"center"}}/>
-                  <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBonusBalance}</Text>
-                </View>
-              }
-            </CardBox>
-
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Transaction History")}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={{flex:1,fontSize:15}}>Transaction History</Text>
-                    <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                  </View>
-              </TouchableOpacity>
-            </CardBox>
-
+            {transactions && transactions.map((transc) => {
+              return (
+                <CardBox styles={{}} key={transc.id}>
+                  <TouchableOpacity onPress={() => {}}>
+                      <View style={{flexDirection:"row",alignItems:"center"}}>
+                        <Text style={{flex:1,fontSize:15}}>{constants.transactionsStatuses[transc.transactionType].shortDesc}</Text>
+                        <Text style={{fontSize:15}}>{transc.amount}&nbsp;<Icon name="rupee" size={14}/></Text>
+                        {/* <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} /> */}
+                      </View>
+                      <Text style={{flex:1,fontSize:15, color:"grey"}}>Transaction Id: {transc.transactionId}</Text>
+                      <Text style={{flex:1,fontSize:15, color:"grey"}}>Transaction Date: {new Date(transc.createdOn).toLocaleString()}</Text>
+                      {transc.drawId?.name && <Text style={{flex:1,fontSize:15, color:"grey"}}>Draw Name: {transc.drawId?.name}</Text>}
+                  </TouchableOpacity>
+                </CardBox>
+              )
+            })}
+           {!transactions && <CardBox>
+              <Text style={{textAlign:"center",color:"gray"}}>No transactions available!!</Text>
+            </CardBox>}
           </ScrollView>
       </Container>
     </>
@@ -152,4 +131,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Wallet);
+export default connect(null, mapDispatchToProps)(TransactionHistory);

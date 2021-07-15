@@ -32,12 +32,12 @@ const Header = (props) => {
   };
 
   useEffect(() => {
-    //console.log("Header,useEffect");
+    console.log("Header,useEffect");
     loadProfileImage();
   });
 
   useEffect(() => {
-    //console.log("Header,useEffect,2");
+    console.log("Header,useEffect,2");
     if(props.headerReducer && props.headerReducer.hide){
       setHideHeader(true);
     }else{

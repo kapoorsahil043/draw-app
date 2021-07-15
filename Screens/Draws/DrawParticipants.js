@@ -64,7 +64,6 @@ const DrawParticipants = (props) => {
         {/* body */}
         {participants && participants.map((item) => {
           ++cnt;
-          console.log(item.id, userId);
             return (
               item.id === userId ? rowFn(item,true) : rowFn(item,false)
             );

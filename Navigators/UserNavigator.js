@@ -12,6 +12,9 @@ import AddressAdd from "../Screens/User/AddressAdd"
 import ChangeEmail from "../Screens/User/ChangeEmail"
 import ChangeEmailVerifyOtp from "../Screens/User/ChangeEmailVerifyOtp"
 import ProfileChangePassword from "../Screens/User/ProfileChangePassword"
+import AddCash from "../Screens/User/AddCash"
+import WithdrawWinnings from "../Screens/User/WithdrawWinnings"
+import TransactionHistory from "../Screens/User/TransactionHistory"
 
 const Stack = createStackNavigator();
 
@@ -32,12 +35,34 @@ function MyStack(props) {
                 }}
             />
               <Stack.Screen 
-                name="Wallet"
+                name="Accounts"
                 component={Wallet}
                 options={{
                     headerShown: true
                 }}
             />
+             <Stack.Screen 
+                name="Transaction History"
+                component={TransactionHistory}
+                options={{
+                    headerShown: true
+                }}
+            />
+             <Stack.Screen 
+                name="Add Cash"
+                component={AddCash}
+                options={{
+                    headerShown: true
+                }}
+            />
+               <Stack.Screen 
+                name="Withdraw Winnings"
+                component={WithdrawWinnings}
+                options={{
+                    headerShown: true
+                }}
+            />
+
              <Stack.Screen 
                 name="Address"
                 component={Address}
