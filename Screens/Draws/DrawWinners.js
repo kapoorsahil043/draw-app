@@ -99,9 +99,9 @@ const DrawWinners = (props) => {
 
 const loadRankImage = (winnerItem) =>{
   if(!winnerItem || !winnerItem.draw || !winnerItem.draw.ranks){
-    return constants.DEFAULT_USER_IMAGE_URL;
+    return constants.DEFAULT_IMAGE_URL;
   }
-  let img = constants.DEFAULT_USER_IMAGE_URL;
+  let img = constants.DEFAULT_IMAGE_URL;
   winnerItem.draw.ranks.forEach((rank)=>{
     if(winnerItem.rank >=rank.rankStart && winnerItem.rank <= rank.rankEnd){
       img = rank.rankImage;

@@ -29,7 +29,7 @@ const DrawCard = (props) => {
     join,
     hideJoinBtn,
     createdOn,
-    extendCount
+    extendCount,
   } = props;
 
   const formatTimeByOffset = (dateString, offset) => {
@@ -89,6 +89,7 @@ const DrawCard = (props) => {
   const [hideBtn,setHideBtn] = useState(false);
 
   useEffect(() => {
+    console.log('drawid',id,name)
     if(status == constants.statuses.live){
       setStatusText("Live");
       setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})

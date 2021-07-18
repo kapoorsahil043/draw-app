@@ -45,32 +45,6 @@ const DrawDetails = (props) => {
 
   //id, name, totalSpots, entryPrice, winnersPct, status, image
 
-  const toggleDraw =() => {
-    console.log('toggleDraw',item.id)
-    setLoading(true);
-    const req = {
-      draw: item.id
-    };
-
-    const config = {
-      headers: {
-          Authorization: `Bearer ${token}`,
-      }
-    };
-
-    axios
-    .put(`${baseURL}draws/toggle`, req, config)
-    .then((res) => {
-      setToggleLabel(res.data.status == constants.statuses.started ? "Restart": "Start")
-      setItem(res.data);// draw
-      setLoading(false);
-    })
-    .catch((error) => {
-      setLoading(false);
-      alert(`Error to ${toggleLabel} draw`);
-    });
-  }
-
   const formatDay = (day,hrs) =>{
     return day + pluraliseDay(day);
   }
@@ -90,8 +64,12 @@ const DrawDetails = (props) => {
     return [days, hours, minutes, sec];
   };
 
-  const loadData = async () =>{
+  const loadData = async (jwt) =>{
     console.log('loadData');
+    setLoading(true);
+    axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt || token}`}})
+    .then((res) => {setItem(res.data);setLoading(false);})
+    .catch((error) => {console.log("Api call error",error.response);setLoading(false);});
   }
 
   useEffect(() => {
@@ -102,7 +80,7 @@ const DrawDetails = (props) => {
     AsyncStorage.getItem("jwt")
     .then((res) => {
         setToken(res);
-        loadData();
+        loadData(res);
     })
     .catch((error) => console.log(error));
     
@@ -176,6 +154,8 @@ const DrawDetails = (props) => {
       setDrawCompletedLabel();
       setTimer();
       clearInterval(timee);
+      clearInterval();
+      setItem();
     };
   }, []);
 
@@ -203,7 +183,7 @@ const DrawDetails = (props) => {
     <Container style={styles.container}>
      {item && <ScrollView style={{ padding: 5 }}>
        <View> 
-         {item.status === constants.statuses.live && 
+         {item.status === constants.statuses.live || item.status === constants.statuses.started && 
          <View style={{position:"absolute",flex:1,elevation:10,marginTop:'20%',backgroundColor:"#C0C0C0",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
            <View>
                <Text style={{fontSize:30,color:"black",padding:5}}>{ ((item.totalSpots -  item.drawCount) / item.totalSpots) * 100 }% Completed</Text>
@@ -212,19 +192,6 @@ const DrawDetails = (props) => {
          }
          <Image source={{uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/>
        </View>
-       {
-         context.stateUser.user.isAdmin == true && 
-        constants.STATUS_FOR_LIVE.indexOf(item.status) > -1 && 
-        item.totalSpots === item.joined &&
-        (<EasyButton
-           primary
-           medium
-           onPress={() => toggleDraw()}
-         >
-           <Text style={{ color: "white", fontWeight: "bold" }}>{toggleLabel}</Text>
-         </EasyButton>)
-       }
-
        <View style={styles.contentContainer}>
          <H1 style={styles.contentHeader}>{item.name}</H1>
        </View>

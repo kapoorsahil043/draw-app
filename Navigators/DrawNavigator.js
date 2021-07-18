@@ -7,6 +7,7 @@ import DrawAdd from '../Screens/Draws/DrawAdd';
 import DrawEdit from '../Screens/Draws/DrawEdit';
 import DrawImageUpload from '../Screens/Draws/DrawImageUpload';
 import DrawExtend from '../Screens/Draws/DrawExtend';
+import Testing from '../Screens/User/Testing';
 
 const Stack = createStackNavigator()
 
@@ -53,6 +54,13 @@ function MyStack() {
                 component={DrawExtend}
                 options={{
                     headerShown: true,
+                }}
+            />
+             <Stack.Screen 
+                name="Testing"
+                component={Testing}
+                options={{
+                    headerShown: true
                 }}
             />
         </Stack.Navigator>

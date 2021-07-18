@@ -29,7 +29,7 @@ import * as Permissions from "expo-permissions";
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
 import DefaultMessage from "../../Shared/DefaultMessage";
-
+import * as constants from "../../assets/common/constants";
 
 var { height } = Dimensions.get("window");
 
@@ -87,19 +87,22 @@ const DrawContainer = (props) => {
       })
       .catch((error) => {
         setLoading(false);
-        console.log("Error:", error.response.data.message);
+        console.log("Error:", error.response.data);
         let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
-        Toast.show({topOffset: 60,type: "error",text1: msg,text2: "Please try new one",});
+        Toast.show({topOffset: 60,type: "error",text1: msg,text2: "",});
+        if(error.response?.data?.redirect){
+          redirectAlert(error.response.data.error);
+        }
 
-        Notifications.scheduleNotificationAsync({
+       /*  Notifications.scheduleNotificationAsync({
           content: {
             title: "Alert!!",
             body: msg,
           },
           trigger: {
-            seconds: 5,
+            seconds: 20,
           },
-        });
+        }); */
 
       });
   };
@@ -113,6 +116,20 @@ const DrawContainer = (props) => {
         style: "cancel",
       },
       { text: "OK", onPress: () => props.navigation.navigate("SignIn") },
+    ]);
+  };
+
+  const redirectAlert = (data) => {
+    console.log("redirectAlert",data);
+    Alert.alert(data.errDesc, "Want to Proceed ?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => {
+        props.navigation.navigate(data.link)
+      } },
     ]);
   };
 
@@ -176,31 +193,12 @@ const DrawContainer = (props) => {
       console.log("DrawContainer,useCallback");
       //checkPermissionsForiOS();
       props.hideHeader({hide:false});
-
-      setFocus(false);
-      setActive(-1);
-      setTimeout(() => {
+      
         AsyncStorage.getItem("jwt")
-          .then((res) => {
-            setToken(res);
-          })
-          .catch((error) => console.log(error));
-      }, 0);
-      // Draws
-      setTimeout(() => {
-        setLoading(true);
-        axios
-          .get(`${baseURL}draws`)
-          .then((res) => {
-            setDraws(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            setLoading(false);
-            setMessage("");
-            console.log("Api call error");
-          });
-      }, 10);
+          .then((res) => {setToken(res);})
+          .catch((error) => [console.log(error)]);
+
+          loadDraws()
 
       return () => {
         setLoading(false);
@@ -208,6 +206,13 @@ const DrawContainer = (props) => {
       };
     }, [])
   );
+
+  const loadDraws = () =>{
+    setLoading(true);
+    axios.get(`${baseURL}draws`)
+    .then((res) => {setDraws(res.data);setLoading(false);setMessage("");})
+    .catch((error) => {setLoading(false);setMessage("");console.log("Api call error");});
+}
 
   const modalHandler = (value) => {
     console.log("modalHandler", value);

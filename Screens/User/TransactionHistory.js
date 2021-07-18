@@ -99,7 +99,7 @@ const TransactionHistory = (props) => {
                 </CardBox>
               )
             })}
-           {!transactions && <CardBox>
+           {!transactions || !transactions.length && <CardBox>
               <Text style={{textAlign:"center",color:"gray"}}>No transactions available!!</Text>
             </CardBox>}
           </ScrollView>

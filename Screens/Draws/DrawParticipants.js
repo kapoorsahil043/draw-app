@@ -41,7 +41,7 @@ const DrawParticipants = (props) => {
     }
   },[]);
 
-  const rowFn = (item,userFound) =>{
+  const rowFn = (cnt,item,userFound) =>{
     return (<View key={item.id} style={{   flexDirection: "row",   padding: 10,   
     backgroundColor: userFound ? '#f0d8bf' : (cnt % 2 == 0 ?  '#E8E8E8': ''),
     height:70 }}>
@@ -51,7 +51,7 @@ const DrawParticipants = (props) => {
                     {item.image==="" && <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: constants.DEFAULT_USER_IMAGE_URL }} />}
                   </View>
                   <View style={{justifyContent:"center"}}>
-                      <Text style={styles.textValue}>{item.name}</Text>
+                      <Text style={styles.textValue}>{cnt} {item.name}</Text>
                   </View>
                 </View>
     </View>);
@@ -65,7 +65,7 @@ const DrawParticipants = (props) => {
         {participants && participants.map((item) => {
           ++cnt;
             return (
-              item.id === userId ? rowFn(item,true) : rowFn(item,false)
+              item.id === userId ? rowFn(cnt,item,true) : rowFn(cnt,item,false)
             );
           })}
       </View>

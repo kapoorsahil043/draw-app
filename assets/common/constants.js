@@ -51,8 +51,40 @@ export const transactionsStatuses = {
     [statuses.transactionType_AppBonusPromotional]:{shortDesc:"Promotional Cash Received"},
     [statuses.transactionType_AppBonusPromotionalExpired]:{shortDesc:"Promotional Cash Expired"},
     [statuses.transactionType_AppBonusReferal]:{shortDesc:"Referral Cash Received"},
-    [statuses.transactionType_AppContestJoinedUsingBonus]:{shortDesc:"Contest Joined"},
+    [statuses.transactionType_AppContestJoinedUsingBonus]:{shortDesc:"Contest Joined Using Bonus"},
 }
+
+export const statusesDesc = {
+    [statuses.inactive]: "Inactive",
+    [statuses.active]: "Active",
+    [statuses.live]: "Live",
+    [statuses.started]: "Started",
+    [statuses.stopped]: "Stopped",
+    [statuses.completed]: "Completed",
+    [statuses.drawFull]: "Full",
+    [statuses.cancelled]: "Cancelled",
+}
+
+export const statusesColor = {
+    [statuses.inactive]: "grey",
+    [statuses.active]: "green",
+    [statuses.live]: COLOR_RED,
+    [statuses.started]: "green",
+    [statuses.stopped]: COLOR_RED,
+    [statuses.completed]: "orange",
+    [statuses.drawFull]: "orange",
+    [statuses.cancelled]: COLOR_RED,
+}
+
+export const errCodes = {
+    D1:{errDesc:"Login Required",code:"D1",link:"Me"},
+    D2:{errDesc:"Add Cash",code:"D2",link:"Me"},
+    D3:{errDesc:"Login Required",code:"D2",link:"Me"},
+    D4:{errDesc:"Login Required",code:"D2",link:"Me"},
+    D5:{errDesc:"Login Required",code:"D2",link:"Me"},
+    D6:{errDesc:"Login Required",code:"D2",link:"Me"}
+};
+
 
 export const STATUS_FOR_LIVE = [statuses.live , statuses.started , statuses.stopped];
 export const STATUS_FOR_ACTIVE = [statuses.active,statuses.drawFull];

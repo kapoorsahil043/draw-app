@@ -17,7 +17,33 @@ const Register = (props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const createTestUser = async (cnt) => {
+    console.log('cnt',cnt);
+    let user = {
+      name: "testemail"+cnt,
+      email: "testemail"+cnt+"@gmail.com",
+      password: "a",
+      phone: cnt,
+      isAdmin: false,
+    };
+
+    let rr = await  axios
+      .post(`${baseURL}users/register`, user)
+      .then((res) => {
+        console.log(res.status);
+        if(cnt > 2300){
+          return;
+        }
+        createTestUser(++cnt);
+      })
+      .catch((error) => {
+       console.log("err",error.response.data)
+      });
+     
+  }
   const register = () => {
+    //createTestUser(1222);
+    //return;
     if (email === "" || name === "" || phone === "" || password === "") {
       setError("Please fill in the form correctly");
     }
