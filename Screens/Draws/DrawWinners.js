@@ -128,13 +128,13 @@ const rowFn = (item,_item,isUserFound)=>{
                 <Text style={styles.textValue}>#{_item.rank}</Text>
               </View>
               <View style={{}}>
-                <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: loadRankImage(_item) }} />
+                <Image style={{height:50,width:50,borderRadius:100}} source={ _item?.draw?.ranks ? { uri: loadRankImage(_item)} : require("../../assets/box-960_720.png") } />
               </View>
             </View>
           </View>
           <View style={{ flex: 1,flexDirection:"row"}}>
             <View style={{}}>
-              <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: _item.user.image ? _item.user.image : constants.DEFAULT_USER_IMAGE_URL}} />
+              <Image style={{height:50,width:50,borderRadius:100}} source={_item.user.image ? {uri: _item.user.image} : require("../../assets/user-icon.png") }/>
             </View>
             <View style={{justifyContent:"center", padding:5}}>
               <Text style={styles.textValue}>{_item.user.name}</Text>

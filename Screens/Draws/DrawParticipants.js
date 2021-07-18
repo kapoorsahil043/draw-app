@@ -47,8 +47,7 @@ const DrawParticipants = (props) => {
     height:70 }}>
                 <View style={{ flex: 1,flexDirection:"row" }}>
                   <View style={{justifyContent:"center",marginRight:20}}>
-                    {item.image!=="" && <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: item.image }} />}
-                    {item.image==="" && <Image style={{height:50,width:50,borderRadius:100}} source={{ uri: constants.DEFAULT_USER_IMAGE_URL }} />}
+                    <Image style={{height:50,width:50,borderRadius:100}} source={item.image!=="" ? { uri: item.image } : require("../../assets/user-icon.png")} />
                   </View>
                   <View style={{justifyContent:"center"}}>
                       <Text style={styles.textValue}>{cnt} {item.name}</Text>

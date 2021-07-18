@@ -64,12 +64,26 @@ const DrawDetails = (props) => {
     return [days, hours, minutes, sec];
   };
 
-  const loadData = async (jwt) =>{
-    console.log('loadData');
-    setLoading(true);
+  const loadData = async (jwt,loadDataTimeInterval) =>{
+    console.log('loadData..',item.status);
+    if(item.status === constants.statuses.completed){
+      clearInterval(loadDataTimeInterval);
+      return;
+    }
+    //setLoading(true);
     axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt || token}`}})
-    .then((res) => {setItem(res.data);setLoading(false);})
-    .catch((error) => {console.log("Api call error",error.response);setLoading(false);});
+    .then((res) => {
+      setItem(res.data);
+      if(resp.data.status !== constants.statuses.started){
+        clearTimeout(loadDataTimeInterval);
+      }
+
+    })
+    .catch((error) => {console.log("Api call error",error.response);
+      if(item.status !== constants.statuses.started){
+        clearTimeout(loadDataTimeInterval);
+      }
+    });
   }
 
   useEffect(() => {
@@ -80,7 +94,6 @@ const DrawDetails = (props) => {
     AsyncStorage.getItem("jwt")
     .then((res) => {
         setToken(res);
-        loadData(res);
     })
     .catch((error) => console.log(error));
     
@@ -148,6 +161,10 @@ const DrawDetails = (props) => {
         );
     }, 1000);
 
+    const loadDataTimeInterval = setInterval(() => {
+      loadData(null,loadDataTimeInterval);
+    }, 2000);
+
     return () => {
       props.hideHeader({hide:false});
       setToken();
@@ -156,6 +173,7 @@ const DrawDetails = (props) => {
       clearInterval(timee);
       clearInterval();
       setItem();
+      clearTimeout(loadDataTimeInterval);
     };
   }, []);
 
@@ -184,9 +202,9 @@ const DrawDetails = (props) => {
      {item && <ScrollView style={{ padding: 5 }}>
        <View> 
          {item.status === constants.statuses.live || item.status === constants.statuses.started && 
-         <View style={{position:"absolute",flex:1,elevation:10,marginTop:'20%',backgroundColor:"#C0C0C0",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
+         <View style={{position:"absolute",flex:1,elevation:20,marginTop:'20%',backgroundColor:"lightgrey",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
            <View>
-               <Text style={{fontSize:30,color:"black",padding:5}}>{ ((item.totalSpots -  item.drawCount) / item.totalSpots) * 100 }% Completed</Text>
+               <Text style={{fontSize:25,color:"black",padding:5}}>{ Math.round(((item.totalSpots -  item.drawCount) / item.totalSpots) * 100) }% Completed</Text>
            </View>
          </View>
          }
