@@ -13,48 +13,48 @@ const DrawWinners = (props) => {
   const [selfWinnerObj,setSelfWinnerObj] = useState();
   const [token,setToken] = useState();
   
-  const loadWinners = (_token) =>{
-      if(!_token){
+  const loadWinners = (jwt,winnerTimer) =>{
+    console.log("loadWinners",item.totalSpots,item.name,(!jwt),winners.length,item.status)
+      if(!jwt){
+        clearInterval(winnerTimer);
+        return;
+      }
+      if(winners && winners.length === item.totalSpots){
+        clearInterval(winnerTimer);
+        return;
+      }
+      if(item.status !== constants.statuses.started && item.status !== constants.statuses.completed){
         return;
       }
 
       axios
-      .get(`${baseURL}winners/draw/${item.id}`,{headers: {Authorization: `Bearer ${_token}`}})
+      .get(`${baseURL}winners/draw/${item.id}`,{headers: {Authorization: `Bearer ${jwt}`}})
       .then((resp) => {
+        console.log('win success')
          setWinners(resp.data);
-            if(resp.data.status!==constants.statuses.completed){
-              if(resp.data.status === constants.statuses.started){
-                setTimeout(() => {
-                  loadWinners(_token);  
-                }, 2000);
-              }
-            }
+          if(resp.data.length === item.totalSpots){
+            clearInterval(winnerTimer);
           }
-         )
-         
-      .catch((error) => {
-          //alert("Error to load winners");
         })
-
-        if(winners.length && (item.totalSpots == winners.length)){
-        }
-        if(item.totalSpots > 0 && item.drawCount == 0 ){
-        }
+        .catch((error) => {
+          console.log('win err')
+          if(winners && winners.length === item.totalSpots){
+            clearInterval(winnerTimer);
+          }
+        })
   }
  
   useEffect(() => {
     console.log('DrawWinners, usesEffect');
 
-    AsyncStorage.getItem("jwt")
-      .then((jwt) => {
-          setToken(jwt);
-          loadWinners(jwt);
-      })
-      .catch((error) => console.log(error));
+      const winnerTimer = setInterval(() => {
+        AsyncStorage.getItem("jwt").then((jwt) => {loadWinners(jwt,winnerTimer);}).catch((error) => console.log(error));
+      }, 5000);
       
     return () => {
       setWinners();
       setToken();
+      clearInterval(winnerTimer);
     }
   },[]);
 

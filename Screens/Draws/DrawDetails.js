@@ -35,9 +35,6 @@ const DrawDetails = (props) => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState();
 
-  const [drawCompletedLabel, setDrawCompletedLabel] = useState();
-
-
   const [timer, setTimer] = useState();
   const [statusText,setStatusText] = useState();
   const [statusStyle,setStatusStyle] = useState({color:"white",padding:5,});
@@ -73,14 +70,14 @@ const DrawDetails = (props) => {
     //setLoading(true);
     axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt || token}`}})
     .then((res) => {
+      console.log('res.data',res.data.joined)
       setItem(res.data);
-      if(resp.data.status !== constants.statuses.started){
+      if(!res.data.status === constants.statuses.active && !res.data.status === constants.statuses.started){
         clearTimeout(loadDataTimeInterval);
       }
-
     })
-    .catch((error) => {console.log("Api call error",error.response);
-      if(item.status !== constants.statuses.started){
+    .catch((error) => {console.log("Api call error",error);
+      if(item.status === constants.statuses.completed){
         clearTimeout(loadDataTimeInterval);
       }
     });
@@ -91,45 +88,31 @@ const DrawDetails = (props) => {
     
     props.hideHeader({hide:true});
     
+    if(item.status == constants.statuses.live){
+      setHideBtn(true);
+    }else if(item.status == constants.statuses.active){
+      
+    }else if(item.status == constants.statuses.started){
+      setHideBtn(true);
+    }else if(item.status == constants.statuses.stopped){
+      setHideBtn(true);
+    }else if(item.status == constants.statuses.completed){
+      setHideBtn(true);
+    }else if(item.status == constants.statuses.cancelled){
+      setHideBtn(true);
+    }
+    if (item && item.status == constants.statuses.active && item.totalSpots && item.totalSpots === item.joined){
+        setStatusText("Full");
+        setStatusStyle({...statusStyle,backgroundColor:"orange"})
+        setHideBtn(true);
+    }
+    
     AsyncStorage.getItem("jwt")
     .then((res) => {
         setToken(res);
     })
     .catch((error) => console.log(error));
     
-    if(item.status == constants.statuses.live){
-      setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
-      setHideBtn(true);
-    }else if(item.status == constants.statuses.active){
-      setStatusText("Available");
-      setStatusStyle({...statusStyle,backgroundColor:"green"})
-    }else if(item.status == constants.statuses.started){
-      setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
-      setHideBtn(true);
-    }else if(item.status == constants.statuses.stopped){
-      setStatusText("Paused");
-      setStatusStyle({...statusStyle,backgroundColor:"red"})
-      setHideBtn(true);
-    }else if(item.status == constants.statuses.completed){
-      setStatusText("Completed");
-      setStatusStyle({...statusStyle,backgroundColor:"orange"})
-      setHideBtn(true);
-    }else if(item.status == constants.statuses.cancelled){
-      setStatusText("Cancelled");
-      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
-      setHideBtn(true);
-    }
-
-    if (item && item.status == constants.statuses.active && item.totalSpots && item.totalSpots === item.joined){
-        setStatusText("Full");
-        setStatusStyle({...statusStyle,backgroundColor:"orange"})
-        setHideBtn(true);
-    }
-    //label
-    setDrawCompletedLabel(formatSpotLeft(item));
-
     // timer
     const timee = setInterval(() => {
       //draw not avtive
@@ -138,7 +121,7 @@ const DrawDetails = (props) => {
         return;
       }
 
-      if (item.status != constants.statuses.active){
+      if (item.status !== constants.statuses.active){
         clearInterval(timee);
         return;  
       }
@@ -163,12 +146,11 @@ const DrawDetails = (props) => {
 
     const loadDataTimeInterval = setInterval(() => {
       loadData(null,loadDataTimeInterval);
-    }, 2000);
+    }, 3000);
 
     return () => {
       props.hideHeader({hide:false});
       setToken();
-      setDrawCompletedLabel();
       setTimer();
       clearInterval(timee);
       clearInterval();
@@ -221,11 +203,27 @@ const DrawDetails = (props) => {
              {item.totalAmtAvlForDistribution}
            </Text>
            <View style={{ flexDirection: "row"}}>
+             {item && 
              <View>
-               <Text style={{color:statusStyle.color,backgroundColor:statusStyle.backgroundColor,borderRadius:5,padding:5}}>
-                   {statusText}
-               </Text>
-             </View>
+               {(item.status === constants.statuses.active) && item.totalSpots === item.joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
+                   Full
+               </Text>}
+               {(item.status === constants.statuses.live || item.status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                   Live
+               </Text>}
+               {item.status === constants.statuses.active && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
+                   Available
+               </Text>}
+               {item.status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                   Paused
+               </Text>}
+               {item.status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
+                   Completed
+               </Text>}
+               {item.status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                    Cancelled
+               </Text>}
+             </View>}
            </View>
          </View>
          <View style={{ flexDirection: "column",alignItems:"flex-end" }}>
@@ -249,7 +247,7 @@ const DrawDetails = (props) => {
          <View style={{ flexDirection: "column" }}>
            <Text style={{fontSize:12,color:"black"}}>{item.totalSpots}&nbsp;spots</Text>
            <Text style={{ color: constants.COLOR_RED,fontSize:12,paddingTop:2 }}>
-             {drawCompletedLabel}
+             {formatSpotLeft(item)}
            </Text>
          </View>
        </View>

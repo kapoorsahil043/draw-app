@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
-import { View, Text, StyleSheet, Button, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, Alert, TextInput } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
@@ -39,6 +39,8 @@ const Testing = (props) => {
   const [token, setToken] = useState();
   const [selectedDrawId, setSelectedDrawId] = useState();
   const [draws, setDraws] = useState();
+  const [loadUserCount, setLoadUserCount] = useState(10);
+  
 
  useFocusEffect( 
    useCallback(() => {
@@ -67,8 +69,9 @@ const Testing = (props) => {
   }
 
   const loadData = ()=>{
-    setLoading(true)
-    axios.get(`${baseURL}users/test/users`,{headers: { Authorization: `Bearer ${token}` },})
+    setLoading(true);
+    setLoadUserCount("");
+    axios.get(`${baseURL}users/test/users/${loadUserCount}`,{headers: { Authorization: `Bearer ${token}` },})
     .then((resp) => [setLoading(false),setUsers(resp.data)])
     .catch((err) => {console.log(err),setLoading(false);});
   }
@@ -122,8 +125,15 @@ const Testing = (props) => {
     console.log('addCashForTestUsers')
     setLoading(true);
     axios.post(`${baseURL}users/test/addcash`, {amount:100},{headers: { Authorization: `Bearer ${token}` },})
-    .then((resp) => [setLoading(false)])
-    .catch((err) => {console.log(err),setLoading(false);});
+    .then((resp) => {
+      setLoading(false);
+      let msg = resp.data?.message ? resp.data.message : "Success";
+      Toast.show({topOffset: 60,type: "success",text1: msg,text2: "",});
+    })
+    .catch((err) => {console.log(err),setLoading(false);
+      let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
+      Toast.show({topOffset: 60,type: "error",text1: msg,text2: "",});
+    });
   }
 
 
@@ -136,7 +146,7 @@ const Testing = (props) => {
       Toast.show({topOffset: 60,type: "success",text1: msg,text2: "",});
     })
     .catch((error) => {console.log(error),setLoading(false);
-      let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
+      let msg = error.response?.data?.message ? error.response.data.message : "Something went wrong";
       Toast.show({topOffset: 60,type: "error",text1: msg,text2: "",});
     });
   }
@@ -192,19 +202,26 @@ const Testing = (props) => {
               </TouchableOpacity>
           </View>
         </CardBox>
-       {/*  <CardBox styles={{padding:20}}>
+       { <CardBox styles={{padding:20}}>
           <View style={{}}>
+              <TextInput value={loadUserCount} onChangeText={(text) => setLoadUserCount(Number(text))} placeholder="Enter no. of user to view" keyboardType="numeric"
+              style={{height:20,marginBottom:10}}
+              />
+          
               <TouchableOpacity onPress={() => loadData()}>
-                <Text style={{fontSize:15,fontWeight:"600"}}>View test users</Text>
+                <Text style={{fontSize:15,fontWeight:"600"}}>Click here to view test users ({users && users.length} users found)</Text>
               </TouchableOpacity>
           </View>
-        </CardBox> */}
+        </CardBox>}
           {
             users && users.map((user)=>{
               return (
                 <CardBox styles={{padding:20}} key={user._id}>
                   <View style={{}}>
-                  <Text style={{fontSize:15,fontWeight:"600"}}>{user.name}</Text>
+                    <Text style={{fontSize:15,fontWeight:"600",textTransform:"capitalize"}}>{user.name}</Text>
+                    <Text style={{fontSize:12}}>Total Balance: {user.totalBalance}</Text>
+                    <Text style={{fontSize:12}}>Total Winning Balance: {user.totalWinningBalance}</Text>
+                    <Text style={{fontSize:12}}>Total Bonus Balance: {user.totalBonusBalance}</Text>
                   </View>
                 </CardBox>
               )
