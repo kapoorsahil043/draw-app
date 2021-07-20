@@ -103,8 +103,6 @@ const DrawDetails = (props) => {
       setHideBtn(true);
     }
     if (item && item.status == constants.statuses.active && item.totalSpots && item.totalSpots === item.joined){
-        setStatusText("Full");
-        setStatusStyle({...statusStyle,backgroundColor:"orange"})
         setHideBtn(true);
     }
     
@@ -219,7 +217,7 @@ const DrawDetails = (props) => {
                {(item.status === constants.statuses.live || item.status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
                    Live
                </Text>}
-               {item.status === constants.statuses.active && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
+               {item.status === constants.statuses.active && item.totalSpots !== item.joined && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
                    Available
                </Text>}
                {item.status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
