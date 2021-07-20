@@ -10,6 +10,8 @@ export const DEFAULT_USER_IMAGE_URL = HOSTNAME_RESOURCE_SERVER + "/public/upload
 
 export const COLOR_WHITE_SMOKE = "#F5F5F5";
 export const COLOR_RED = "#f40105";
+export const COLOR_RED_LIGHT = "#FF7F7F";
+export const COLOR_GREEN = "green";
 
 export const statuses = {
     inactive: 0,
@@ -38,20 +40,20 @@ export const statuses = {
 };
 
 export const transactionsStatuses = {
-    [statuses.transactionStatusInit]:{shortDesc:"Initiated"},
-    [statuses.transactionStatusSuccess]:{shortDesc:"Success"},
-    [statuses.transactionStatusFailed]:{shortDesc:"Failed"},
-    [statuses.transactionStatusContestFull]:{shortDesc:"Contest Full"},
-    [statuses.transactionType_AppAddCash]:{shortDesc:"Cash Added"},
-    [statuses.transactionType_AppContestJoinedUsingMainAcct]:{shortDesc:"Contest Joined"},
-    [statuses.transactionType_AppContestCancelled]:{shortDesc:"Contest Cancelled"},
-    [statuses.transactionType_AppContestWinCashback]:{shortDesc:"Cashback Received"},
-    [statuses.transactionType_AppContestJoinedUsingWinAcct]:{shortDesc:"Contest Joined"},
-    [statuses.transactionType_AppWithdraw]:{shortDesc:"Amount Withdrawn"},
-    [statuses.transactionType_AppBonusPromotional]:{shortDesc:"Promotional Cash Received"},
-    [statuses.transactionType_AppBonusPromotionalExpired]:{shortDesc:"Promotional Cash Expired"},
-    [statuses.transactionType_AppBonusReferal]:{shortDesc:"Referral Cash Received"},
-    [statuses.transactionType_AppContestJoinedUsingBonus]:{shortDesc:"Contest Joined Using Bonus"},
+    [statuses.transactionStatusInit]:{shortDesc:"Initiated",colorCode:COLOR_WHITE_SMOKE},
+    [statuses.transactionStatusSuccess]:{shortDesc:"Success",colorCode:COLOR_GREEN},
+    [statuses.transactionStatusFailed]:{shortDesc:"Failed",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionStatusContestFull]:{shortDesc:"Contest Full",colorCode:COLOR_WHITE_SMOKE},
+    [statuses.transactionType_AppAddCash]:{shortDesc:"Cash Added",colorCode:COLOR_GREEN},
+    [statuses.transactionType_AppContestJoinedUsingMainAcct]:{shortDesc:"Contest Joined",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionType_AppContestCancelled]:{shortDesc:"Contest Cancelled",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionType_AppContestWinCashback]:{shortDesc:"Cashback Received",colorCode:COLOR_GREEN},
+    [statuses.transactionType_AppContestJoinedUsingWinAcct]:{shortDesc:"Contest Joined",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionType_AppWithdraw]:{shortDesc:"Amount Withdrawn",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionType_AppBonusPromotional]:{shortDesc:"Promotional Cash Received",colorCode:COLOR_GREEN},
+    [statuses.transactionType_AppBonusPromotionalExpired]:{shortDesc:"Promotional Cash Expired",colorCode:COLOR_RED_LIGHT},
+    [statuses.transactionType_AppBonusReferal]:{shortDesc:"Referral Cash Received",colorCode:COLOR_GREEN},
+    [statuses.transactionType_AppContestJoinedUsingBonus]:{shortDesc:"Contest Joined Using Bonus",colorCode:COLOR_RED_LIGHT},
 }
 
 export const statusesDesc = {

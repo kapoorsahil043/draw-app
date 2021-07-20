@@ -51,7 +51,7 @@ const Header = (props) => {
     <SafeAreaView style={styles.header}>
       {!hideHeader && 
       <View style={{   flexDirection: "row",   justifyContent: "space-between",   alignItems: "center", padding: 6,paddingLeft:15,paddingRight:15 }}>
-        <View style={{}}>
+        <View style={{borderWidth:1,borderRadius:100,borderColor:"lightgrey"}}>
           {context.stateUser.isAuthenticated && <Pressable style={{}} onPress={props.profile} style={{ borderRadius: 100}}>
             <Image
               style={{ height: 30, width: 30, borderRadius: 100 }}

@@ -35,41 +35,36 @@ const Upcoming = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
-
+  const [message, setMessage] = useState("loading..");
 
   const joinHandler = (drawId) => {
     console.log("join draw container", drawId);
   };
 
-  const callMethod = () => {
+  const callMethod = async () => {
     //console.log("Upcoming, callMethod");
     setLoading(true);
+    setMessage("loading...")
     setTimeout(() => {
       AsyncStorage.getItem("jwt")
         .then((jwt) => {
-          axios
-          .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
-          .then((res) => {
-            setToken(jwt);
-            setDraws(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {setLoading(false);console.log("Participants Api call error");});
-        })
-        .catch((error) => console.log(error));
+          axios.get(`${baseURL}participants/draws/status/upcoming`, {headers: {Authorization: `Bearer ${jwt}`}})
+          .then((res) => {setToken(jwt);setDraws(res.data);setLoading(false);setMessage("");})
+          .catch((error) => {setLoading(false);console.log("Participants Api call error");setMessage("");});
+        }).catch((error) => {console.log(error);setMessage("");});
     }, 0);
   };
 
   useFocusEffect(
     useCallback(() => {
       console.log("Upcoming, useCallBack");
-
       props.hideHeader({hide:false});
       callMethod();
 
       return () => {
         setDraws([]);
         setLoading(false);
+        setMessage();
       };
     }, [])
   );
@@ -84,10 +79,9 @@ const Upcoming = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-              {draws.length > 0 ? (
+              {draws && draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
-                    if(!item || item.status !== constants.statuses.active){return}
                     return (
                       <DrawList
                         navigation={props.navigation}
@@ -99,7 +93,7 @@ const Upcoming = (props) => {
                   })}
                 </View>
               ) : (
-                <DefaultMessage/>
+                <DefaultMessage message={message}/>
               )}
         </ScrollView>
       </Container>

@@ -16,19 +16,7 @@ function MyStack(props) {
   
 
     return (
-      <TabTop.Navigator
-          tabBarOptions={{
-            activeTintColor: constants.COLOR_RED,
-            labelStyle: {
-              fontSize: 11,
-            },
-            style: {
-              //backgroundColor: 'blue',
-              borderTopLeftRadius:10,
-              borderTopRightRadius:10
-            },
-        }}
-      >
+      <TabTop.Navigator tabBarOptions={{activeTintColor: constants.COLOR_RED,labelStyle: {fontSize: 11,},style: {borderTopLeftRadius:10,borderTopRightRadius:10},}}>
         <TabTop.Screen name="Price Table" component={RankTable} initialParams={item}/>
         <TabTop.Screen name="Participants" component={DrawParticipants} initialParams={item}/>
         <TabTop.Screen name="Winners" component={DrawWinners} initialParams={item}/>

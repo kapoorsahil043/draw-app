@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
@@ -65,7 +66,7 @@ const Login = (props) => {
   };
 
   return (
-    <>
+    <KeyboardAwareScrollView viewIsInsideTabBar={true} extraHeight={100} enableOnAndroid={true}>
       <Spinner status={loading}></Spinner>
       <FormContainer title={"Login"}>
         <Input
@@ -103,7 +104,7 @@ const Login = (props) => {
           </EasyButton>
         </View>
       </FormContainer>
-    </>
+    </KeyboardAwareScrollView>
   );
 };
 

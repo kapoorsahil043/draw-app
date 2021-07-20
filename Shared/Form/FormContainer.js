@@ -14,8 +14,8 @@ const FormContainer = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 30,
-        marginBottom: 400,
+        marginTop: 20,
+        marginBottom: 200,
         justifyContent: 'center',
         alignItems: 'center'
     },

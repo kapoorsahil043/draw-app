@@ -156,7 +156,7 @@ const AddressEdit = (props) => {
   };
 
   return (
-    <KeyboardAwareScrollView viewIsInsideTabBar={true} extraHeight={200} enableOnAndroid={true}>
+    <>
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
         { 
@@ -201,7 +201,7 @@ const AddressEdit = (props) => {
         </ScrollView>
         }
       </Container>
-    </KeyboardAwareScrollView>
+    </>
   );
 };
 

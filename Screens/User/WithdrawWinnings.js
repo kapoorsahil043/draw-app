@@ -126,14 +126,12 @@ const WithdrawWinnings = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
           <ScrollView style={{ backgroundColor: "gainsboro" }}>
-            <CardBox>
-              {balances && 
+          {balances && <CardBox>
                 <View style={{flexDirection:"row"}}>
                   <Label text="WINNINGS" type="form" styles={{flex:1,alignSelf:"center"}}/>
                   <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalWinningBalance}</Text>
                 </View>
-              }
-            </CardBox>
+            </CardBox>}
             <CardBox styles={{flexDiection:"row",alignItems:"center"}}>
               <Input
                   placeholder={"Enter amount to be withdrawn"}

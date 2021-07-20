@@ -15,6 +15,7 @@ import ProfileChangePassword from "../Screens/User/ProfileChangePassword"
 import AddCash from "../Screens/User/AddCash"
 import WithdrawWinnings from "../Screens/User/WithdrawWinnings"
 import TransactionHistory from "../Screens/User/TransactionHistory"
+import * as constants from '../assets/common/constants';
 
 const Stack = createStackNavigator();
 
@@ -25,20 +26,20 @@ function MyStack(props) {
         
     });
 
+    const activeHeaderStyle = () => {
+        return {headerTintColor:"white",headerStyle: {backgroundColor: constants.COLOR_RED}}
+    }
+
     return (
         <Stack.Navigator>
-             <Stack.Screen 
-                name="Settings"
-                component={UserProfile}
-                options={{
-                    headerShown: false
-                }}
-            />
+            <Stack.Screen name="My Accounts"component={Wallet} options={activeHeaderStyle}/>
+            <Stack.Screen name="Transaction History"component={TransactionHistory} options={activeHeaderStyle}/>
+            <Stack.Screen name="Withdraw Winnings"component={WithdrawWinnings} options={activeHeaderStyle}/>
         </Stack.Navigator>
     )
 }
 
-export default function UserNavigator(props) {
+export default function AccountNavigator(props) {
     //console.log('props.item>>',props.route.state.routes);
     //let userProfile; 
     /* if(props?.route?.state?.routes){

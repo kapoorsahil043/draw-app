@@ -40,8 +40,7 @@ const Live = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
-
-
+  const [message, setMessage] = useState("loading...");
 
   const joinHandler = (drawId) => {
     console.log("join draw container", drawId);
@@ -50,21 +49,14 @@ const Live = (props) => {
   const callMethod = () => {
     //console.log("Live, callMethod");
     setLoading(true);
-    setTimeout(() => {
-      AsyncStorage.getItem("jwt")
-        .then((jwt) => {
-          axios
-          .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
-          .then((res) => {
-            setToken(jwt);
-            setDraws(res.data);
-            setInitialState(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {setLoading(false);console.log("Participants Api call error");});
-        })
-        .catch((error) => console.log(error));
-    }, 0);
+    setMessage("loading..")
+
+    AsyncStorage.getItem("jwt").then((jwt) => {
+      axios.get(`${baseURL}participants/draws/status/live`, {headers: {Authorization: `Bearer ${jwt}`}})
+      .then((res) => {setToken(jwt);setDraws(res.data);setLoading(false);setMessage("");})
+      .catch((error) => {setLoading(false);console.log("Participants Api call error");setMessage("");});
+    }).catch((error) => {console.log(error);setMessage("");});
+
   };
 
   useFocusEffect(
@@ -72,14 +64,9 @@ const Live = (props) => {
       console.log("Live, useCallBack");
       props.hideHeader({hide:false});
       callMethod();
-      setFocus(false);
-      setActive(-1);
-
+      
       return () => {
         setDraws([]);
-        setFocus();
-        setActive();
-        setInitialState();
         setLoading(false);
       };
     }, [])
@@ -94,12 +81,9 @@ const Live = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-          {draws.length > 0 ? (
+          {draws && draws.length > 0 ? (
             <View style={styles.listContainer}>
-              {draws.map((item) => {
-                if (!item || item.status === constants.statuses.live ||
-                  item.status === constants.statuses.started)
-                {}else{return}
+              {draws && draws.map((item) => {
                 return (
                   <DrawList
                     navigation={props.navigation}
@@ -112,7 +96,7 @@ const Live = (props) => {
               })}
             </View>
           ) : (
-            <DefaultMessage/>
+            <DefaultMessage message={message}/>
           )}
         </ScrollView>
       </Container>

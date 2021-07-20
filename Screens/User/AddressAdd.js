@@ -160,7 +160,7 @@ const AddressAdd = (props) => {
   };
 
   return (
-    <KeyboardAwareScrollView viewIsInsideTabBar={true} extraHeight={200} enableOnAndroid={true} style={{backgroundColor:"gainsboro"}}>
+    <>
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
         { 
@@ -208,7 +208,7 @@ const AddressAdd = (props) => {
         </ScrollView>
         }
       </Container>
-    </KeyboardAwareScrollView>
+    </>
   );
 };
 

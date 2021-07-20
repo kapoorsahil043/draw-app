@@ -40,7 +40,8 @@ const Completed = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
-
+  const [message, setMessage] = useState("loading..");
+  
 
   const joinHandler = (drawId) => {
     console.log("join draw container", drawId);
@@ -49,21 +50,13 @@ const Completed = (props) => {
   const callMethod = () => {
     //console.log("Upcoming, callMethod");
     setLoading(true);
-    setTimeout(() => {
-      AsyncStorage.getItem("jwt")
+    setMessage("loading...")
+    AsyncStorage.getItem("jwt")
         .then((jwt) => {
-          axios
-          .get(`${baseURL}participants/draws`, {headers: {Authorization: `Bearer ${jwt}`}})
-          .then((res) => {
-            setToken(jwt);
-            setDraws(res.data);
-            setInitialState(res.data);
-            setLoading(false);
-          })
-          .catch((error) => {setLoading(false);console.log("Participants Api call error");});
-        })
-        .catch((error) => console.log(error));
-    }, 0);
+          axios.get(`${baseURL}participants/draws/status/completed`, {headers: {Authorization: `Bearer ${jwt}`}})
+          .then((res) => {setToken(jwt);setDraws(res.data);setLoading(false);setMessage("");})
+          .catch((error) => {setLoading(false);console.log("Participants Api call error");setMessage("");});
+        }).catch((error) => {console.log(error);setMessage("");});
   };
 
   useFocusEffect(
@@ -75,10 +68,7 @@ const Completed = (props) => {
       setActive(-1);
 
       return () => {
-        setDraws([]);
-        setFocus();
-        setActive();
-        setInitialState();
+        setDraws();
         setLoading(false);
       };
     }, [])
@@ -94,11 +84,9 @@ const Completed = (props) => {
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
-              {draws.length > 0 ? (
+              {draws && draws.length > 0 ? (
                 <View style={styles.listContainer}>
                   {draws.map((item) => {
-                    if (!item || item.status === constants.statuses.completed)
-                    {}else{return}
                     return (
                       <DrawList
                         navigation={props.navigation}
@@ -111,7 +99,7 @@ const Completed = (props) => {
                   })}
                 </View>
               ) : (
-                <DefaultMessage/>
+                <DefaultMessage message={message}/>
               )}
         </ScrollView>
       </Container>

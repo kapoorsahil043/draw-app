@@ -45,7 +45,7 @@ const DrawContainer = (props) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
-  const [message, setMessage] = useState("loading..");
+  const [message, setMessage] = useState("loading...");
 
   const joinContest = (drawId) => {
     setLoading(true);
@@ -188,27 +188,25 @@ const DrawContainer = (props) => {
     }
   })
  */
-  useFocusEffect(
-    useCallback(() => {
+  (
+    useEffect(() => {
       console.log("DrawContainer,useCallback");
       //checkPermissionsForiOS();
       props.hideHeader({hide:false});
-      
-        AsyncStorage.getItem("jwt")
-          .then((res) => {setToken(res);})
-          .catch((error) => [console.log(error)]);
-
-          loadDraws()
+      AsyncStorage.getItem("jwt").then((res) => {setToken(res);}).catch((error) => [console.log(error)]);
+      loadDraws();
 
       return () => {
         setLoading(false);
         setDraws([]);
+        setMessage();
       };
     }, [])
   );
 
   const loadDraws = () =>{
     setLoading(true);
+    setMessage("loading...")
     axios.get(`${baseURL}draws`)
     .then((res) => {setDraws(res.data);setLoading(false);setMessage("");})
     .catch((error) => {setLoading(false);setMessage("");console.log("Api call error");});

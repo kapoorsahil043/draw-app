@@ -38,11 +38,12 @@ import CardBox from "../../Shared/Form/CardBox";
 
 var { height } = Dimensions.get("window");
 
-const DrawPage = (props) => {
+const MaintenancePage = (props) => {
   const [draws, setDraws] = useState([]);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState();
   const context = useContext(AuthGlobal);
+  const [message, setMessage] = useState("loading...");
 
   useFocusEffect(
     useCallback(() => {
@@ -53,7 +54,7 @@ const DrawPage = (props) => {
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
         setToken(jwt);
-        //loadActiveDraws(jwt);
+        loadActiveDraws(jwt);
       })
       .catch((error) => console.log(error));
 
@@ -61,12 +62,14 @@ const DrawPage = (props) => {
         setDraws([]);
         setLoading();
         setToken();
+        setMessage();
       };
     }, [])
   );
 
 
   const loadActiveDraws = (jwt)=>{
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${jwt || token}`,
@@ -77,9 +80,12 @@ const DrawPage = (props) => {
     .get(`${baseURL}draws`,config)
     .then((res) => {
       setDraws(res.data);
+      setLoading(false);
     })
     .catch((error) => {
       console.log("Api call error");
+      setLoading(false);
+      setMessage("");
     });
   }
 
@@ -213,41 +219,53 @@ const DrawPage = (props) => {
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>
           <View>
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Add",{item:null})}>
-                    <View style={{flexDirection:"row"}}>
-                      <Text style={{flex:1,fontSize:15}}>Create Draw</Text>
-                      <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} />
-                    </View>
-                </TouchableOpacity>
-            </CardBox>
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Images",{item:null})}>
-                    <View style={{flexDirection:"row"}}>
-                      <Text style={{flex:1,fontSize:15}}>Upload Image</Text>
-                      <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
-                    </View>
-                </TouchableOpacity>
-            </CardBox>
-
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Testing")}>
-                    <View style={{flexDirection:"row"}}>
-                      <Text style={{flex:1,fontSize:15}}>Testing</Text>
-                      <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
-                    </View>
-              </TouchableOpacity>
-            </CardBox>
-
-            <CardBox styles={{padding:20}}>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Maintenance")}>
-                    <View style={{flexDirection:"row"}}>
-                      <Text style={{flex:1,fontSize:15}}>Maintenance</Text>
-                      <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
-                    </View>
-              </TouchableOpacity>
-            </CardBox>
-
+            {draws.length > 0 ? (
+              <View style={styles.listContainer}>
+                <Text style={{padding:5}}>Draw count(s) ({draws.length})</Text>
+                {draws.map((item) => {
+                  return (
+                      <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>
+                        <View>
+                          <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]})</Text></Text>
+                          <Text style={{fontSize:13,padding:1}}>Draw date: {new Date (item.drawDate).toLocaleString()}</Text>
+                          <Text style={{fontSize:13,padding:1}}>Total spots: {item.totalSpots}</Text>
+                          <Text style={{fontSize:13,padding:1}}>Total winner spots: {item.totalWinnerSpot} (Winn%: {item.winnersPct}%)</Text>
+                          <Text style={{fontSize:13,padding:1}}>Total user joined: {item.joined}</Text>
+                          <Text style={{fontSize:13,padding:1}}>Cashback settlement status: {constants.statusesDesc[item.priceSettleStatus]}</Text>
+                          <Text style={{fontSize:13,padding:1}}>Cashback user count: {item.priceSettleCount}</Text>
+                          <Text style={{fontSize:13,padding:1}}>Cashback user %: {(item.priceSettleCount/ item.totalWinnerSpot)*100 }%</Text>
+                        </View>
+                        <View style={{flexDirection:"row",alignSelf:"flex-end",padding:5}}>
+                          {item.status === constants.statuses.active && item.joined !== item.totalSpots && <EasyButton primary small onPress={() => props.navigation.navigate("Edit",{id:item.id})}>
+                            <Text style={{ color: "white"}}>Edit</Text>
+                          </EasyButton>}
+                          {item.status === constants.statuses.active && item.joined !== item.totalSpots && <EasyButton primary small onPress={() => props.navigation.navigate("Extend",{id:item.id})}>
+                            <Text style={{ color: "white"}}>Extend</Text>
+                          </EasyButton>}
+                          {item.status === constants.statuses.active && item.joined !== item.totalSpots && <EasyButton primary small onPress={() => confirmAlert(item.id,"cancel")}>
+                            <Text style={{ color: "white"}}>Cancel</Text>
+                          </EasyButton>}
+                          {item.status === constants.statuses.live && <EasyButton primary small onPress={() => confirmAlert(item.id,"start")}>
+                            <Text style={{ color: "white"}}>Start</Text>
+                          </EasyButton>}
+                          {item.status === constants.statuses.started && <EasyButton primary small onPress={() => confirmAlert(item.id,"restart")}>
+                            <Text style={{ color: "white"}}>Restart</Text>
+                          </EasyButton>}
+                          {item.status === constants.statuses.completed && 
+                          item.priceSettleStatus === constants.statuses.inactive && 
+                          <EasyButton primary small onPress={() => confirmAlert(item.id,"settlement")}>
+                                <Text style={{ color: "white"}}>Settle Cashback</Text>
+                          </EasyButton>
+                          }
+                        </View>
+                        
+                      </View>
+                  );
+                })}
+              </View>
+            ) : (
+              <DefaultMessage message={message}/>
+            )}
           </View>
         </ScrollView>
       </Container>
@@ -288,4 +306,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null,mapDispatchToProps)(DrawPage);
+export default connect(null,mapDispatchToProps)(MaintenancePage);

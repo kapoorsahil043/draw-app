@@ -21,48 +21,7 @@ function MyStack() {
                     headerShown: false,
                 }}
             />
-            <Stack.Screen 
-                name='Draw Detail'
-                component={DrawDetails}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen 
-                name='Add'
-                component={DrawAdd}
-                options={{
-                    headerShown: true,
-                }}
-            />
-            <Stack.Screen 
-                name='Images'
-                component={DrawImageUpload}
-                options={{
-                    headerShown: true,
-                }}
-            />
-            <Stack.Screen 
-                name='Edit'
-                component={DrawEdit}
-                options={{
-                    headerShown: true,
-                }}
-            />
-             <Stack.Screen 
-                name='Extend'
-                component={DrawExtend}
-                options={{
-                    headerShown: true,
-                }}
-            />
-             <Stack.Screen 
-                name="Testing"
-                component={Testing}
-                options={{
-                    headerShown: true
-                }}
-            />
+           
         </Stack.Navigator>
     )
 }

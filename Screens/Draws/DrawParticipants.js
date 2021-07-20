@@ -1,10 +1,12 @@
 import React, {useCallback, useContext, useEffect, useState} from "react"
-import { StyleSheet, View, Text, Image, AsyncStorage } from 'react-native'
+import { StyleSheet, View, Text, Image, AsyncStorage ,ScrollView} from 'react-native'
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
 import * as constants from "../../assets/common/constants";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AuthGlobal from "../../Context/store/AuthGlobal";
+import { useFocusEffect } from "@react-navigation/core";
+import Spinner from "../../Shared/Spinner";
 
 const DrawParticipants = (props) => {
   const [item,setItem] = useState(props.route.params.item);
@@ -12,21 +14,25 @@ const DrawParticipants = (props) => {
   const [token, setToken] = useState();
   const context = useContext(AuthGlobal);
   const [userId,setUserId] = useState(context.stateUser.user.userId);
+  const [loading,setLoading] = useState(false);
 
-  const loadData = (_token) =>{
+  const loadData = async (_token) => {
     //console.log('!_token',(!_token))
       if(!_token){
         return;
       }
+      setLoading(true);
+
       axios
       .get(`${baseURL}participants/draw/${item.id}`,{headers: {Authorization: `Bearer ${_token}`}})
-      .then((resp) => {setParticipants(resp.data)})
+      .then((resp) => {setParticipants(resp.data);setLoading(false);})
       .catch((error) => {
        // alert("Error to load participant");
+       setLoading(false);
       })
   }
  
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     console.log('DrawParticipants,useEffect')
     AsyncStorage.getItem("jwt")
       .then((jwt) => {
@@ -39,8 +45,9 @@ const DrawParticipants = (props) => {
       setParticipants();
       setToken();
       setItem();
+      setLoading();
     }
-  },[]);
+  },[]))
 
   const rowFn = (cnt,item,userFound) =>{
     return (<View key={item.id} style={{   flexDirection: "row",   padding: 10,   
@@ -59,7 +66,9 @@ const DrawParticipants = (props) => {
 
   let cnt = 0;
   return (
-      <View>
+      <>
+      <Spinner status={loading}/>
+      <ScrollView>
         {/* headers */}
         {/* body */}
         {participants && participants.map((item) => {
@@ -68,8 +77,9 @@ const DrawParticipants = (props) => {
               item.id === userId ? rowFn(cnt,item,true) : rowFn(cnt,item,false)
             );
           })}
-      </View>
-    );
+      </ScrollView> 
+      </>
+         );
 }
 
 const styles = StyleSheet.create({

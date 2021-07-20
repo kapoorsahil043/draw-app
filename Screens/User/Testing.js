@@ -106,7 +106,7 @@ const Testing = (props) => {
   }
 
   const confirmAlert = (id,type) => {
-    Alert.alert("Confirmation", `Do you want to ${type} ?`, [
+    Alert.alert("Confirmation", `Do you want to ${type.toUpperCase()} ?`, [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -115,6 +115,10 @@ const Testing = (props) => {
       { text: "OK", onPress: () => {
         if(type == "cleanup"){
           dataCleanUp();
+          return;
+        }
+        if(type == "joincontest"){
+          joinContestTestUsers();
           return;
         }
       } },
@@ -197,8 +201,8 @@ const Testing = (props) => {
         </CardBox>
         <CardBox styles={{padding:20,backgroundColor: selectedDrawId ? "white" : "lightgrey"}}>
           <View style={{}}>
-              <TouchableOpacity onPress={() => joinContestTestUsers()} disabled={!selectedDrawId}>
-                <Text style={{fontSize:15,fontWeight:"600"}}>Click here to join contest for test users</Text>
+              <TouchableOpacity onPress={() => confirmAlert(null,"joincontest")} disabled={!selectedDrawId}>
+                <Text style={{fontSize:15,fontWeight:"600"}}>Click here to join contest using test users</Text>
               </TouchableOpacity>
           </View>
         </CardBox>
@@ -209,7 +213,7 @@ const Testing = (props) => {
               />
           
               <TouchableOpacity onPress={() => loadData()}>
-                <Text style={{fontSize:15,fontWeight:"600"}}>Click here to view test users ({users && users.length} users found)</Text>
+                <Text style={{fontSize:15,fontWeight:"600"}}>Click here to list test users ({users && users.length} users found)</Text>
               </TouchableOpacity>
           </View>
         </CardBox>}

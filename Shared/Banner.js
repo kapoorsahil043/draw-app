@@ -17,11 +17,11 @@ const Banner = () => {
       }
       return false; // skip
     }).map(function(img) { return img.image; });
-    //console.log(sources);
+    console.log(sources);
     setBannerData(sources)
   }
 
-  useFocusEffect(useCallback(() => {
+  (useEffect(() => {
     console.log('Banner,useEffect')
     axios
       .get(`${baseUrl}images`)
@@ -48,7 +48,7 @@ const Banner = () => {
             style={{ height: width / 1.5 }}
             showButtons={false}
             autoplay={true}
-            autoplayTimeout={2}
+            autoplayTimeout={3}
           >
             {bannerData.map((item) => {
               return (

@@ -11,13 +11,11 @@ const DrawList = (props) => {
   const context = useContext(AuthGlobal);
   
   const handleClick = (item) =>{
-    console.log('test');
     if(!context.stateUser.user.userId || context.stateUser.user.userId==null){
-      console.log('testss',);
       loginAlert();
       return;
     }
-    props.navigation.navigate("Details", { item: item });
+    props.navigation.navigate("Draw Details", { item: item });
   }
 
   return (

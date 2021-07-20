@@ -85,12 +85,12 @@ export default function App() {
 
   const gotoWalletHandler = () =>{
     console.log('gotoWalletHandler');
-    navigationRef.current?.navigate('Me',{goto:"Accounts"});
+    navigationRef.current?.navigate('Accounts');
   };
 
   const gotoProfileHandler = () =>{
     console.log('gotoProfileHandler');
-    navigationRef.current?.navigate('Me',{goto:"Settings"});
+    navigationRef.current?.navigate('Me');
   };
 
   const onReadyHandler = () => {

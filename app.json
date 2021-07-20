@@ -4,7 +4,7 @@
     "slug": "my-draw",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/rewards_icon.png",
+    "icon": "./assets/rewards_icon_1.png",
     "splash": {
       "image": "./assets/splash-1.png",
       "backgroundColor": "#f40105",
@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "l.d"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +26,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "l.d",
-      "useNextNotificationsApi":true
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/rewards_icon.png"

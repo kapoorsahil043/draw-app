@@ -85,7 +85,7 @@ const TransactionHistory = (props) => {
           <ScrollView style={{ backgroundColor: "gainsboro" }}>
             {transactions && transactions.map((transc) => {
               return (
-                <CardBox styles={{}} key={transc.id}>
+                <CardBox styles={{borderColor:constants.transactionsStatuses[transc.transactionType].colorCode,borderWidth:1}} key={transc.id}>
                   <TouchableOpacity onPress={() => {}}>
                       <View style={{flexDirection:"row",alignItems:"center"}}>
                         <Text style={{flex:1,fontSize:15}}>{constants.transactionsStatuses[transc.transactionType].shortDesc}</Text>

@@ -27,6 +27,7 @@ import baseURL from "../../assets/common/baseUrl";
 //redux
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
+import CardBox from "../../Shared/Form/CardBox";
 
 const DrawDetails = (props) => {
   const context = useContext(AuthGlobal);
@@ -62,8 +63,8 @@ const DrawDetails = (props) => {
   };
 
   const loadData = async (jwt,loadDataTimeInterval) =>{
-    console.log('loadData..',item.status);
-    if(item.status === constants.statuses.completed){
+    console.log('DrawDetails,loadData..',item.status);
+    if(item.status === constants.statuses.completed || item.status === constants.statuses.cancelled){
       clearInterval(loadDataTimeInterval);
       return;
     }
@@ -77,7 +78,7 @@ const DrawDetails = (props) => {
       }
     })
     .catch((error) => {console.log("Api call error",error);
-      if(item.status === constants.statuses.completed){
+      if(item.status === constants.statuses.completed || item.status === constants.statuses.cancelled){
         clearTimeout(loadDataTimeInterval);
       }
     });
@@ -154,7 +155,7 @@ const DrawDetails = (props) => {
       setTimer();
       clearInterval(timee);
       clearInterval();
-      setItem();
+      //setItem();
       clearTimeout(loadDataTimeInterval);
     };
   }, []);
@@ -164,7 +165,7 @@ const DrawDetails = (props) => {
     if(!item){
       return "";
     }
-    if(item.status == constants.statuses.completed){
+    if(item.status == constants.statuses.completed || item.status === constants.statuses.cancelled){
       return "";
     }
     let diff = item.totalSpots - item.joined;
@@ -181,7 +182,9 @@ const DrawDetails = (props) => {
     <>
     <Spinner status={loading}></Spinner>
     <Container style={styles.container}>
-     {item && <ScrollView style={{ padding: 5 }}>
+     {item && 
+     <ScrollView style={{ padding: 5 }}>
+       {/* image box */}
        <View> 
          {item.status === constants.statuses.live || item.status === constants.statuses.started && 
          <View style={{position:"absolute",flex:1,elevation:20,marginTop:'20%',backgroundColor:"lightgrey",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
@@ -192,10 +195,15 @@ const DrawDetails = (props) => {
          }
          <Image source={{uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/>
        </View>
+       
+       {/* draw name */}
        <View style={styles.contentContainer}>
          <H1 style={styles.contentHeader}>{item.name}</H1>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center"}}>
+       
+       {/* details box */}
+       <View>
+          <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginBottom: 20, borderRadius:5,alignContent:"center"}}>
          <View style={{ flexDirection: "column", flex: 1}}>
            <Text>Pool Price</Text>
            <Text style={styles.contentText}>
@@ -240,17 +248,26 @@ const DrawDetails = (props) => {
            }
          </View>
        </View>
-       <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center"}}>
-         <View style={{ flexDirection: "row", flex: 1 }}>
-           <Text style={{fontSize:12}}>Winning {item.winnersPct}%</Text>
-         </View>
-         <View style={{ flexDirection: "column" }}>
-           <Text style={{fontSize:12,color:"black"}}>{item.totalSpots}&nbsp;spots</Text>
-           <Text style={{ color: constants.COLOR_RED,fontSize:12,paddingTop:2 }}>
-             {formatSpotLeft(item)}
-           </Text>
-         </View>
+       
+          <View style={[styles.bottomContainer,{ width: "100%", justifyContent: "space-between",backgroundColor:constants.COLOR_WHITE_SMOKE,borderBottomRightRadius:5,borderBottomLeftRadius:5,padding:6 },]}>
+          <View>
+            <Text style={{ fontSize: 12,color:"grey" }}>Winning {item.winnersPct}%</Text>
+          </View>
+          <View>
+            <Text style={{ color: constants.COLOR_RED, fontSize: 12 }}>
+              {formatSpotLeft(item)}
+            </Text>
+          </View>
+          <View>
+            <Text style={{ fontSize: 12, color:"grey" }}>
+              {item.totalSpots}&nbsp;spots
+            </Text>
+          </View>
+        </View>
+
        </View>
+       
+       {/* rank nav */}
        <View style={{ flexDirection: "row", padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center", marginBottom:20}}>
           <RankNavigator item={item}></RankNavigator>
        </View>

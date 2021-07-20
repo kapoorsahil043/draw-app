@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useState, useContext} from "react"
-import { StyleSheet, View, Text, Image, AsyncStorage } from 'react-native'
+import { StyleSheet, View, Text, Image, AsyncStorage, ScrollView } from 'react-native'
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import * as constants from "../../assets/common/constants";
+import { useFocusEffect } from "@react-navigation/core";
+import Spinner from "../../Shared/Spinner";
 
 const DrawWinners = (props) => {
   const [item,setItem] = useState(props.route.params.item);
@@ -12,51 +14,57 @@ const DrawWinners = (props) => {
   const [userId,setUserId] = useState(context.stateUser.user.userId);
   const [selfWinnerObj,setSelfWinnerObj] = useState();
   const [token,setToken] = useState();
+  const [loading,setLoading] = useState(false);
   
-  const loadWinners = (jwt,winnerTimer) =>{
+  const loadWinners = async (jwt,winnerTimer) => {
     console.log("loadWinners",item.totalSpots,item.name,(!jwt),winners.length,item.status)
       if(!jwt){
-        clearInterval(winnerTimer);
+        //clearInterval(winnerTimer);
         return;
       }
-      if(winners && winners.length === item.totalSpots){
-        clearInterval(winnerTimer);
+      setLoading(true);
+      /* if(winners && winners.length === item.totalSpots){
+        //clearInterval(winnerTimer);
         return;
       }
       if(item.status !== constants.statuses.started && item.status !== constants.statuses.completed){
         return;
-      }
+      } */
 
       axios
       .get(`${baseURL}winners/draw/${item.id}`,{headers: {Authorization: `Bearer ${jwt}`}})
       .then((resp) => {
-        console.log('win success')
+        console.log('DrawWinners success')
          setWinners(resp.data);
+         setLoading(false);
           if(resp.data.length === item.totalSpots){
-            clearInterval(winnerTimer);
+            //clearInterval(winnerTimer);
           }
         })
         .catch((error) => {
-          console.log('win err')
+          console.log('DrawWinners err');
+          setLoading(false);
           if(winners && winners.length === item.totalSpots){
-            clearInterval(winnerTimer);
+            //clearInterval(winnerTimer);
           }
         })
   }
  
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     console.log('DrawWinners, usesEffect');
+      AsyncStorage.getItem("jwt").then((jwt) => {loadWinners(jwt,null);}).catch((error) => {console.log(error);});
 
-      const winnerTimer = setInterval(() => {
-        AsyncStorage.getItem("jwt").then((jwt) => {loadWinners(jwt,winnerTimer);}).catch((error) => console.log(error));
-      }, 5000);
+      /* const winnerTimer = setInterval(() => {
+        AsyncStorage.getItem("jwt").then((jwt) => {loadWinners(jwt,winnerTimer);setLoading(false);}).catch((error) => {console.log(error);setLoading(false);});
+      }, 10000); */
       
     return () => {
       setWinners();
       setToken();
-      clearInterval(winnerTimer);
+      //clearInterval(winnerTimer);
+      setLoading();
     }
-  },[]);
+  },[]));
 
   const userFound = (_item) => {
     setSelfWinnerObj(_item);
@@ -64,7 +72,9 @@ const DrawWinners = (props) => {
   }
 
   return (
-      <View>
+      <>
+      <Spinner status={loading}/>
+      <ScrollView>
         {/* headers */}
         <View
           style={{
@@ -93,7 +103,8 @@ const DrawWinners = (props) => {
             );
           })
         }
-      </View>
+      </ScrollView>
+      </>
     );
 }
 
@@ -113,7 +124,7 @@ const loadRankImage = (winnerItem) =>{
 
 const rowFn = (item,_item,isUserFound)=>{
   return (
-      <View
+       <View
           key={_item.rank}
           style={{
             flexDirection: "row",
@@ -143,7 +154,7 @@ const rowFn = (item,_item,isUserFound)=>{
             </View>
           </View>
         </View>
-  )
+   )
 }
 
 const styles = StyleSheet.create({

@@ -82,9 +82,8 @@ const Wallet = (props) => {
     <>
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
-          <ScrollView style={{ backgroundColor: "gainsboro" }}>
+          {balances && <ScrollView style={{ backgroundColor: "gainsboro" }}>
             <CardBox>
-              {balances && 
                 <View style={{flexDirection:"column",alignItems:"center",padding:20,borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
                   <Label text="TOTAL BALANCE" type="form" styles={{}}/>
                   <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBalance}</Text>
@@ -93,10 +92,6 @@ const Wallet = (props) => {
                   </EasyButton>
                   <Label text={"Note: The winnings and bonus balance already included in the total balance"} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
                 </View>
-                
-                
-              }
-              {balances && 
                 <View style={{flexDirection:"column",alignItems:"center",borderBottomWidth:1,borderBottomColor:"lightgrey",padding:20}}>
                   <Label text="WINNING BALANCE" type="form" styles={{}}/>
                   <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalWinningBalance}</Text>
@@ -105,13 +100,10 @@ const Wallet = (props) => {
                   </EasyButton>
                   <Label text={balances ? balances.notesWithdraw : ""} type="form" styles={{flex:1,alignSelf:"center",fontSize:11,padding:5}}/>
                 </View>
-              }
-              {balances && 
                 <View style={{flexDirection:"row",borderBottomWidth:1,borderBottomColor:"lightgrey"}}>
                   <Label text="BONUS BALANCE" type="form" styles={{flex:1,alignSelf:"center"}}/>
                   <Text style={styles.text}><Icon name="rupee" size={17}/>&nbsp;{balances.totalBonusBalance}</Text>
                 </View>
-              }
             </CardBox>
 
             <CardBox styles={{padding:20}}>
@@ -122,8 +114,7 @@ const Wallet = (props) => {
                   </View>
               </TouchableOpacity>
             </CardBox>
-
-          </ScrollView>
+          </ScrollView>}
       </Container>
     </>
   );
