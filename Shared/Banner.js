@@ -11,17 +11,20 @@ var { width } = Dimensions.get("window");
 const Banner = () => {
   const [bannerData, setBannerData] = useState([]);
   const loadImage = (images) =>{
-    let sources = images.filter(function(img) {
-      if (img.name.toLowerCase().indexOf('banner') > -1) {
-        return true;
-      }
-      return false; // skip
-    }).map(function(img) { return img.image; });
-    console.log(sources);
-    setBannerData(sources)
+    console.log('loadImage')
+    //let sources = ;
+    //console.log(sources);
+    setTimeout(() => {
+      setBannerData(images.filter(function(img) {
+        if (img.name.toLowerCase().indexOf('banner') > -1) {
+          return true;
+        }
+        return false; // skip
+      }).map(function(img) { return img.image; }))
+    }, 10);
   }
 
-  (useEffect(() => {
+  useFocusEffect(useCallback(() => {
     console.log('Banner,useEffect')
     axios
       .get(`${baseUrl}images`)
@@ -44,23 +47,14 @@ const Banner = () => {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.swiper}>
-          <Swiper
-            style={{ height: width / 1.5 }}
-            showButtons={false}
-            autoplay={true}
-            autoplayTimeout={3}
-          >
+          {bannerData && bannerData.length > 0 && 
+          <Swiper style={{ height: width / 1.5 }} showButtons={false} autoplay={true} autoplayTimeout={3}>
             {bannerData.map((item) => {
               return (
-                <Image
-                  key={item}
-                  style={styles.imageBanner}
-                  resizeMode="contain"
-                  source={{ uri: item }}
-                />
+                <Image key={item} style={styles.imageBanner} resizeMode="contain" source={{ uri: item }}/>
               );
             })}
-          </Swiper>
+          </Swiper>}
           {/* <View style={{ height: 10 }}></View> */}
         </View>
       </View>
