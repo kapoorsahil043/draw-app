@@ -22,6 +22,7 @@ import DrawEdit from "../Screens/Draws/DrawEdit"
 import DrawExtend from "../Screens/Draws/DrawExtend"
 import Testing from "../Screens/User/Testing"
 import MaintenancePage from "../Screens/Draws/MaintenancePage"
+import DrawPage from "../Screens/Draws/DrawPage"
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ function MyStack(props) {
 
     return (
         <Stack.Navigator>
+            <Stack.Screen name='Draw'component={DrawPage} options={activeHeaderStyle}/>
             <Stack.Screen name='Maintenance'component={MaintenancePage} options={activeHeaderStyle}/>
         </Stack.Navigator>
     )

@@ -106,14 +106,10 @@ const DrawDetails = (props) => {
         setHideBtn(true);
     }
     
-    AsyncStorage.getItem("jwt")
-    .then((res) => {
-        setToken(res);
-    })
-    .catch((error) => console.log(error));
+    AsyncStorage.getItem("jwt").then((res) => {setToken(res);}).catch((error) => console.log(error));
     
     // timer
-    const timee = setInterval(() => {
+    const timee = setInterval(async () => {
       //draw not avtive
       if(!item){
         clearInterval(timee);
@@ -181,7 +177,7 @@ const DrawDetails = (props) => {
     <Spinner status={loading}></Spinner>
     <Container style={styles.container}>
      {item && 
-     <ScrollView style={{ padding: 5 }}>
+     <View style={{height:"50%"}}>
        {/* image box */}
        <View> 
          {item.status === constants.statuses.live || item.status === constants.statuses.started && 
@@ -264,12 +260,12 @@ const DrawDetails = (props) => {
         </View>
 
        </View>
-       
-       {/* rank nav */}
-       <View style={{ flexDirection: "row", padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5,alignContent:"center", marginBottom:20}}>
-          <RankNavigator item={item}></RankNavigator>
-       </View>
-     </ScrollView>
+     </View>
+     }
+     {item && 
+     <View style={{ height:"48%",padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5, marginBottom:5,flex:1 }}>
+        <RankNavigator item={item}></RankNavigator> 
+     </View>
      }
    </Container>
     </>

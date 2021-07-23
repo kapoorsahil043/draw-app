@@ -24,6 +24,7 @@ import * as constants from '../../assets/common/constants';
 //redux
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
+import Spinner from "../../Shared/Spinner";
 
 
 const DrawExtend = (props) => {
@@ -32,6 +33,7 @@ const DrawExtend = (props) => {
   const [err, setError] = useState();
   const [drawId,setDrawId] = useState(props.route.params.id);
   const [drawState,setDrawState] = useState();
+  const [loading,setLoading] = useState(false);
   
   
   useEffect(() => {
@@ -56,12 +58,17 @@ const DrawExtend = (props) => {
     
 
     return () => {
-      props.hideHeader({hide:false});
       setDrawState();
     };
   }, []);
 
   const handleSubmit = () => {
+    if(!token){
+      return;
+    }
+    setLoading(true);
+
+    
     let req = {
       drawDate: drawDate + "",
       drawId:drawId
@@ -73,29 +80,17 @@ const DrawExtend = (props) => {
       },
     };
 
-    axios
-    .put(`${baseURL}draws/extend`, req, config)
+    axios.put(`${baseURL}draws/extend`, req, config)
     .then((res) => {
-    if (res.status == 200 || res.status == 201) {
-      Toast.show({
-        topOffset: 60,
-        type: "success",
-        text1: "Draw extended successfully!!",
-        text2: "",
-      });
-      setTimeout(() => {
-        //props.navigation.navigate("Draw");
-      }, 500);
-    }
-    })
-    .catch((error) => {
-    console.log(error)
-    Toast.show({
-      topOffset: 60,
-      type: "error",
-      text1: "Something went wrong",
-      text2: "Please try again",
-    });
+      if (res.status == 200 || res.status == 201) {
+        Toast.show({topOffset: 60,type: "success",text1: "Draw extended successfully!!",text2: "",});
+      }
+      setLoading(false);
+      
+    }).catch((error) => {
+      console.log(error);
+      setLoading(false);
+      Toast.show({topOffset: 60,type: "error",text1: "Something went wrong",text2: "Please try again",});
     });
   };
 
@@ -134,6 +129,7 @@ const DrawExtend = (props) => {
 
   return (
     <Container style={{backgroundColor:"gainsboro"}}>
+      <Spinner status={loading}/>
     {drawState && 
       <View style={{margin: 5}}>
         <FormContainer title="Extend Draw">

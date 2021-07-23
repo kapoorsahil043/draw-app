@@ -101,7 +101,6 @@ const DrawEdit = (props) => {
     })();
 
     return () => {
-      props.hideHeader({hide:false});
       setImages();
       setDrawState();
     };
@@ -148,6 +147,18 @@ const DrawEdit = (props) => {
     ) {
       setError("Error in Winn%");
     }
+
+    if(!ranks || !ranks.length){
+      setError("Please add rank details!!");
+      return;
+    }
+    console.log(ranks);
+
+    if(ranks[ranks.length-1].rankEnd !== (totalSpots * (winnersPct / 100))){
+      setError(`Please complete rank list till rank end ${(totalSpots * (winnersPct / 100))}!!`);
+      return;
+    }
+
 
     let req = {
       drawImage: drawImage,
@@ -505,11 +516,11 @@ const DrawEdit = (props) => {
             </View>
             <View>
               <Text style={constants.styleTextLabel}>#End</Text>
-              <TextInput value={rank.rankEnd} onChangeText={(text) => setRank({ ...rank, rankEnd: text })} placeholder="Enter rank #end" keyboardType="numeric"></TextInput>
+              <TextInput value={rank.rankEnd} onChangeText={(text) => setRank({ ...rank, rankEnd: Number(text) })} placeholder="Enter rank #end" keyboardType="numeric"></TextInput>
             </View>
             <View>
               <Text style={constants.styleTextLabel}>Price</Text>
-              <TextInput  value={rank.rankPrice}  onChangeText={(text) => setRank({ ...rank, rankPrice: text })}  placeholder="Enter price"  keyboardType="numeric"></TextInput>
+              <TextInput  value={rank.rankPrice}  onChangeText={(text) => setRank({ ...rank, rankPrice: Number(text) })}  placeholder="Enter price"  keyboardType="numeric"></TextInput>
             </View>
             <View>
               <Text style={constants.styleTextLabel}>Name</Text>

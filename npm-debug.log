@@ -1,0 +1,55 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/sahil/.nvm/versions/node/v6.12.0/bin/node',
+1 verbose cli   '/Users/sahil/.nvm/versions/node/v6.12.0/bin/npm',
+1 verbose cli   'view',
+1 verbose cli   '--json',
+1 verbose cli   'react-native-vector-icons',
+1 verbose cli   'description',
+1 verbose cli   'dist-tags.latest',
+1 verbose cli   'homepage',
+1 verbose cli   'version' ]
+2 info using npm@3.10.10
+3 info using node@v6.12.0
+4 silly mapToRegistry name react-native-vector-icons
+5 silly mapToRegistry using default registry
+6 silly mapToRegistry registry https://registry.npmjs.org/
+7 silly mapToRegistry data Result {
+7 silly mapToRegistry   raw: 'react-native-vector-icons',
+7 silly mapToRegistry   scope: null,
+7 silly mapToRegistry   escapedName: 'react-native-vector-icons',
+7 silly mapToRegistry   name: 'react-native-vector-icons',
+7 silly mapToRegistry   rawSpec: '',
+7 silly mapToRegistry   spec: 'latest',
+7 silly mapToRegistry   type: 'tag' }
+8 silly mapToRegistry uri https://registry.npmjs.org/react-native-vector-icons
+9 verbose request uri https://registry.npmjs.org/react-native-vector-icons
+10 verbose request no auth needed
+11 info attempt registry request try #1 at 9:50:50 AM
+12 verbose request id 8954bafd0e37bc5a
+13 http request GET https://registry.npmjs.org/react-native-vector-icons
+14 info retry will retry, error on last attempt: Error: connect ETIMEDOUT 104.16.24.35:443
+15 info attempt registry request try #2 at 9:52:16 AM
+16 http request GET https://registry.npmjs.org/react-native-vector-icons
+17 info retry will retry, error on last attempt: Error: connect ETIMEDOUT 104.16.24.35:443
+18 info attempt registry request try #3 at 9:54:32 AM
+19 http request GET https://registry.npmjs.org/react-native-vector-icons
+20 verbose stack Error: connect ETIMEDOUT 104.16.17.35:443
+20 verbose stack     at Object.exports._errnoException (util.js:1020:11)
+20 verbose stack     at exports._exceptionWithHostPort (util.js:1043:20)
+20 verbose stack     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1090:14)
+21 verbose cwd /Users/sahil/Documents/GitHub/draw/draw-app
+22 error Darwin 19.6.0
+23 error argv "/Users/sahil/.nvm/versions/node/v6.12.0/bin/node" "/Users/sahil/.nvm/versions/node/v6.12.0/bin/npm" "view" "--json" "react-native-vector-icons" "description" "dist-tags.latest" "homepage" "version"
+24 error node v6.12.0
+25 error npm  v3.10.10
+26 error code ETIMEDOUT
+27 error errno ETIMEDOUT
+28 error syscall connect
+29 error network connect ETIMEDOUT 104.16.17.35:443
+30 error network This is most likely not a problem with npm itself
+30 error network and is related to network connectivity.
+30 error network In most cases you are behind a proxy or have bad network settings.
+30 error network
+30 error network If you are behind a proxy, please make sure that the
+30 error network 'proxy' config is set properly.  See: 'npm help config'
+31 verbose exit [ 1, true ]

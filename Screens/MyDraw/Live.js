@@ -9,6 +9,7 @@ import {
   Modal,
   Pressable,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { Container, Header, Icon, Item, Input, Text } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -42,6 +43,9 @@ const Live = (props) => {
   const [token, setToken] = useState();
   const [message, setMessage] = useState("loading...");
 
+  const [allLoaded, setAllLoaded] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
   const joinHandler = (drawId) => {
     console.log("join draw container", drawId);
   };
@@ -53,9 +57,9 @@ const Live = (props) => {
 
     AsyncStorage.getItem("jwt").then((jwt) => {
       axios.get(`${baseURL}participants/draws/status/live`, {headers: {Authorization: `Bearer ${jwt}`}})
-      .then((res) => {setToken(jwt);setDraws(res.data);setLoading(false);setMessage("");})
-      .catch((error) => {setLoading(false);console.log("Participants Api call error");setMessage("");});
-    }).catch((error) => {console.log(error);setMessage("");});
+      .then((res) => {setToken(jwt);setDraws(res.data);setLoading(false);setMessage("");setRefreshing(false);})
+      .catch((error) => {setLoading(false);console.log("Participants Api call error");setMessage("");setRefreshing(false);});
+    }).catch((error) => {console.log(error);setMessage("");setRefreshing(false);});
 
   };
 
@@ -71,6 +75,13 @@ const Live = (props) => {
       };
     }, [])
   );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    callMethod();
+  };
+
+
   return (
     <>
       {/* <Pressable
@@ -80,7 +91,14 @@ const Live = (props) => {
     </Pressable> */}
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
-        <ScrollView>
+        <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        >
           {draws && draws.length > 0 ? (
             <View style={styles.listContainer}>
               {draws && draws.map((item) => {

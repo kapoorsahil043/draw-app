@@ -86,7 +86,6 @@ const DrawAdd = (props) => {
     })();
 
     return () => {
-      props.hideHeader({hide:false});
       setImages();
     };
   }, []);
@@ -172,7 +171,7 @@ const DrawAdd = (props) => {
               text2: "",
             });
             setTimeout(() => {
-              //props.navigation.navigate("Draw");
+              props.navigation.navigate("Draw");
             }, 10);
           }
         })

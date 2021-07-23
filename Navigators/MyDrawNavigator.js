@@ -21,6 +21,6 @@ function MyStack() {
     );
 }
 
-export default function UserDrawNavigator() {
+export default function MyDrawNavigator() {
     return <MyStack />;
 }

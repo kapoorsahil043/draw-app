@@ -9,7 +9,8 @@ import {
   Modal,
   Pressable,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl
 } from "react-native";
 import { Container, Header, Icon, Item, Input, Text } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -46,6 +47,9 @@ const DrawContainer = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState();
   const [message, setMessage] = useState("loading...");
+
+  const [allLoaded, setAllLoaded] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const joinContest = (drawId) => {
     setLoading(true);
@@ -188,34 +192,56 @@ const DrawContainer = (props) => {
     }
   })
  */
-  (
-    useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
       console.log("DrawContainer,useCallback");
       //checkPermissionsForiOS();
+      
       props.hideHeader({hide:false});
-      AsyncStorage.getItem("jwt").then((res) => {setToken(res);}).catch((error) => [console.log(error)]);
+
+      setLoading(true);
+      AsyncStorage.getItem("jwt").then((res) => {setToken(res);}).catch((error) => [console.log(error),setLoading(false)]);
       loadDraws();
 
       return () => {
-        setLoading(false);
+        setLoading();
         setDraws([]);
         setMessage();
+        setRefreshing();
       };
     }, [])
   );
 
-  const loadDraws = () =>{
-    setLoading(true);
+  const loadDraws = async () =>{
+    console.log('loadDraws')
+    //setLoading(true);
     setMessage("loading...")
     axios.get(`${baseURL}draws`)
-    .then((res) => {setDraws(res.data);setLoading(false);setMessage("");})
-    .catch((error) => {setLoading(false);setMessage("");console.log("Api call error");});
-}
+    .then((res) => {updateResults(res.data);setLoading(false);setMessage("");setRefreshing(false);})
+    .catch((error) => {setLoading(false);setMessage("");console.log("Api call error");setRefreshing(false);});
+  }
+  
+  const updateResults = (newData) =>{
+    if(newData && newData.length){
+      console.log('updateResults')
+    
+      let newObj =[];
+      Object.assign(newObj,newData);
+      //console.log('updateResults',newObj)
+      setDraws(newObj);
+    }
+  }
 
   const modalHandler = (value) => {
     console.log("modalHandler", value);
     setModalVisible(value);
   };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    loadDraws();
+  };
+  
 
   return (
     <>
@@ -230,7 +256,14 @@ const DrawContainer = (props) => {
       ></ModalScreen>
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro",}}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        >
           <View>
             <View>
               <Banner />

@@ -53,7 +53,6 @@ const DrawPage = (props) => {
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
         setToken(jwt);
-        //loadActiveDraws(jwt);
       })
       .catch((error) => console.log(error));
 

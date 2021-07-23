@@ -14,6 +14,7 @@ import * as actions from "../../Redux/Actions/cartActions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as constants from "../../assets/common/constants";
 import * as Localization from "expo-localization";
+import delay from 'delay';
 
 var { width } = Dimensions.get("window");
 
@@ -30,6 +31,8 @@ const DrawCard = (props) => {
     hideJoinBtn,
     createdOn,
     extendCount,
+    joined,
+    drawDate
   } = props;
 
   const formatTimeByOffset = (dateString, offset) => {
@@ -89,35 +92,9 @@ const DrawCard = (props) => {
   const [hideBtn,setHideBtn] = useState(false);
 
   useEffect(() => {
-    console.log('drawid',id,name)
-    if(status == constants.statuses.live){
-      setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
-      setHideBtn(true);
-    }else if(status == constants.statuses.active){
-      setStatusText("Available");
-      setStatusStyle({...statusStyle,backgroundColor:"green"})
-    }else if(status == constants.statuses.started){
-      setStatusText("Live");
-      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
-      setHideBtn(true);
-    }else if(status == constants.statuses.stopped){
-      setStatusText("Paused");
-      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
-      setHideBtn(true);
-    }else if(status == constants.statuses.completed){
-      setStatusText("Completed");
-      setStatusStyle({...statusStyle,backgroundColor:"orange"})
-      setHideBtn(true);
-    }else if(status == constants.statuses.cancelled){
-      setStatusText("Cancelled");
-      setStatusStyle({...statusStyle,backgroundColor:constants.COLOR_RED})
-      setHideBtn(true);
-    }
-
+    console.log('DrawCard,useEffect')
+    
     if (status == constants.statuses.active && props.totalSpots == props.joined){
-      setStatusText("Full");
-      setStatusStyle({...statusStyle,backgroundColor:"orange"})
       setHideBtn(true);
     }
     if(timer == "0" || timer === 0){
@@ -137,15 +114,14 @@ const DrawCard = (props) => {
   const [timer, setTimer] = useState();
   useEffect(() => {
     const timee = setInterval(() => {
-      //console.log("setInterval,", dhm(new Date(props.drawDate) - new Date()));
 
       //draw not avtive
-      if (props.status != constants.statuses.active){
+      if (status != constants.statuses.active){
         clearInterval(timee);
         return;
       }
 
-      const _dhm = dhm(new Date(props.drawDate) - new Date());
+      const _dhm = dhm(new Date(drawDate) - new Date());
       if (_dhm[3] < 0) {
         setTimer(0);
         clearInterval(timee);
@@ -162,6 +138,7 @@ const DrawCard = (props) => {
         " left"
         );
     }, 1000);
+
     return () => {
       setTimer();
       clearInterval(timee);
@@ -189,22 +166,32 @@ const DrawCard = (props) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.image}
-        resizeMode="contain"
-        source={{
-          uri: props.image ? props.image : constants.DEFAULT_IMAGE_URL,
-        }}
-      />
+      <Image style={styles.image} resizeMode="contain" source={{uri: props.image ? props.image : constants.DEFAULT_IMAGE_URL,}}/>
       <View style={styles.card} />
       <View style={{   justifyContent: "center",   alignItems: "center",   width: "100%", }}>
         <View style={{flexDirection:"row"}}>
             <View style={{flex:1,flexDirection:"row"}}>
-              <View>
-                <Text style={{color:statusStyle.color,backgroundColor:statusStyle.backgroundColor,borderRadius:5,padding:5}}>
-                    {statusText}
-                </Text>
-              </View>
+            {status && 
+             <View>
+               {(status === constants.statuses.active) && totalSpots === joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
+                   Full
+               </Text>}
+               {(status === constants.statuses.live || status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                   Live
+               </Text>}
+               {status === constants.statuses.active && totalSpots !== joined && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
+                   Available
+               </Text>}
+               {status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                   Paused
+               </Text>}
+               {status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
+                   Completed
+               </Text>}
+               {status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
+                    Cancelled
+               </Text>}
+             </View>}
             </View>
             {status === constants.statuses.active && timer != "0" && (
                 <View style={{flexDirection:"row"}}>
@@ -245,22 +232,17 @@ const DrawCard = (props) => {
           </View>
         </View>
 
-        {!hideBtn && <View>
+        {
+        status === constants.statuses.active && props.totalSpots !== props.joined 
+        && !(timer === "0" || timer === 0)
+        && <View>
           <EasyButton
-            disabled={hideBtn}
+            disabled={status !== constants.statuses.active || props.totalSpots === props.joined}
             primary
             medium
             onPress={() => {
               join(props.id);
-              /* ,
-            Toast.show({
-              topOffset: 60,
-              type: "success",
-              text1: `${props.name} edit`,
-              text2: "Go to your cart to complete order",
-            }); */
-            }}
-          >
+            }}>
             <Text style={{ color: "white" }}>
                 <Text>
                   <Icon style={{ color: "white" }} name="rupee" />{" "}

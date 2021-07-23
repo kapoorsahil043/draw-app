@@ -25,7 +25,6 @@ import AdminNavigator from "./AdminNavigator";
 
 import CartIcon from "../Shared/CartIcon";
 import AuthGlobal from "../Context/store/AuthGlobal";
-import UserDrawNavigator from "./UserDrawNavigator";
 import LoginNavigator from "./LoginNavigator";
 import * as constants from '../assets/common/constants';
 import Wallet from "../Screens/User/Wallet";
@@ -51,6 +50,7 @@ import AddressNavigator from "./AddressNavigator";
 import ProfileNavigator from "./ProfileNavigator";
 import MaintenancePage from "../Screens/Draws/MaintenancePage";
 import MaintenanceNavigator from "./MaintenanceNavigator";
+import MyDrawNavigator from "./MyDrawNavigator";
 
 
 const Tab = createBottomTabNavigator();
@@ -91,7 +91,7 @@ function HomeTabs(){
 
         {context.stateUser.isAuthenticated && <Tab.Screen
           name="My Draw"
-          component={UserDrawNavigator}
+          component={MyDrawNavigator}
           options={{
             tabBarIcon: ({ color,focused }) => (
               <View>

@@ -8,6 +8,7 @@ import DrawEdit from '../Screens/Draws/DrawEdit';
 import DrawImageUpload from '../Screens/Draws/DrawImageUpload';
 import DrawExtend from '../Screens/Draws/DrawExtend';
 import Testing from '../Screens/User/Testing';
+import MaintenanceNavigator from './MaintenanceNavigator';
 
 const Stack = createStackNavigator()
 
@@ -16,7 +17,7 @@ function MyStack() {
         <Stack.Navigator>
             <Stack.Screen 
                 name='Draw'
-                component={DrawPage}
+                component={MaintenanceNavigator}
                 options={{
                     headerShown: false,
                 }}

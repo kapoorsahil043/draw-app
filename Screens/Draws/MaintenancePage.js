@@ -68,8 +68,10 @@ const MaintenancePage = (props) => {
   );
 
 
-  const loadActiveDraws = (jwt)=>{
+  const loadActiveDraws = async (jwt)=>{
     setLoading(true);
+    setMessage("loading...");
+
     const config = {
       headers: {
         Authorization: `Bearer ${jwt || token}`,
@@ -81,6 +83,7 @@ const MaintenancePage = (props) => {
     .then((res) => {
       setDraws(res.data);
       setLoading(false);
+      setMessage("")
     })
     .catch((error) => {
       console.log("Api call error");
@@ -226,10 +229,11 @@ const MaintenancePage = (props) => {
                   return (
                       <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>
                         <View>
-                          <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]})</Text></Text>
+                          <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]}{item.joined ===item.totalSpots ? " / Full":"" })</Text>
+                          </Text>
                           <Text style={{fontSize:13,padding:1}}>Draw date: {new Date (item.drawDate).toLocaleString()}</Text>
                           <Text style={{fontSize:13,padding:1}}>Total spots: {item.totalSpots}</Text>
-                          <Text style={{fontSize:13,padding:1}}>Total winner spots: {item.totalWinnerSpot} (Winn%: {item.winnersPct}%)</Text>
+                          <Text style={{fontSize:13,padding:1}}>Total winner spots: {item.totalWinnerSpot} (Winning%: {item.winnersPct}%)</Text>
                           <Text style={{fontSize:13,padding:1}}>Total user joined: {item.joined}</Text>
                           <Text style={{fontSize:13,padding:1}}>Cashback settlement status: {constants.statusesDesc[item.priceSettleStatus]}</Text>
                           <Text style={{fontSize:13,padding:1}}>Cashback user count: {item.priceSettleCount}</Text>
