@@ -180,6 +180,7 @@ const DrawDetails = (props) => {
      <View style={{height:"50%"}}>
        {/* image box */}
        <View> 
+         {/* completion % */}
          {item.status === constants.statuses.live || item.status === constants.statuses.started && 
          <View style={{position:"absolute",flex:1,elevation:20,marginTop:'20%',backgroundColor:"lightgrey",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
            <View>
@@ -187,7 +188,7 @@ const DrawDetails = (props) => {
            </View>
          </View>
          }
-         <Image source={{uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/>
+         {/* <Image source={{uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/> */}
        </View>
        
        {/* draw name */}
@@ -263,7 +264,7 @@ const DrawDetails = (props) => {
      </View>
      }
      {item && 
-     <View style={{ height:"48%",padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5, marginBottom:5,flex:1 }}>
+     <View style={{ height:"25%",padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5, marginBottom:5,flex:1 }}>
         <RankNavigator item={item}></RankNavigator> 
      </View>
      }
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 280,
+    height: "30%",
     borderRadius:10
   },
   contentContainer: {

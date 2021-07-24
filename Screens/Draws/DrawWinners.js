@@ -54,7 +54,7 @@ const DrawWinners = (props) => {
         return;
       }
       
-      axios.get(`${baseURL}winners/draw/${item.id}/${winners[winners.length-1].createdOn}`,{headers: {Authorization: `Bearer ${jwt||token}`}})
+      await axios.get(`${baseURL}winners/draw/${item.id}/${winners[winners.length-1].createdOn}`,{headers: {Authorization: `Bearer ${jwt||token}`}})
       .then((resp) => {console.log('DrawWinners success');setNewWinners(resp.data);updateResults(resp.data);})
       .catch((error) => {console.log('DrawWinners err');})
   }
@@ -138,7 +138,7 @@ const DrawWinners = (props) => {
             <Text style={styles.textLabel}>#Rank</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.textLabel}>Name</Text>
+            <Text style={styles.textLabel}>Name (Displaying {winners.length} winners)</Text>
           </View>
         </View>
       } 

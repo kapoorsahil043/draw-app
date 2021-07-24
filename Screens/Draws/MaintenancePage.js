@@ -8,6 +8,7 @@ import {
   Dimensions,
   Pressable,
   Alert,
+  RefreshControl,
 } from "react-native";
 import {
   Container,
@@ -35,6 +36,7 @@ import * as actions from '../../Redux/Actions/headerActions';
 import DefaultMessage from "../../Shared/DefaultMessage";
 import Spinner from "../../Shared/Spinner";
 import CardBox from "../../Shared/Form/CardBox";
+import delay from 'delay';
 
 var { height } = Dimensions.get("window");
 
@@ -44,32 +46,35 @@ const MaintenancePage = (props) => {
   const [token, setToken] = useState();
   const context = useContext(AuthGlobal);
   const [message, setMessage] = useState("loading...");
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       console.log('DrawPage,useFocusEffect')
       // pull only active Draws
       props.hideHeader({hide:true});
-
+      setLoading(true);
+    
       AsyncStorage.getItem("jwt")
       .then((jwt) => {
         setToken(jwt);
         loadActiveDraws(jwt);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {console.log(error);setLoading(false);
+      });
 
       return () => {
         setDraws([]);
         setLoading();
         setToken();
         setMessage();
+        setRefreshing();
       };
     }, [])
   );
 
 
   const loadActiveDraws = async (jwt)=>{
-    setLoading(true);
     setMessage("loading...");
 
     const config = {
@@ -83,12 +88,14 @@ const MaintenancePage = (props) => {
     .then((res) => {
       setDraws(res.data);
       setLoading(false);
-      setMessage("")
+      setMessage("");
+      setRefreshing(false);
     })
     .catch((error) => {
       console.log("Api call error");
       setLoading(false);
       setMessage("");
+      setRefreshing(false);
     });
   }
 
@@ -216,11 +223,23 @@ const MaintenancePage = (props) => {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await delay(1000);
+    loadActiveDraws(token);
+  };
+
   return (
     <>
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
-        <ScrollView>
+        <ScrollView refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+      >
           <View>
             {draws.length > 0 ? (
               <View style={styles.listContainer}>
@@ -229,15 +248,27 @@ const MaintenancePage = (props) => {
                   return (
                       <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>
                         <View>
-                          <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]}{item.joined ===item.totalSpots ? " / Full":"" })</Text>
-                          </Text>
-                          <Text style={{fontSize:13,padding:1}}>Draw date: {new Date (item.drawDate).toLocaleString()}</Text>
-                          <Text style={{fontSize:13,padding:1}}>Total spots: {item.totalSpots}</Text>
-                          <Text style={{fontSize:13,padding:1}}>Total winner spots: {item.totalWinnerSpot} (Winning%: {item.winnersPct}%)</Text>
-                          <Text style={{fontSize:13,padding:1}}>Total user joined: {item.joined}</Text>
+                          
+                          <View style={{borderBottomWidth:1,borderColor:"lightgrey"}}>
+                            <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]}{item.joined ===item.totalSpots ? " / Full":"" })</Text></Text>
+                            <Text style={{fontSize:13,padding:1}}>Draw date: {new Date (item.drawDate).toLocaleString()}</Text>
+                          </View>
+                          
+                          
+                          <View style={{borderBottomWidth:1,borderColor:"lightgrey"}}>
+                            <Text style={{fontSize:13,padding:1}}>Total spots: {item.totalSpots}</Text>
+                            <Text style={{fontSize:13,padding:1}}>Total winner spots: {item.totalWinnerSpot} (Winning: {item.winnersPct}%)</Text>
+                            <Text style={{fontSize:13,padding:1}}>Total user joined: {item.joined}</Text>
+                          </View>
+                          <View style={{borderBottomWidth:1,borderColor:"lightgrey"}}>
+                              <Text style={{fontSize:13,padding:1}}>Draw start status: {constants.statusesDesc[item.drawStartedStatus]}</Text>
+                              <Text style={{fontSize:13,padding:1}}>Draw completion%: {Math.round((item.totalSpots - item.drawCount)/item.totalSpots * 100)}%</Text>
+                          </View>
                           <Text style={{fontSize:13,padding:1}}>Cashback settlement status: {constants.statusesDesc[item.priceSettleStatus]}</Text>
                           <Text style={{fontSize:13,padding:1}}>Cashback user count: {item.priceSettleCount}</Text>
-                          <Text style={{fontSize:13,padding:1}}>Cashback user %: {(item.priceSettleCount/ item.totalWinnerSpot)*100 }%</Text>
+                          <View style={{borderBottomWidth:1,borderColor:"lightgrey"}}>
+                            <Text style={{fontSize:13,padding:1}}>Cashback user %: {(item.priceSettleCount/ item.totalWinnerSpot)*100 }%</Text>
+                          </View>
                         </View>
                         <View style={{flexDirection:"row",alignSelf:"flex-end",padding:5}}>
                           {item.status === constants.statuses.active && item.joined !== item.totalSpots && <EasyButton primary small onPress={() => props.navigation.navigate("Edit",{id:item.id})}>

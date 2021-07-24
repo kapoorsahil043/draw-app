@@ -84,7 +84,7 @@ const DrawParticipants = (props) => {
                     <Image style={{height:50,width:50,borderRadius:100}} source={item.image!=="" ? { uri: item.image } : require("../../assets/user-icon.png")} />
                   </View>
                   <View style={{justifyContent:"center"}}>
-                      <Text style={styles.textValue}>{cnt} {item.name} {item.createdOn}</Text>
+                      <Text style={styles.textValue}>{item.name}</Text>
                   </View>
                 </View>
     </View>);
@@ -169,11 +169,11 @@ const DrawParticipants = (props) => {
             onRefresh={onRefresh}
           />
         }
-        /* ListHeaderComponent={
+        ListHeaderComponent={
           <View style={appstyles.header}>
-            <Text style={appstyles.title}>Displaying {participants.length} Participants</Text>
+            <Text style={{}}>Displaying {participants.length} Participants</Text>
           </View>
-        } */
+        }
         ListFooterComponent={
           <View style={appstyles.footer}>
             {loadingMore &&
