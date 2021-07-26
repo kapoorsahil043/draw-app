@@ -51,6 +51,8 @@ import ProfileNavigator from "./ProfileNavigator";
 import MaintenancePage from "../Screens/Draws/MaintenancePage";
 import MaintenanceNavigator from "./MaintenanceNavigator";
 import MyDrawNavigator from "./MyDrawNavigator";
+import NotificationNavigator from "./NotificationNavigator";
+import MyAlert from "../Shared/MyAlert";
 
 
 const Tab = createBottomTabNavigator();
@@ -200,18 +202,21 @@ const Main = () => {
         <Stack.Screen name="Home" component={HomeTabs}  options={{headerShown: false,}} />
         <Stack.Screen name="Draw Details" component={DrawDetails} options={activeHeaderStyle} />
         <Stack.Screen name="Add Cash" component={AddCash} options={activeHeaderStyle}/>
+        <Stack.Screen name="Alerts" component={MyAlert} options={activeHeaderStyle}/>
 
         <Stack.Screen name='Add'component={DrawAdd} options={activeHeaderStyle}/>
         <Stack.Screen name='Images'component={DrawImageUpload} options={activeHeaderStyle}/>
         <Stack.Screen name='Edit'component={DrawEdit} options={activeHeaderStyle}/>
         <Stack.Screen name='Extend'component={DrawExtend} options={activeHeaderStyle}/>
         <Stack.Screen name="Testing"component={Testing} options={activeHeaderStyle}/>
+        
+        <Stack.Screen name='Maintenance'component={MaintenanceNavigator} options={{headerShown: false}}/>
+        <Stack.Screen name='Notification'component={NotificationNavigator} options={{headerShown: false}}/>
 
         <Stack.Screen name="Profile Image"component={ProfileImage} options={activeHeaderStyle}/>
 
-        <Stack.Screen name='Maintenance'component={MaintenanceNavigator} options={{headerShown: false}}/>
-        <Stack.Screen name="Address"component={AddressNavigator} options={{headerShown: false}}/>
         <Stack.Screen name="Profile"component={ProfileNavigator} options={{headerShown: false}}/>
+        <Stack.Screen name="Address"component={AddressNavigator} options={{headerShown: false}}/>
         <Stack.Screen name="Accounts"component={AccountNavigator} options={{headerShown: false}}/>
     </Stack.Navigator>
   );

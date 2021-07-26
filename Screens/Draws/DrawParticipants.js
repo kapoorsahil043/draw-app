@@ -40,7 +40,7 @@ const DrawParticipants = (props) => {
 
       await axios.get(`${baseURL}participants/draw/${item.id}/${participants[participants.length-1].createdOn}`,{headers: {Authorization: `Bearer ${_token}`}})
       .then((resp) => {setNewParticipants(resp.data);updateResults(resp.data);})
-      .catch((error) => {})
+      .catch((error) => {setNewParticipants([])})
   }
 
   const initData = async (_token) => {
@@ -94,6 +94,10 @@ const DrawParticipants = (props) => {
     console.log('loadMoreResults','loadingMore',loadingMore,'allLoaded',allLoaded)
     // if already loading more, or all loaded, return
     if (loadingMore || allLoaded){return}
+
+    if(!participants || !participants.length){
+      return
+    }
     if(participants && item && participants.length === item.totalSpots){return;}
 
     // set loading more (also updates footer text)

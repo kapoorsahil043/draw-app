@@ -56,7 +56,7 @@ const DrawWinners = (props) => {
       
       await axios.get(`${baseURL}winners/draw/${item.id}/${winners[winners.length-1].createdOn}`,{headers: {Authorization: `Bearer ${jwt||token}`}})
       .then((resp) => {console.log('DrawWinners success');setNewWinners(resp.data);updateResults(resp.data);})
-      .catch((error) => {console.log('DrawWinners err');})
+      .catch((error) => {console.log('DrawWinners err');setNewWinners([])})
   }
  
   useFocusEffect(useCallback(() => {
@@ -82,7 +82,8 @@ const DrawWinners = (props) => {
     console.log('loadMoreResults',info);
     // if already loading more, or all loaded, return
     if (loadingMore || allLoaded){return}
-      
+    
+    if(!winners || !winners.length){return}
     if(winners && item && winners.length === item.totalSpots){return}
       
     // set loading more (also updates footer text)

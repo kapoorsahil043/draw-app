@@ -17,12 +17,16 @@ import * as actions from '../../Redux/Actions/userProfileActions';
 import Spinner from "../../Shared/Spinner";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import * as Device from 'expo-device';
+import AsyncStorage from "@react-native-community/async-storage";
+
+
 const Login = (props) => {
   const context = useContext(AuthGlobal);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     console.log('Login,useEffect')
@@ -33,34 +37,43 @@ const Login = (props) => {
   }, []);
 
   useEffect(() => {
-    setLoading(false);
 
     return () => {
       setLoading();
     }
   });
+
   const succussCallBack =(user)=>{
     console.log('succussCallBack')
-    //setLoading(false);
+    setLoading(false);
     props.updateUserProfile(user.image);
     props.navigation.navigate("Home");  
   }
   const errorCallBack =()=>{
     console.log('errorCallBack')
-    //setLoading(false);  
+    setLoading(false);  
   }
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("handleSubmit");
-    //setLoading(true);
+    setLoading(true);
     const user = {
       email,
       password,
+      pushId:'',
+      osName: Device.osName,
+      osVersion: Device.osVersion,
+      modelName: Device.modelName,
+      isRooted:''
     };
 
     if (email === "" || password === "") {
       setError("Please fill in your credentials");
+      setLoading(false);
     } else {
+      try {await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  } catch (error) {}
+      await AsyncStorage.getItem("push_id").then((data) => {user.pushId = data;}).catch((error) => [console.log(error)]);
+      
       loginUser(user, context.dispatch,succussCallBack,errorCallBack);
     }
   };

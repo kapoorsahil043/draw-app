@@ -30,6 +30,10 @@
     },
     "web": {
       "favicon": "./assets/rewards_icon.png"
+    },
+    "notification": {
+      "icon": "./assets/rewards_icon.png",
+      "color": "#FFFFFF"
     }
   }
 }

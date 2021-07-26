@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Switch
 } from "react-native";
 import { Container } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -19,8 +20,10 @@ import Spinner from "../../Shared/Spinner";
 
 import { logoutUser } from "../../Context/actions/Auth.actions";
 import * as ImagePicker from "expo-image-picker";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import Fontisto from "react-native-vector-icons/Fontisto";
 
 import Toast from "react-native-toast-message";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
@@ -42,8 +45,20 @@ const UserProfile = (props) => {
   const [token, setToken] = useState();
   const [error, setError] = useState();
 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => {
+    axios.put(`${baseURL}users/push/toggle`, {push:"toggle"}, {headers: { Authorization: `Bearer ${token}` }})
+    .then((res) => [setIsEnabled(previousState => !previousState),setLoading(false)])
+    .catch((err) => {
+      console.log(err),
+      setLoading(false);
+    });
+  };
+
+
   const saveProfile = async (user) =>{
-    console.log('UserProfile,saveProfile',);
+    console.log('UserProfile,saveProfile');
+    setIsEnabled(user.isPushMessageOn === constants.statuses.active ? true : false);
     AsyncStorage.setItem("usr", JSON.stringify({image:user.image}));
     props.updateUserProfile({image:user.image});
   }
@@ -65,8 +80,7 @@ const UserProfile = (props) => {
         .then((res) => {
           setLoading(true);
           setToken(res);
-          axios
-            .get(`${baseURL}users/${context.stateUser.user.userId}`, {
+            axios.get(`${baseURL}users/${context.stateUser.user.userId}`, {
               headers: { Authorization: `Bearer ${res}` },
             })
             .then((user) => [saveProfile(user.data),setUserProfile(user.data),setLoading(false)])
@@ -160,8 +174,21 @@ const UserProfile = (props) => {
                   </View>
               </TouchableOpacity>
             </CardBox>
+
+            <CardBox styles={{padding:20}}>
+              <View style={{flexDirection:"row",alignItems:"center"}}>
+                <Text style={{flex:1,fontSize:15}}>{isEnabled ? "Disable" : "Enable"} push notification</Text>
+                <Switch
+                  trackColor={{ false: '#767577', true: constants.COLOR_RED }}
+                  thumbColor={isEnabled ? 'white' : 'lightgrey'}
+                  //ios_backgroundColor={constants.COLOR_RED}
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
+              />
+              </View>
+            </CardBox>
             
-            <View style={{ marginTop: 5,marginBottom:50,alignItems:"center" }}>
+            <View style={{ marginTop: 20,marginBottom:50,alignItems:"center" }}>
               <EasyButton large danger onPress={() => [
                   AsyncStorage.removeItem("jwt"),
                   logoutUser(context.dispatch),

@@ -51,7 +51,7 @@ const Completed = (props) => {
     console.log("join draw container", drawId);
   };
 
-  const callMethod = () => {
+  const callMethod = async () => {
     //console.log("Upcoming, callMethod");
     setLoading(true);
     setMessage("loading...")

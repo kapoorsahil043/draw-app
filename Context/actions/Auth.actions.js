@@ -127,7 +127,16 @@ export const changePassword = (user, dispatch,succussCallBack,errorCallBack) => 
     });
 };
 
-export const loginUser = (user, dispatch,succussCallBack,errorCallBack) => {
+export const loginUser = async (user, dispatch,succussCallBack,errorCallBack) => {
+    await AsyncStorage.getItem("push_id")
+    .then((data) => {
+        user.pushId = data;
+        console.log('push_id',data);
+    })
+    .catch((error) => [console.log(error)]);
+
+    console.log('user',user);
+
     fetch(`${baseURL}users/login`, {
         method: "POST",
         body: JSON.stringify(user),

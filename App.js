@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LogBox, Pressable, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -19,6 +19,8 @@ import Header from "./Shared/Header";
 
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
+import Constants from 'expo-constants';
+
 import AsyncStorage from "@react-native-community/async-storage";
 
 //context
@@ -32,14 +34,16 @@ Notifications.setNotificationHandler({
     return {
       shouldShowAlert: true,
       shouldPlaySound: true,
+      shouldSetBadge: false,
     };
   },
 });
 
 export default function App() {
   const context = useContext(AuthGlobal);
+  const [expoPushToken, setExpoPushToken] = useState('');
 
-  const checkPermissionsForiOS = () => {
+  const checkPermissionsForiOS = async () => {
     Permissions.getAsync(Permissions.NOTIFICATIONS)
       .then((statusObj) => {
         if (statusObj.status !== "granted") {
@@ -53,14 +57,54 @@ export default function App() {
           return;
         }
       })
-      .then(() => {})
+      .then(() => {
+        return Notifications.getExpoPushTokenAsync();
+      })
+      .then((res)=>{
+        console.log(res.data);
+        AsyncStorage.setItem("push_id",token);
+      })
       .catch((err) => {
         return null;
       });
   };
 
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (true) {
+      //if(Constants.isDevice)
+  
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        //alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      //alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }  
+
   useEffect(() => {
     console.log('App,useEffect');
+    //registerForPushNotificationsAsync().then(token => {setExpoPushToken(token); AsyncStorage.setItem("push_id",token);console.log('push_token',token)});
     checkPermissionsForiOS();
     
     const backgroundSub = Notifications.addNotificationResponseReceivedListener(
@@ -78,15 +122,45 @@ export default function App() {
     return () => {
       foregroundSub.remove;
       backgroundSub.remove;
+      setExpoPushToken();
     };
   });
 
   const navigationRef = React.useRef(null);
 
-  const gotoWalletHandler = () =>{
-    console.log('gotoWalletHandler');
-    navigationRef.current?.navigate('Accounts');
+
+// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/notifications
+async function sendPushNotification(expoPushToken) {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Original Title',
+    body: 'And here is the body!',
+    data: { someData: 'goes here' },
   };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+  const gotoWalletHandler = async () =>{
+    navigationRef.current?.navigate('Accounts');
+    //await sendPushNotification(expoPushToken);
+  };
+
+  const gotoAlertHandler = async () =>{
+    navigationRef.current?.navigate('Alerts');
+    //await sendPushNotification(expoPushToken);
+  };
+
+  
 
   const gotoProfileHandler = () =>{
     console.log('gotoProfileHandler');
@@ -101,7 +175,7 @@ export default function App() {
     <Auth>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef} onReady={onReadyHandler}>
-          <Header wallet={gotoWalletHandler} profile={gotoProfileHandler}/>
+          <Header wallet={gotoWalletHandler} profile={gotoProfileHandler} alert={gotoAlertHandler}/>
           <Main />
           <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>

@@ -50,7 +50,7 @@ const Live = (props) => {
     console.log("join draw container", drawId);
   };
 
-  const callMethod = () => {
+  const callMethod = async () => {
     //console.log("Live, callMethod");
     setLoading(true);
     setMessage("loading..")

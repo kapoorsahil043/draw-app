@@ -42,12 +42,6 @@ const AddCash = (props) => {
     console.log('AddCash,useEffect');
     props.hideHeader({hide:true});
 
-    AsyncStorage.getItem("jwt")
-    .then((res) => {
-      setToken(res);
-    })
-    .catch((error) => [console.log(error)]);
-    
     loadBalance();
 
     return () => {
@@ -56,7 +50,7 @@ const AddCash = (props) => {
     };
   },[]));
 
-  const loadBalance = ()=>{
+  const loadBalance = async () =>{
     AsyncStorage.getItem("jwt")
     .then((res) => {
       setLoading(true);

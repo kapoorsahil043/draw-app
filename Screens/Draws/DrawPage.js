@@ -247,6 +247,15 @@ const DrawPage = (props) => {
               </TouchableOpacity>
             </CardBox>
 
+            <CardBox styles={{padding:20}}>
+              <TouchableOpacity onPress={() => props.navigation.navigate("Notification")}>
+                    <View style={{flexDirection:"row"}}>
+                      <Text style={{flex:1,fontSize:15}}>Notification</Text>
+                      <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED}/>
+                    </View>
+              </TouchableOpacity>
+            </CardBox>
+
           </View>
         </ScrollView>
       </Container>

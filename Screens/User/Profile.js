@@ -121,7 +121,6 @@ const Profile = (props) => {
                     </TouchableOpacity>
                   </View>
               </View>
-              
           </CardBox>
         </ScrollView> }
       </Container>

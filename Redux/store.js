@@ -5,11 +5,16 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import cartItems from './Reducers/cartItem'
 import userProfileReducer from './Reducers/userProfileReducer'
 import headerReducer from './Reducers/headerReducer'
+import alertReducer from './Reducers/alertReducer'
+import alertLatestDateReducer from './Reducers/alertLatestDateReducer'
+
 
 const reducers = combineReducers({
     cartItems: cartItems,
     userProfileReducer:userProfileReducer,
-    headerReducer
+    headerReducer,
+    alertReducer,
+    alertLatestDateReducer
 })
 
 const store = createStore(
