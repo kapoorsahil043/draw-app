@@ -4,7 +4,7 @@ import { TextInput, StyleSheet } from 'react-native'
 const Input = (props) => {
     return (
         <TextInput
-        style={styles.input}
+        style={[styles.input,props.styles]}
         placeholder={props.placeholder}
         name={props.name}
         id={props.id}

@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import { StyleSheet, View, Text, Image,SafeAreaView,FlatList } from 'react-native'
+import { StyleSheet, View, Text, Image,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'
 import * as constants from '../assets/common/constants';
 import appstyles from "../assets/common/appstyles";
 import Spinner from "./Spinner";
@@ -53,7 +53,8 @@ const RankTable = (props) => {
         renderItem={({ item, index }) => {
           return (
             <React.Fragment key={index}>
-              <View key={item.rankStart} style={{   flexDirection: "row",   height: 70,   backgroundColor: index % 2 == 0 ?  '#E8E8E8': '',alignItems:"center",padding: 10, }} >
+              <TouchableOpacity onPress={()=>{props.navigation.navigate('Description',{item:item})}}>
+                <View key={item.rankStart} style={{   flexDirection: "row",   height: 70,   backgroundColor: index % 2 == 0 ?  '#E8E8E8': '',alignItems:"center",padding: 10, }} >
                 <View style={{ flex: 1, }}>
                   <Text style={styles.textValue}> 
                     {item.rankStart == item.rankEnd ? "#" + item.rankStart : "#" + item.rankStart + " - " + item.rankEnd}
@@ -72,6 +73,7 @@ const RankTable = (props) => {
                   />
                 </View>
               </View>
+              </TouchableOpacity>
             </React.Fragment>
           )
         }}

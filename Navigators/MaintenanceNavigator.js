@@ -17,7 +17,6 @@ import WithdrawWinnings from "../Screens/User/WithdrawWinnings"
 import TransactionHistory from "../Screens/User/TransactionHistory"
 import * as constants from '../assets/common/constants';
 import DrawAdd from "../Screens/Draws/DrawAdd"
-import DrawImageUpload from "../Screens/Draws/DrawImageUpload"
 import DrawEdit from "../Screens/Draws/DrawEdit"
 import DrawExtend from "../Screens/Draws/DrawExtend"
 import Testing from "../Screens/User/Testing"

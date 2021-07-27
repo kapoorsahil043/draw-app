@@ -30,7 +30,7 @@ import * as constants from '../assets/common/constants';
 import Wallet from "../Screens/User/Wallet";
 import DrawDetails from "../Screens/Draws/DrawDetails";
 import DrawAdd from "../Screens/Draws/DrawAdd";
-import DrawImageUpload from "../Screens/Draws/DrawImageUpload";
+import DrawImagePage from "../Screens/Draws/DrawImagePage";
 import DrawEdit from "../Screens/Draws/DrawEdit";
 import DrawExtend from "../Screens/Draws/DrawExtend";
 import Testing from "../Screens/User/Testing";
@@ -53,6 +53,8 @@ import MaintenanceNavigator from "./MaintenanceNavigator";
 import MyDrawNavigator from "./MyDrawNavigator";
 import NotificationNavigator from "./NotificationNavigator";
 import MyAlert from "../Shared/MyAlert";
+import Description from "../Shared/Description";
+import DrawImageAdd from "../Screens/Draws/DrawImageAdd";
 
 
 const Tab = createBottomTabNavigator();
@@ -200,15 +202,19 @@ const Main = () => {
   return (
     <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeTabs}  options={{headerShown: false,}} />
-        <Stack.Screen name="Draw Details" component={DrawDetails} options={activeHeaderStyle} />
+        <Stack.Screen name="Details" component={DrawDetails} options={activeHeaderStyle} />
         <Stack.Screen name="Add Cash" component={AddCash} options={activeHeaderStyle}/>
         <Stack.Screen name="Alerts" component={MyAlert} options={activeHeaderStyle}/>
+        <Stack.Screen name="Description" component={Description} options={activeHeaderStyle}/>
 
         <Stack.Screen name='Add'component={DrawAdd} options={activeHeaderStyle}/>
-        <Stack.Screen name='Images'component={DrawImageUpload} options={activeHeaderStyle}/>
         <Stack.Screen name='Edit'component={DrawEdit} options={activeHeaderStyle}/>
         <Stack.Screen name='Extend'component={DrawExtend} options={activeHeaderStyle}/>
         <Stack.Screen name="Testing"component={Testing} options={activeHeaderStyle}/>
+
+        <Stack.Screen name='Images'component={DrawImagePage} options={activeHeaderStyle}/>
+        <Stack.Screen name='Add Image'component={DrawImageAdd} options={activeHeaderStyle}/>
+        
         
         <Stack.Screen name='Maintenance'component={MaintenanceNavigator} options={{headerShown: false}}/>
         <Stack.Screen name='Notification'component={NotificationNavigator} options={{headerShown: false}}/>

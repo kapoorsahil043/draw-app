@@ -5,7 +5,6 @@ import DrawDetails from "../Screens/Draws/DrawDetails"
 import DrawPage from '../Screens/Draws/DrawPage';
 import DrawAdd from '../Screens/Draws/DrawAdd';
 import DrawEdit from '../Screens/Draws/DrawEdit';
-import DrawImageUpload from '../Screens/Draws/DrawImageUpload';
 import DrawExtend from '../Screens/Draws/DrawExtend';
 import Testing from '../Screens/User/Testing';
 import MaintenanceNavigator from './MaintenanceNavigator';

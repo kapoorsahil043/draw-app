@@ -53,6 +53,7 @@ const DrawAdd = (props) => {
   const [rank, setRank] = useState({ rankStart: 1, rankImage:"",rankType:"",imageId:"", rankEnd:0 });
   const [drawImage, setDrawImage] = useState();
   const [images, setImages] = useState([]);
+  const [drawImageId, setDrawImageId] = useState();
   let cnt = 0;
   
   useEffect(() => {
@@ -87,6 +88,7 @@ const DrawAdd = (props) => {
 
     return () => {
       setImages();
+      setDrawImageId()
     };
   }, []);
 
@@ -118,6 +120,7 @@ const DrawAdd = (props) => {
   };
 
   const createDraw = () => {
+    console.log('ranks',ranks)
     setError("");
     if (!drawImage || name == "" || entryPrice == "" || totalSpots == "") {
       setError("Please fill in the form correctly");
@@ -151,6 +154,7 @@ const DrawAdd = (props) => {
       companysPct: companysPct,
       drawDate: drawDate + "",
       ranks: ranks,
+      drawImageId: drawImageId
     };
 
     const config = {
@@ -298,14 +302,19 @@ const DrawAdd = (props) => {
     setRank({...rank,rankImage:tmp.image,rankType:tmp.name,imageId:tmp.id});
   }
 
+  const drawImageFn = e =>{
+    //console.log('drawImageFn',e)
+    const ftr = images.filter((i)=>  i.id===e)
+    console.log('ftr',ftr[0])
+    //setDrawImage(ftr[0].image)
+    setDrawImage(ftr[0].image)
+  }
+
   return (
     <Container style={{backgroundColor:"gainsboro"}}>
       <FormContainer title="Add Draw">
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: drawImage  || constants.DEFAULT_IMAGE_URL}} />
-          {/* <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-            <Icon style={{ color: "white" }} name="camera" />
-          </TouchableOpacity> */}
         </View>
         <View style={{backgroundColor: "white",padding: 10, marginTop: 5, borderRadius:5,width:"100%",flexDirection:"column"}}>
           <View>
@@ -319,12 +328,12 @@ const DrawAdd = (props) => {
               selectedValue={drawImage}
               placeholderStyle={{ color: "#007aff" }}
               placeholderIconColor="#007aff"
-              onValueChange={(e) => [setDrawImage(e)]}
+              onValueChange={(e) => { drawImageFn(e)}}
             >
               {images &&
                 images.map((c) => {
                   return (
-                    <Picker.Item key={c.id} label={c.name} value={c.image} />
+                    <Picker.Item key={c.id} label={c.name} value={c.id} />
                   );
                 })}
             </Picker>

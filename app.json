@@ -29,10 +29,10 @@
       "useNextNotificationsApi": true
     },
     "web": {
-      "favicon": "./assets/rewards_icon.png"
+      "favicon": "./assets/rewards_icon_1.png"
     },
     "notification": {
-      "icon": "./assets/rewards_icon.png",
+      "icon": "./assets/rewards_icon_1.png",
       "color": "#FFFFFF"
     }
   }

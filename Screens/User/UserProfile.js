@@ -15,7 +15,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
-import baseUrlResourceServer from "../../assets/common/baseUrlResourceServer";
 import Spinner from "../../Shared/Spinner";
 
 import { logoutUser } from "../../Context/actions/Auth.actions";

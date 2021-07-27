@@ -56,6 +56,10 @@ const MyAlert = (props) => {
     if(newData && newData.length){
       dispatch({type: 'UPDATE_ALERT_DATE',date: newData[newData.length-1].createdOn});
 
+      newData.map((i)=>{
+        i.read = true;
+      })
+
       dispatch({
         type: 'UPDATE_ALERT_LIST',
         items: newData
@@ -63,8 +67,8 @@ const MyAlert = (props) => {
     }
   }
   
- ( 
-   useEffect(() => {
+ useFocusEffect( 
+   useCallback(() => {
     props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")
@@ -89,7 +93,7 @@ const MyAlert = (props) => {
 
 
   const initAlerts = async (jwt) => {
-    console.log('initAlerts',alertLastRecordDate)
+    //console.log('initAlerts',alertLastRecordDate)
     if(!jwt){
       return
     }

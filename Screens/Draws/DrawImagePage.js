@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -32,6 +32,7 @@ import * as constants from "../../assets/common/constants";
 //redux
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
+import { useFocusEffect } from "@react-navigation/core";
 
 
 var { width } = Dimensions.get("window");
@@ -43,8 +44,10 @@ const DrawImageUpload = (props) => {
   const [err, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
+  const [bottomBarHeight, setBbottomBarHeight] = useState(80);
+  
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     console.log("DrawImageUpload, useEffect");
     
     props.hideHeader({hide:true});
@@ -55,7 +58,7 @@ const DrawImageUpload = (props) => {
         setToken(jwt);
         axios
         .get(`${baseUrl}images`)
-        .then((res) => [setImages(res.data),console.log(res.data)])
+        .then((res) => [setImages(res.data)])
         .catch((error) => alert("Error to load images"));
       })
       .catch((error) => console.log(error));
@@ -71,10 +74,9 @@ const DrawImageUpload = (props) => {
     })();
 
     return () => {
-      props.hideHeader({hide:false});
       setImages();
     };
-  }, []);
+  }, []));
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -114,6 +116,7 @@ const DrawImageUpload = (props) => {
       name: newImageUri.split("/").pop(),
     });
     formData.append("name", name);
+    formData.append("description", description);
    
     
     const config = {
@@ -195,24 +198,21 @@ const deleteImages = (id) => {
     <>
       <Spinner status={loading}></Spinner>
       <View style={{ position: "relative", height: "100%",backgroundColor: "gainsboro"}}>
-        <View style={{ marginBottom: 80 }}>
-          <FlatList  data={images} renderItem={({ item, index }) => ( <Item item={item} index={index} delete={deleteImages} />)} keyExtractor={(item) => item.id}/>
-        </View>
-        <View style={styles.bottomBar}>
-          <View style={{flex:1}}>
-              <Image style={styles.imageContainer} source={{ uri: mainImage }} />
-              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                <Icon style={{ color: "white" }} name="camera" />
-              </TouchableOpacity>
-          </View>
-          <View style={{flex:2}}>
-            <Input placeholder="Image Name" name="name" id="name" value={name} onChangeText={(text) => setName(text)} />
-          </View>
-          <View style={{}}>
-            <EasyButton large primary onPress={() => uploadImage()}>
-              <Text style={styles.buttonText}>Upload</Text>
-            </EasyButton>
-          </View>
+        <View style={{}}>
+          <FlatList
+          ListHeaderComponent={
+            <View>
+              <EasyButton
+                danger
+                medium
+                onPress={() => props.navigation.navigate("Add Image")}
+              >
+                <Text style={{ color: "white"}}>Add</Text>
+              </EasyButton>
+            </View>
+          } 
+          data={images} 
+          renderItem={({ item, index }) => ( <Item item={item} index={index} delete={deleteImages} />)} keyExtractor={(item) => item.id}/>
         </View>
       </View>
     </>
@@ -223,7 +223,6 @@ const styles = StyleSheet.create({
   bottomBar: {
       backgroundColor: "white",
       width: width,
-      height: 80,
       padding: 5,
       flexDirection: "row",
       alignItems: "center",

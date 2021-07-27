@@ -61,7 +61,7 @@ const Header = (props) => {
   
 
   const initAlerts = async (jwt) => {
-    console.log('initAlerts',alertLastRecordDate)
+    //console.log('initAlerts',alertLastRecordDate)
     if(!jwt){
       return
     }
@@ -79,7 +79,7 @@ const Header = (props) => {
   }
 
   useEffect(() => {
-    console.log("Header,useEffect");
+    //console.log("Header,useEffect");
     loadProfileImage();
     AsyncStorage.getItem("jwt")
     .then(async (res) => {
@@ -89,7 +89,7 @@ const Header = (props) => {
   });
 
   useEffect(() => {
-    console.log("Header,useEffect,2");
+    //console.log("Header,useEffect,2");
     if(props.headerReducer && props.headerReducer.hide){
       setHideHeader(true);
     }else{

@@ -15,7 +15,7 @@ const DrawList = (props) => {
       loginAlert();
       return;
     }
-    props.navigation.navigate("Draw Details", { item: item });
+    props.navigation.navigate("Details", { item: item });
   }
 
   return (

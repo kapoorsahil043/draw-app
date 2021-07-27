@@ -71,7 +71,6 @@ const DrawDetails = (props) => {
     //setLoading(true);
     axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt || token}`}})
     .then((res) => {
-      console.log('res.data',res.data.joined)
       setItem(res.data);
       if(!res.data.status === constants.statuses.active && !res.data.status === constants.statuses.started){
         clearTimeout(loadDataTimeInterval);
@@ -141,7 +140,7 @@ const DrawDetails = (props) => {
 
     const loadDataTimeInterval = setInterval(() => {
       loadData(null,loadDataTimeInterval);
-    }, 3000);
+    }, 5000);
 
     return () => {
       props.hideHeader({hide:false});

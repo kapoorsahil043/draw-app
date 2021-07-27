@@ -71,9 +71,10 @@ const Login = (props) => {
       setError("Please fill in your credentials");
       setLoading(false);
     } else {
-      try {await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  } catch (error) {}
+      try {
+      await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  } catch (error) {}
       await AsyncStorage.getItem("push_id").then((data) => {user.pushId = data;}).catch((error) => [console.log(error)]);
-      
+      console.log(user);
       loginUser(user, context.dispatch,succussCallBack,errorCallBack);
     }
   };
