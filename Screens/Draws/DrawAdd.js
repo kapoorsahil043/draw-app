@@ -28,6 +28,7 @@ import * as constants from '../../assets/common/constants';
 //redux
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
+import Spinner from "../../Shared/Spinner";
 
 
 const DrawAdd = (props) => {
@@ -54,6 +55,9 @@ const DrawAdd = (props) => {
   const [drawImage, setDrawImage] = useState();
   const [images, setImages] = useState([]);
   const [drawImageId, setDrawImageId] = useState();
+
+  const [loading, setLoading] = useState(false);
+
   let cnt = 0;
   
   useEffect(() => {
@@ -145,6 +149,8 @@ const DrawAdd = (props) => {
       return;
     }
 
+    setLoading(true)
+
     let req = {
       drawImage: drawImage,
       name: name,
@@ -167,6 +173,7 @@ const DrawAdd = (props) => {
       axios
         .post(`${baseURL}draws`, req, config)
         .then((res) => {
+          setLoading(true)
           if (res.status == 200 || res.status == 201) {
             Toast.show({
               topOffset: 60,
@@ -174,10 +181,12 @@ const DrawAdd = (props) => {
               text1: "Draw added successfully!!",
               text2: "",
             });
+            
             setTimeout(() => {
               props.navigation.navigate("Draw");
             }, 10);
           }
+          
         })
         .catch((error) => {
           Toast.show({
@@ -186,6 +195,7 @@ const DrawAdd = (props) => {
             text1: "Something went wrong",
             text2: "Please try again",
           });
+          setLoading(true)
         });
     }
   };
@@ -311,7 +321,8 @@ const DrawAdd = (props) => {
   }
 
   return (
-    <Container style={{backgroundColor:"gainsboro"}}>
+    <>
+      <Spinner status={loading}></Spinner>
       <FormContainer title="Add Draw">
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: drawImage  || constants.DEFAULT_IMAGE_URL}} />
@@ -325,7 +336,7 @@ const DrawAdd = (props) => {
               mode="dropdown"
               iosIcon={<Icon style={{ color: "grey" }} name="camera" />}
               placeholder="Select your image"
-              selectedValue={drawImage}
+              selectedValue={drawImageId}
               placeholderStyle={{ color: "#007aff" }}
               placeholderIconColor="#007aff"
               onValueChange={(e) => { drawImageFn(e)}}
@@ -624,7 +635,7 @@ const DrawAdd = (props) => {
           </EasyButton>
         </View>
       </FormContainer>
-     </Container>
+     </>
   );
 };
 

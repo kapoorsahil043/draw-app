@@ -202,7 +202,7 @@ const Main = () => {
   return (
     <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeTabs}  options={{headerShown: false,}} />
-        <Stack.Screen name="Details" component={DrawDetails} options={activeHeaderStyle} />
+        <Stack.Screen name="Draw Details" component={DrawDetails} options={activeHeaderStyle} />
         <Stack.Screen name="Add Cash" component={AddCash} options={activeHeaderStyle}/>
         <Stack.Screen name="Alerts" component={MyAlert} options={activeHeaderStyle}/>
         <Stack.Screen name="Description" component={Description} options={activeHeaderStyle}/>

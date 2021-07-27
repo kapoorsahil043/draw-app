@@ -10,7 +10,8 @@ import {
   Switch,
   Button,
   FlatList,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from "react-native";
 import { Container, Item, Picker } from "native-base";
 import FormContainer from "../../Shared/Form/FormContainer";
@@ -148,7 +149,7 @@ const DrawImageAdd = (props) => {
   return (
     <>
       <Spinner status={loading}></Spinner>
-      <Container style={{ backgroundColor: "gainsboro"}}>
+      <ScrollView>
         <CardBox styles={{}}>
           <View style={{alignItems:"center"}}>
               <Image style={styles.imageContainer} source={{ uri: mainImage }} />
@@ -169,7 +170,7 @@ const DrawImageAdd = (props) => {
             </EasyButton>
           </View>
         </CardBox>
-      </Container>
+      </ScrollView>
     </>
   );
 };

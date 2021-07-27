@@ -98,6 +98,7 @@ const Description = (props) => {
       setLoading();
       setError();
       setMessage();
+      setImageData();
     };
   },[]));
 
@@ -108,24 +109,24 @@ const Description = (props) => {
   return (
     <>
       <Spinner status={loading}/>
-      <ScrollView>
-      {imageData && 
-        <>
-          <CardBox>
-            <Image source={{uri: imageData.image ? imageData.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/>
-          </CardBox>
-          <CardBox>
-            <H1 style={styles.contentHeader}>{imageData.name}</H1>
-          </CardBox>
-          <CardBox>
-            <Text style={{fontSize:15}}>{imageData.description}</Text>
-          </CardBox>
-        </>
-        }
-        {!imageData && <DefaultMessage message={message}/>}
-        
-      </ScrollView>
-
+        <ScrollView>
+          {imageData && 
+          <>
+            <CardBox styles={{flexDirection:"column",flex:1,height:280}}>
+              <Image source={{uri: imageData.image ? imageData.image : constants.DEFAULT_IMAGE_URL}} resizeMode="contain" style={styles.image}/>
+            </CardBox>
+            <CardBox styles={{flexDirection:"column",flex:1}}>
+              <H1 style={{}}>{imageData.name}</H1>
+            </CardBox>
+            <CardBox styles={{flexDirection:"column",flex:1}}>
+              <Text style={{fontSize:15}}>{imageData.description}</Text>
+            </CardBox>
+          </>
+          }
+          {!imageData && <DefaultMessage message={message}/>}
+          
+        </ScrollView>
+      
     </>
   );
 };
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 100,
+    borderRadius: 10,
   },
 });
 

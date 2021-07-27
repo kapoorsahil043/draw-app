@@ -75,7 +75,7 @@ const Header = (props) => {
     await axios.get(`${baseURL}alerts/page/${date}`, {headers: { Authorization: `Bearer ${jwt || token}` },})
         .then((resp) => [
           updateResults(resp.data)])
-        .catch((err) => {console.log(err),setLoading(false);setRefreshing(false);setNewAlerts([])});
+        .catch((err) => {console.log(err);setRefreshing(false);setNewAlerts([])});
   }
 
   useEffect(() => {
