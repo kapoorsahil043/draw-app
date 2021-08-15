@@ -6,7 +6,6 @@ import {
   Text,
   ScrollView,
   Pressable,
-  AsyncStorage,
   StatusBar,
   Alert
 } from "react-native";
@@ -18,7 +17,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import RankTable from "../../Shared/RankTable";
-import * as constants from "../../assets/common/constants";
+
+import  * as constants from "../../assets/common/constants";
+
 import RankNavigator from "../../Navigators/RankNavigator";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import Spinner from "../../Shared/Spinner";
@@ -31,6 +32,8 @@ import * as actions from '../../Redux/Actions/headerActions';
 import CardBox from "../../Shared/Form/CardBox";
 import Label from "../../Shared/Label";
 import { Button } from "native-base";
+import { logoutUser } from "../../Context/actions/Auth.actions";
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 const DrawDetails = (props) => {
@@ -66,26 +69,52 @@ const DrawDetails = (props) => {
     return [days, hours, minutes, sec];
   };
 
+  const redirectAlert = (data) => {
+    console.log("redirectAlert",data);
+    Alert.alert(data.errDesc, "Want to Proceed ?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => {
+        if(data.code === constants.errCodes.D1.code){
+          logoutUser(context.dispatch)
+        }
+        props.navigation.navigate(data.link)
+      } },
+    ]);
+  };
+
   const loadData = async (jwt,loadDataTimeInterval) =>{
+    
     console.log('DrawDetails,loadData..',item.status);
+    
     if(item.status === constants.statuses.completed || item.status === constants.statuses.cancelled){
       clearInterval(loadDataTimeInterval);
       return;
     }
-    //setLoading(true);
-    axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt || token}`}})
-    .then((res) => {
-      setItem(res.data);
-      if(!res.data.status === constants.statuses.active && !res.data.status === constants.statuses.started){
-        clearTimeout(loadDataTimeInterval);
-      }
-    })
-    .catch((error) => {console.log("Api call error",error);
-      if(item.status === constants.statuses.completed || item.status === constants.statuses.cancelled){
-        clearTimeout(loadDataTimeInterval);
-      }
-    });
-  }
+    
+    AsyncStorage.getItem("jwt").then((jwt) => {setToken(jwt);
+      axios.get(`${baseURL}draws/${props.route.params.item._id}`,{headers: { Authorization: `Bearer ${jwt}`}})
+      .then((res) => {setItem(res.data);
+        if(!res.data.status === constants.statuses.active && !res.data.status === constants.statuses.started){
+          clearTimeout(loadDataTimeInterval);
+        }
+      })
+      .catch((error) => {console.log("Api call error",error.response?.data);
+        if(item.status === constants.statuses.completed || item.status === constants.statuses.cancelled){
+          clearTimeout(loadDataTimeInterval);
+        }
+        if(error.response?.data?.redirect){
+          clearTimeout(loadDataTimeInterval);
+          redirectAlert(error.response.data.code);
+        }
+      });
+    }).catch((error) => console.log(error));
+    
+
+  }//load data ends
 
   useEffect(() => {
     console.log("DrawDetails,use effect",item.status);
@@ -109,7 +138,6 @@ const DrawDetails = (props) => {
         setHideBtn(true);
     }
     
-    AsyncStorage.getItem("jwt").then((res) => {setToken(res);}).catch((error) => console.log(error));
     
     // timer
     const timee = setInterval(async () => {

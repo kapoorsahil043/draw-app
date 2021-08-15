@@ -54,6 +54,23 @@ const Wallet = (props) => {
     };
   },[]));
 
+  const redirectAlert = (data) => {
+    console.log("redirectAlert",data);
+    Alert.alert(data.errDesc, "Want to Proceed ?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => {
+        if(data.code === constants.errCodes.D1.code){
+          logoutUser(context.dispatch)
+        }
+        props.navigation.navigate(data.link)
+      } },
+    ]);
+  };
+
   const loadBalance = ()=>{
     AsyncStorage.getItem("jwt")
     .then((res) => {
@@ -61,7 +78,11 @@ const Wallet = (props) => {
       setToken(res);
       axios.get(`${baseURL}w/balance`, {headers: { Authorization: `Bearer ${res}` },})
         .then((resp) => [setBalances(resp.data),setLoading(false)])
-        .catch((err) => {console.log(err),setLoading(false);});
+        .catch((err) => {console.log(err),setLoading(false);
+          if(error.response?.data?.redirect){
+            redirectAlert(error.response.data.code);
+          }
+        });
     })
     .catch((error) => [console.log(error), setLoading(false)]);
   }

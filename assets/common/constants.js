@@ -58,7 +58,7 @@ export const transactionsStatuses = {
     [statuses.transactionType_AppBonusPromotionalExpired]:{shortDesc:"Promotional Cash Expired",colorCode:COLOR_RED_LIGHT},
     [statuses.transactionType_AppBonusReferal]:{shortDesc:"Referral Cash Received",colorCode:COLOR_GREEN},
     [statuses.transactionType_AppContestJoinedUsingBonus]:{shortDesc:"Contest Joined Using Bonus",colorCode:COLOR_RED_LIGHT},
-}
+};
 
 export const statusesDesc = {
     [statuses.inactive]: "Inactive",
@@ -69,7 +69,7 @@ export const statusesDesc = {
     [statuses.completed]: "Completed",
     [statuses.drawFull]: "Full",
     [statuses.cancelled]: "Cancelled",
-}
+};
 
 export const statusesColor = {
     [statuses.inactive]: "grey",
@@ -80,10 +80,10 @@ export const statusesColor = {
     [statuses.completed]: "orange",
     [statuses.drawFull]: "orange",
     [statuses.cancelled]: COLOR_RED,
-}
+};
 
 export const errCodes = {
-    D1:{errDesc:"Login Required",code:"D1",link:"Me"},
+    D1:{errDesc:"Login Required",code:"D1",link:"SignIn"},
     D2:{errDesc:"Add Cash",code:"D2",link:"Me"},
     D3:{errDesc:"Login Required",code:"D2",link:"Me"},
     D4:{errDesc:"Login Required",code:"D2",link:"Me"},
@@ -113,4 +113,4 @@ export const isValidateValue = (value) =>{
         return true;
     }
     return false;
-}
+};

@@ -243,14 +243,18 @@ const MaintenancePage = (props) => {
           <View>
             {draws.length > 0 ? (
               <View style={styles.listContainer}>
-                <Text style={{padding:5}}>Draw count(s) ({draws.length})</Text>
+                <Text style={{padding:5,fontSize:12,color:constants.COLOR_GREY}}>Draw count(s) ({draws.length})</Text>
                 {draws.map((item) => {
                   return (
                       <View key={item.id} style={{flexDirection:"column",backgroundColor:"white",margin:5,borderRadius:5,padding:10}}>
                         <View>
                           
                           <View style={{borderBottomWidth:1,borderColor:"lightgrey"}}>
-                            <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]}{item.joined ===item.totalSpots ? " / Full":"" })</Text></Text>
+                            <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.name} 
+                              <Text style={{color:constants.statusesColor[item.status]}}>({constants.statusesDesc[item.status]}{item.joined ===item.totalSpots ? " / Full":"" }) &nbsp;&nbsp;</Text>
+                              <TouchableOpacity onPress={()=>{props.navigation.navigate("Draw Details", { item: item })}}><Text style={{textDecorationLine:"underline"}}>View details</Text></TouchableOpacity>
+                            </Text>
+                            
                             <Text style={{fontSize:13,padding:1}}>Draw date: {new Date (item.drawDate).toLocaleString()}</Text>
                           </View>
                           

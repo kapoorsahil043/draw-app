@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Switch
+  Switch,
+  Alert
 } from "react-native";
 import { Container } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -61,6 +62,23 @@ const UserProfile = (props) => {
     AsyncStorage.setItem("usr", JSON.stringify({image:user.image}));
     props.updateUserProfile({image:user.image});
   }
+
+  const redirectAlert = (data) => {
+    console.log("redirectAlert",data);
+    Alert.alert(data.errDesc, "Want to Proceed ?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => {
+        if(data.code === constants.errCodes.D1.code){
+          logoutUser(context.dispatch)
+        }
+        props.navigation.navigate(data.link)
+      } },
+    ]);
+  };
   
   useFocusEffect(
     useCallback(() => {
@@ -83,9 +101,12 @@ const UserProfile = (props) => {
               headers: { Authorization: `Bearer ${res}` },
             })
             .then((user) => [saveProfile(user.data),setUserProfile(user.data),setLoading(false)])
-            .catch((err) => {
-              console.log(err),
+            .catch((error) => {
+              console.log(error),
               setLoading(false);
+              if(error.response?.data?.redirect){
+                redirectAlert(error.response.data.code);
+              }
             });
         })
         .catch((error) => [console.log(error), setLoading(false)]);

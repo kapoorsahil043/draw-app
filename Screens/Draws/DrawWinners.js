@@ -8,6 +8,8 @@ import { useFocusEffect } from "@react-navigation/core";
 import Spinner from "../../Shared/Spinner";
 import appstyles from "../../assets/common/appstyles";
 import delay from 'delay';
+import { useDispatch, useSelector } from "react-redux";
+import HighlightWinner from "../../Shared/HighlightWinner";
 
 const DrawWinners = (props) => {
   const [item,setItem] = useState(props.route.params.item);
@@ -15,14 +17,14 @@ const DrawWinners = (props) => {
   const [newWinners,setNewWinners] = useState([]);
   const context = useContext(AuthGlobal);
   const [userId,setUserId] = useState(context.stateUser.user.userId);
-  const [selfWinnerObj,setSelfWinnerObj] = useState();
   const [token,setToken] = useState();
   const [loading,setLoading] = useState(false);
-
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   
+  const dispatch = useDispatch();
+
   const initWinners = async (jwt) => {
     console.log("initWinners")
       if(!jwt){
@@ -46,7 +48,6 @@ const DrawWinners = (props) => {
       setWinners(cur);
     }
   }
-  
 
   const loadWinners = async (jwt) => {
     console.log("loadWinners")
@@ -70,13 +71,11 @@ const DrawWinners = (props) => {
       setLoading();
       setRefreshing();
       //setItem();
+      dispatch({
+        type: 'CLEAR_HIGHLIGHT_WINNER',
+      });
     }
   },[]));
-
-  const userFound = (_item) => {
-    setSelfWinnerObj(_item);
-    return null;
-  }
 
   const loadMoreResults = async info => {
     console.log('loadMoreResults',info);
@@ -137,6 +136,13 @@ const DrawWinners = (props) => {
 
   const rowFn = (_item,isUserFound,props) => {
     isUserFound = _item.user._id === userId ? {backgroundColor : constants.COLOR_ORANGE_LIGHT} : {};
+    if(_item.user._id === userId){
+        dispatch({
+          type: 'UPDATE_HIGHLIGHT_WINNER',
+          data: _item
+        });
+      return;
+    }
     return (
       <TouchableOpacity onPress={()=>{props.navigation.navigate('Description',{item:_item.draw.ranks[0]})}}>
         <View key={_item.rank} style={[appstyles.flatListRow,isUserFound]}>
@@ -165,6 +171,10 @@ const DrawWinners = (props) => {
          
      )
   }
+  
+  const navigateToHandler = async (_item) => {
+    props.navigation.navigate('Description',{item:_item.draw.ranks[0]})
+  }  
 
   return (
       <>
@@ -178,6 +188,7 @@ const DrawWinners = (props) => {
         />
       }
       ListHeaderComponent={
+        <>
         <View style={{flex: 1,flexDirection: "row",alignContent: "space-around",padding: 10,backgroundColor: constants.COLOR_WHITE_SMOKE,}}>
           <View style={{ flex: 1 }}>
             <Text style={styles.textLabel}>Rank</Text>
@@ -186,6 +197,10 @@ const DrawWinners = (props) => {
             <Text style={styles.textLabel}>Name</Text>
           </View>
         </View>
+        <View>
+          <HighlightWinner navigateTo={navigateToHandler}/>
+        </View>
+        </>
       } 
       ListFooterComponent={
         <View style={appstyles.footer}>

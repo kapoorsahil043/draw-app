@@ -7,8 +7,9 @@ import userProfileReducer from './Reducers/userProfileReducer'
 import headerReducer from './Reducers/headerReducer'
 import alertReducer from './Reducers/alertReducer'
 import alertLatestDateReducer from './Reducers/alertLatestDateReducer'
-
 import spinnerReducer from './Reducers/spinnerReducer';
+import highlightWinnerReducer from './Reducers/highlightWinnerReducer';
+import highlightParticipantReducer from './Reducers/highlightParticipantReducer';
 
 const reducers = combineReducers({
     cartItems: cartItems,
@@ -16,7 +17,9 @@ const reducers = combineReducers({
     headerReducer,
     alertReducer,
     alertLatestDateReducer,
-    spinnerReducer
+    spinnerReducer,
+    highlightWinnerReducer,
+    highlightParticipantReducer
 })
 
 const store = createStore(

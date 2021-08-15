@@ -32,6 +32,7 @@ import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
 import DefaultMessage from "../../Shared/DefaultMessage";
 import * as constants from "../../assets/common/constants";
+import { logoutUser } from "../../Context/actions/Auth.actions";
 
 var { height } = Dimensions.get("window");
 
@@ -96,7 +97,7 @@ const DrawContainer = (props) => {
         let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
         Toast.show({topOffset: 60,type: "error",text1: msg,text2: "",});
         if(error.response?.data?.redirect){
-          redirectAlert(error.response.data.error);
+          redirectAlert(error.response.data.code);
         }
 
        /*  Notifications.scheduleNotificationAsync({
@@ -133,6 +134,9 @@ const DrawContainer = (props) => {
         style: "cancel",
       },
       { text: "OK", onPress: () => {
+        if(data.code === constants.errCodes.D1.code){
+          logoutUser(context.dispatch)
+        }
         props.navigation.navigate(data.link)
       } },
     ]);
@@ -217,7 +221,7 @@ const DrawContainer = (props) => {
     console.log('loadDraws')
     //setLoading(true);
     setMessage("loading...")
-    axios.get(`${baseURL}draws`)
+    axios.get(`${baseURL}draws/public`)
     .then((res) => {updateResults(res.data);setLoading(false);setMessage("");setRefreshing(false);})
     .catch((error) => {setLoading(false);setMessage("");console.log("Api call error");setRefreshing(false);});
   }

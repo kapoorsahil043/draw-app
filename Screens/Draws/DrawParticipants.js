@@ -10,6 +10,9 @@ import { useFocusEffect } from "@react-navigation/core";
 import Spinner from "../../Shared/Spinner";
 import delay from 'delay';
 
+import { useDispatch, useSelector } from "react-redux";
+import HighlightParticipant from "../../Shared/HighlightParticipant";
+
 const DrawParticipants = (props) => {
   const [item,setItem] = useState(props.route.params.item);
   const [newParticipants,setNewParticipants] = useState([]);
@@ -22,6 +25,7 @@ const DrawParticipants = (props) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useDispatch();
 
   const updateResults = async (newData) =>{
     console.log('updateResults')
@@ -72,11 +76,21 @@ const DrawParticipants = (props) => {
       //setItem();
       setLoading();
       setRefreshing();
+      dispatch({
+        type: 'CLEAR_HIGHLIGHT_PARTICIPANT',
+      });
     }
   },[]))
 
   const rowFn = (cnt,item,userFound) =>{
     userFound = userId === item._id ? {backgroundColor : constants.COLOR_ORANGE_LIGHT} : {};
+    if(userId === item._id){
+      dispatch({
+        type: 'UPDATE_HIGHLIGHT_PARTICIPANT',
+        data: item
+      });
+    return;
+    }
     return (<View key={item.id} style={[appstyles.flatListRow,userFound]}>
                 <View style={{ flex: 1,flexDirection:"row" }}>
                   <View style={{justifyContent:"center",marginRight:20}}>
@@ -172,11 +186,11 @@ const DrawParticipants = (props) => {
             onRefresh={onRefresh}
           />
         }
-        /* ListHeaderComponent={
-          <View style={appstyles.header}>
-            <Text style={{}}>Displaying {participants.length} Participants</Text>
+        ListHeaderComponent={
+          <View>
+            <HighlightParticipant/>
           </View>
-        } */
+        }
         ListFooterComponent={
           <View style={appstyles.footer}>
             {loadingMore &&
