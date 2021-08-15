@@ -207,25 +207,25 @@ const Notification = (props) => {
                     style={{backgroundColor:constants.COLOR_RED}}
                         onPress={() => props.navigation.navigate("Add Promo Notification")}
                     >
-                        <Text style={{ color: "white", fontWeight: "bold"}}>Add Promo Alert</Text>
+                        <Text style={{ color: "white", fontWeight: "bold",fontSize:12}}>Add Promo Alert</Text>
                     </Button>
             </CardBox>
             {alerts.length > 0 ? (
               <View style={{}}>
-                <Text style={{padding:5}}>Alerts count(s) ({alerts.length})</Text>
+                <Text style={{padding:5,fontSize:11,color:constants.COLOR_GREY}}>Alerts count(s) ({alerts.length})</Text>
                 {alerts.map((item) => {
                   return (
                       <CardBox key={item.id}>
                           <View style={{}}>
-                            <Text style={{fontSize:20,fontWeight:"700",textTransform:"capitalize"}}>{item.title}</Text>
-                            <Text style={{}}>{item.message}</Text>
-                            <Text style={{}}>{new Date(item.createdOn).toLocaleString()}</Text>
+                            <Text style={{fontSize:17,fontWeight:"700"}}>{item.title}</Text>
+                            <Text style={{fontSize:11,color:constants.COLOR_GREY}}>{new Date(item.createdOn).toLocaleString()}</Text>
+                            <Text style={{fontSize:12}}>{item.message}</Text>
                           </View>
                           <View style={{flexDirection:"row",justifyContent:"flex-end"}}>
-                            <EasyButton large primary onPress={() => confirmAlert(item.id,"send alert")}>
+                            <EasyButton medium primary onPress={() => confirmAlert(item.id,"send alert")}>
                                 <Text style={styles.buttonText}>Start Promo</Text>
                             </EasyButton>
-                            <EasyButton large primary onPress={() => confirmAlert(item.id,"delete alert")}>
+                            <EasyButton medium primary onPress={() => confirmAlert(item.id,"delete alert")}>
                                 <Text style={styles.buttonText}>Delete</Text>
                             </EasyButton>
                           </View>
@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
+    fontSize:12
   },
 });
 

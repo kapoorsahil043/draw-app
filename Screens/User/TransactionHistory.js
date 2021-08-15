@@ -85,17 +85,17 @@ const TransactionHistory = (props) => {
           <ScrollView style={{ backgroundColor: "gainsboro" }}>
             {transactions && transactions.map((transc) => {
               return (
-                <CardBox styles={{borderColor:constants.transactionsStatuses[transc.transactionType].colorCode,borderWidth:1}} key={transc.id}>
-                  <TouchableOpacity onPress={() => {}}>
+                <CardBox styles={{}} key={transc.id}>
+                  <View onPress={() => {}}>
                       <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{flex:1,fontSize:15}}>{constants.transactionsStatuses[transc.transactionType].shortDesc}</Text>
-                        <Text style={{fontSize:15}}>{transc.amount}&nbsp;<Icon name="rupee" size={14}/></Text>
+                        <Text style={{flex:1,fontSize:14}}>{constants.transactionsStatuses[transc.transactionType].shortDesc}</Text>
+                        <Text style={{fontSize:12,color:constants.transactionsStatuses[transc.transactionType].colorCode}}>{transc.amount}&nbsp;<Icon name="rupee" size={12}/></Text>
                         {/* <SimpleLineIcons name="arrow-right" size={15} style={{alignSelf:"center"}} color={constants.COLOR_RED} /> */}
                       </View>
-                      <Text style={{flex:1,fontSize:15, color:"grey"}}>Transaction Id: {transc.transactionId}</Text>
-                      <Text style={{flex:1,fontSize:15, color:"grey"}}>Transaction Date: {new Date(transc.createdOn).toLocaleString()}</Text>
-                      {transc.drawId?.name && <Text style={{flex:1,fontSize:15, color:"grey"}}>Draw Name: {transc.drawId?.name}</Text>}
-                  </TouchableOpacity>
+                      <Text style={{flex:1,fontSize:12, color:"grey"}}>Transaction Id: {transc.transactionId}</Text>
+                      <Text style={{flex:1,fontSize:12, color:"grey"}}>Transaction Date: {new Date(transc.createdOn).toLocaleString()}</Text>
+                      {transc.drawId?.name && <Text style={{flex:1,fontSize:12, color:"grey"}}>Draw Name: {transc.drawId?.name}</Text>}
+                  </View>
                 </CardBox>
               )
             })}

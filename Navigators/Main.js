@@ -55,6 +55,7 @@ import NotificationNavigator from "./NotificationNavigator";
 import MyAlert from "../Shared/MyAlert";
 import Description from "../Shared/Description";
 import DrawImageAdd from "../Screens/Draws/DrawImageAdd";
+import ProfileImageNavigator from "./ProfileImageNavigator";
 
 
 const Tab = createBottomTabNavigator();
@@ -219,7 +220,7 @@ const Main = () => {
         <Stack.Screen name='Maintenance'component={MaintenanceNavigator} options={{headerShown: false}}/>
         <Stack.Screen name='Notification'component={NotificationNavigator} options={{headerShown: false}}/>
 
-        <Stack.Screen name="Profile Image"component={ProfileImage} options={activeHeaderStyle}/>
+        <Stack.Screen name="Profile Image"component={ProfileImageNavigator} options={{headerShown: false}}/>
 
         <Stack.Screen name="Profile"component={ProfileNavigator} options={{headerShown: false}}/>
         <Stack.Screen name="Address"component={AddressNavigator} options={{headerShown: false}}/>

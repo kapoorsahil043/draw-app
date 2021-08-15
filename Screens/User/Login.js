@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -11,7 +11,7 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import { loginUser } from "../../Context/actions/Auth.actions";
 
 //redux
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import * as actions from '../../Redux/Actions/userProfileActions';
 
 import Spinner from "../../Shared/Spinner";
@@ -19,6 +19,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import * as Device from 'expo-device';
 import AsyncStorage from "@react-native-community/async-storage";
+import { useFocusEffect } from "@react-navigation/core";
 
 
 const Login = (props) => {
@@ -28,67 +29,62 @@ const Login = (props) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const dispatch = useDispatch();
+
+  useFocusEffect(useCallback(() => {
+
     console.log('Login,useEffect')
-    /* if (context.stateUser.isAuthenticated === true) {
-        props.navigation.navigate("User Profile");
-      } */
-      //context.stateUser.isAuthenticated
-  }, []);
-
-  useEffect(() => {
-
     return () => {
       setLoading();
+      setEmail();
+      setPassword();
     }
-  });
+  },[]));
 
   const succussCallBack =(user)=>{
     console.log('succussCallBack')
-    setLoading(false);
     props.updateUserProfile(user.image);
-    props.navigation.navigate("Home");  
+    props.navigation.navigate("Home");
+    setTimeout(() => {
+      dispatch({type: 'HIDE_SPINNER'});  
+    }, 2000);
+    
   }
   const errorCallBack =()=>{
     console.log('errorCallBack')
-    setLoading(false);  
+    dispatch({type: 'HIDE_SPINNER'});
   }
   
   const handleSubmit = async () => {
     console.log("handleSubmit");
-    setLoading(true);
-    const user = {
-      email,
-      password,
-      pushId:'',
-      osName: Device.osName,
-      osVersion: Device.osVersion,
-      modelName: Device.modelName,
-      isRooted:''
-    };
-
+    dispatch({type: 'SHOW_SPINNER'});
     if (email === "" || password === "") {
       setError("Please fill in your credentials");
-      setLoading(false);
-    } else {
-      try {
-      await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  } catch (error) {}
-      await AsyncStorage.getItem("push_id").then((data) => {user.pushId = data;}).catch((error) => [console.log(error)]);
-      console.log(user);
-      loginUser(user, context.dispatch,succussCallBack,errorCallBack);
+      dispatch({type: 'HIDE_SPINNER'});
+      return;
     }
-  };
+    
+    const user = {
+      email:email.toLowerCase(),password,pushId:'',
+      osName: Device.osName,osVersion: Device.osVersion,modelName: Device.modelName,isRooted:''
+    };
 
+    try {await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  }  catch (error) {}
+
+    await AsyncStorage.getItem("push_id").then((data) => {user.pushId = data;}).catch((error) => [console.log(error)]);
+    
+    loginUser(user, context.dispatch,succussCallBack,errorCallBack);
+  };
+  
   return (
     <KeyboardAwareScrollView viewIsInsideTabBar={true} extraHeight={100} enableOnAndroid={true}>
-      <Spinner status={loading}></Spinner>
       <FormContainer title={"Login"}>
         <Input
           placeholder={"Enter Email"}
           name={"email"}
           id={"email"}
           value={email}
-          onChangeText={(text) => setEmail(text.toLowerCase())}
+          onChangeText={(text) => setEmail(text)}
         />
         <Input
           placeholder={"Enter Password"}

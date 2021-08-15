@@ -5,7 +5,7 @@ import {
   Dimensions,
   Image,
   Text,
-  Button,
+  TouchableOpacity
 } from "react-native";
 import Toast from "react-native-toast-message";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
@@ -88,11 +88,11 @@ const DrawCard = (props) => {
   ); */
 
   const [statusText,setStatusText] = useState();
-  const [statusStyle,setStatusStyle] = useState({color:"white",alignSelf:"center",padding:5,fontWeight:"600"});
+  const [statusStyle,setStatusStyle] = useState({color:"white",alignSelf:"center",padding:5,fontWeight:"600",fontSize:11});
   const [hideBtn,setHideBtn] = useState(false);
 
   useEffect(() => {
-    console.log('DrawCard,useEffect')
+    //console.log('DrawCard,useEffect')
     
     if (status == constants.statuses.active && props.totalSpots == props.joined){
       setHideBtn(true);
@@ -163,94 +163,100 @@ const DrawCard = (props) => {
     let sec = Math.floor(minutesms / 1000);
     return [days, hours, minutes, sec];
   };
+  const FirstPrice = () =>{
+    return (
+      <View style={{flexDirection:"row",alignItems:"center",padding:5}}>
+        <View style={{borderWidth:1,borderRadius:100,borderColor:constants.COLOR_GREY,flexDirection:"row",padding:1}}>
+          <Text style={{fontSize:8,color:constants.COLOR_GREY}}>
+            1
+          </Text>
+          <Text style={{fontSize:6,color:constants.COLOR_GREY,top:-1}}>
+            st
+          </Text>
+        </View>
+        <Text style={{fontSize:10,color:constants.COLOR_GREY}}>&nbsp;{props.ranks[0].rankType}</Text>
+      </View>
+    )
+  }
 
-  return (
-    <View style={styles.container}>
-      <Image style={styles.image} resizeMode="contain" source={{uri: props.image ? props.image : constants.DEFAULT_IMAGE_URL,}}/>
-      <View style={styles.card} />
-      <View style={{   justifyContent: "center",   alignItems: "center",   width: "100%", }}>
-        <View style={{flexDirection:"row"}}>
-            <View style={{flex:1,flexDirection:"row"}}>
-            {status && 
-             <View>
-               {(status === constants.statuses.active) && totalSpots === joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
-                   Full
-               </Text>}
-               {(status === constants.statuses.live || status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                   Live
-               </Text>}
-               {status === constants.statuses.active && totalSpots !== joined && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
-                   Available
-               </Text>}
-               {status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                   Paused
-               </Text>}
-               {status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
-                   Completed
-               </Text>}
-               {status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                    Cancelled
-               </Text>}
-             </View>}
-            </View>
-            {status === constants.statuses.active && timer != "0" && (
+  const TimerBox = ()=>{
+    return (
+      status === constants.statuses.active && timer != "0" && 
+            (
                 <View style={{flexDirection:"row"}}>
                   <View style={{paddingRight:3}}>{extendCount && extendCount > 0 ? (<Text style={{fontSize:8,color:constants.COLOR_RED,borderColor:constants.COLOR_RED,borderWidth:1,borderRadius:100,textAlign:"center",paddingLeft:3,paddingRight:3}}>E</Text>) : ( null)}</View>
                   <Text style={{fontSize:10,color:"black"}}>{timer}</Text>
                 </View>
-              )}
-        </View>
-        <View style={{ flexDirection: "row", padding: 1, borderRadius: 1}}>
-          <Text style={styles.title}>
-            {props.name && props.name.length > 12
-              ? props.name.substring(0, 12 - 3) + "..."
-              : props.name}
-          </Text>
-        </View>
-        
+              )
+    )
+  }
 
-        <View
-          style={{
-            flexDirection: "row",
-            padding: 1,
-            borderRadius: 1,
-          }}
-        ></View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            padding: 1,
-            borderRadius: 1,
-          }}
-        >
-          <View style={{ flex: 1, flexDirection: "column" }}>
-            <Text style={{fontSize:12}}>Winning {props.winnersPct}%</Text>
-          </View>
-          <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
-            <Text style={{fontSize:12}}>{props.totalSpots} spots</Text>
-          </View>
-        </View>
-
-        {
-        status === constants.statuses.active && props.totalSpots !== props.joined 
-        && !(timer === "0" || timer === 0)
-        && <View>
-          <EasyButton
-            disabled={status !== constants.statuses.active || props.totalSpots === props.joined}
-            primary
-            medium
-            onPress={() => {
-              join(props.id);
-            }}>
-            <Text style={{ color: "white" }}>
-                <Text>
+  const StatusBox =()=>{
+    return (
+      <View style={{flexDirection:"row",flex:1}}>
+            {status && 
+             <View>
+               {(status === constants.statuses.active) && totalSpots === joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5,fontSize:statusStyle.fontSize}}>
+                   Full
+               </Text>}
+               {(status === constants.statuses.live || status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:statusStyle.fontSize}}>
+                   Live
+               </Text>}
+               {status === constants.statuses.active && totalSpots !== joined && 
+               <TouchableOpacity onPress={()=>{join(props.id)}}>
+                <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,fontSize:11,paddingLeft:15,paddingRight:15,padding:5,fontWeight:"bold"}}>
                   <Icon style={{ color: "white" }} name="rupee" />{" "}
                   {props.entryPrice}
                 </Text>
-            </Text>
-          </EasyButton>
-        </View>}
+              </TouchableOpacity>
+               }
+               {status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:statusStyle.fontSize}}>
+                   Paused
+               </Text>}
+               {status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5,fontSize:statusStyle.fontSize}}>
+                   Completed
+               </Text>}
+               {status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:statusStyle.fontSize}}>
+                    Cancelled
+               </Text>}
+             </View>}
+            </View>
+    )
+  }
+
+  const NameBox = () =>{
+    return (
+      <View style={{ flexDirection: "row", borderRadius: 2}}>
+        <Text style={styles.title}>
+          {props.name && props.name.length > 20
+            ? props.name.substring(0, 20 - 3) + "..."
+            : props.name}
+        </Text>
+      </View>
+    )
+  }
+
+  return (
+    <View style={[styles.container]}>
+      <Image style={styles.image} resizeMode="contain" source={{uri: props.image ? props.image : constants.DEFAULT_IMAGE_URL,}}/>
+      <View style={styles.card} />
+      <View style={{alignItems: "center",}}>
+        <View style={{flexDirection:"row",paddingBottom:10}}>
+            <StatusBox/>
+            <TimerBox/>
+        </View>
+
+        <NameBox/>
+        <FirstPrice/>
+
+        <View style={{flexDirection: "row"}}>
+          <View style={{ flex: 1, flexDirection: "column" }}>
+            <Text style={{fontSize:12,color:constants.COLOR_GREY}}>Winning {props.winnersPct}%</Text>
+          </View>
+          <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+            <Text style={{fontSize:12,color:constants.COLOR_GREY}}>{props.totalSpots} spots</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -266,9 +272,9 @@ const mapDispatchToProps = (dispatch) => {
 const styles = StyleSheet.create({
   container: {
     width: width / 2 - 20,
-    height: width / 1.7 + 15,
+    height: width / 1.8,
     padding: 5,
-    borderRadius: 10,
+    borderRadius: 8,
     marginTop: 55,
     marginBottom: 5,
     marginLeft: 10,
@@ -291,9 +297,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 14,
     //textAlign: "center",
-    textTransform: "capitalize",
+    //textTransform: "capitalize",
     backgroundColor: constants.COLOR_WHITE_SMOKE,
     //width: "100%",
     padding: 5,

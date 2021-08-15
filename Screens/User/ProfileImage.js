@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { Container } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -184,6 +185,7 @@ const ProfileImage = (props) => {
 
   return (
     <>
+      <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
       <Spinner status={loading}></Spinner>
        {!userProfile && !loading &&
          <View style={{ marginTop: 50,marginBottom:50, justifyContent:"center",flexDirection:"row" }}>
@@ -201,7 +203,9 @@ const ProfileImage = (props) => {
         <ScrollView contentContainerStyle={styles.subContainer}>
           <View style={{flexDirection:"column",alignItems:"center"}}>
             <View style={{padding:40}}>
-              <Image style={styles.imageContainer} source={{ uri: getImageSource()}} />
+              <TouchableOpacity onPress={()=>{props.navigation.navigate("View Image",{url:getImageSource()})}}>
+                <Image style={styles.imageContainer} source={{ uri: getImageSource()}} />
+              </TouchableOpacity>
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                 <Icon style={{ color: "white" }} name="camera" />
               </TouchableOpacity>

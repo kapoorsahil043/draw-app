@@ -26,7 +26,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "l.d",
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/rewards_icon_1.png"

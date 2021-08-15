@@ -178,8 +178,8 @@ const UserProfile = (props) => {
               <View style={{flexDirection:"row",alignItems:"center"}}>
                 <Text style={{flex:1,fontSize:15}}>{isEnabled ? "Disable" : "Enable"} push notification</Text>
                 <Switch
-                  trackColor={{ false: '#767577', true: constants.COLOR_RED }}
-                  thumbColor={isEnabled ? 'white' : 'lightgrey'}
+                  trackColor={{ false: '#767577', true: constants.COLOR_RED_LIGHT }}
+                  thumbColor={isEnabled ? constants.COLOR_RED : 'lightgrey'}
                   //ios_backgroundColor={constants.COLOR_RED}
                   onValueChange={toggleSwitch}
                   value={isEnabled}

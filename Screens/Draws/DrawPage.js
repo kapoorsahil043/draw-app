@@ -8,6 +8,7 @@ import {
   Dimensions,
   Pressable,
   Alert,
+  StatusBar,
 } from "react-native";
 import {
   Container,
@@ -208,6 +209,7 @@ const DrawPage = (props) => {
 
   return (
     <>
+    <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
       <Spinner status={loading}></Spinner>
       <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView>

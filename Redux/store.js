@@ -8,13 +8,15 @@ import headerReducer from './Reducers/headerReducer'
 import alertReducer from './Reducers/alertReducer'
 import alertLatestDateReducer from './Reducers/alertLatestDateReducer'
 
+import spinnerReducer from './Reducers/spinnerReducer';
 
 const reducers = combineReducers({
     cartItems: cartItems,
     userProfileReducer:userProfileReducer,
     headerReducer,
     alertReducer,
-    alertLatestDateReducer
+    alertLatestDateReducer,
+    spinnerReducer
 })
 
 const store = createStore(

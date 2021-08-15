@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
 import { View, Text, StyleSheet, Button, ScrollView, Alert, FlatList, RefreshControl,AsyncStorage, Pressable,
-  TouchableOpacity
+  TouchableOpacity,StatusBar
  } from "react-native";
 
 // Context
@@ -44,6 +44,7 @@ const MyAlert = (props) => {
 
   const dispatch = useDispatch();
   const listItems = useSelector(state => state.alertReducer.items);
+  const totalListItems = listItems && listItems.length ? listItems.length : 0;
   const alertLastRecordDate = useSelector(state => state.alertLatestDateReducer.date);
   
   const updateResults = async (newData) =>{
@@ -70,16 +71,7 @@ const MyAlert = (props) => {
  useFocusEffect( 
    useCallback(() => {
     props.hideHeader({hide:true});
-
-    AsyncStorage.getItem("jwt")
-    .then(async (res) => {
-      setToken(res);
-      initAlerts(res);
-    })
-    .catch((error) => [console.log(error), setLoading(false)]);
-
     
-
     return () => {
       setLoading();
       setError();
@@ -172,31 +164,28 @@ const MyAlert = (props) => {
 
   const onRefresh = async () => {
     console.log('onRefresh')
+    return;
     setRefreshing(true);
     initAlerts(token);
   };
   
   return (
     <>
+    <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
     <Spinner status={loading}/>
     <FlatList
       contentContainerStyle={appstyles.list}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      }
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       ListHeaderComponent={
-        <View style={[appstyles.header,{flexDirection:"row",justifyContent:"space-between"}]}>
-          <Text style={{}}>Displaying {listItems ? listItems.length : 0} Alert(s)</Text>
-          <TouchableOpacity onPress={ ()=> dispatch({
+        <CardBox styles={[appstyles.header,{flexDirection:"row",justifyContent:"space-between",borderBottomWidth:0.5,borderBottomColor:constants.COLOR_GREY}]}>
+          <Text style={{fontSize:12,color:constants.COLOR_GREY}}>Displaying {totalListItems} Alert(s)</Text>
+          {totalListItems > 0 && <TouchableOpacity onPress={ ()=> dispatch({
             type: 'CLEAR_ALERT_LIST',
             items: []
           })}>
-            <Text style={{color:"grey"}}>Clear all</Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={{fontSize:12,color:constants.COLOR_GREY}}>Clear all</Text>
+          </TouchableOpacity>}
+        </CardBox>
       }
       ListFooterComponent={
         <View style={appstyles.footer}>
@@ -215,24 +204,17 @@ const MyAlert = (props) => {
       renderItem={({ item, index }) => {
         return (
           <React.Fragment key={index}>
-            <CardBox>
+            <CardBox styles={{borderBottomWidth:0.5,borderBottomColor:constants.COLOR_GREY }}>
               <View style={{flexDirection:"row"}}>
                 <View style={{flex:1}}>
-                  <Text style={{fontWeight:"bold",fontSize:17}}>
-                    {item.title}
-                  </Text>
-                  <Text style={{fontWeight:"300",fontSize:10,paddingTop:2,letterSpacing:1}}>
-                    {new Date(item.createdOn).toLocaleString()}
-                  </Text>
+                  <Text style={{fontWeight:"bold",fontSize:16}}>{item.title}</Text>
+                  <Text style={{fontSize:10,color:constants.COLOR_GREY}}>{new Date(item.createdOn).toLocaleString()}</Text>
                 </View>
-                <TouchableOpacity onPress={ ()=> dispatch({
-                  type: 'REMOVE_ALERT_FROM_LIST',
-                  id: item._id
-                })} >
+                <TouchableOpacity onPress={ ()=> dispatch({type: 'REMOVE_ALERT_FROM_LIST',id: item._id})} >
                   <AntDesign name="delete" size={12} color="grey"/>
                 </TouchableOpacity>
               </View>
-              <Text style={{marginTop:10,fontSize:15,lineHeight:20,fontWeight:"300",letterSpacing:2}}>
+              <Text style={{marginTop:10,fontSize:14}}>
                 {item.message}
               </Text>
             </CardBox>

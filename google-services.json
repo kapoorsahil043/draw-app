@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "720402280323",
+    "project_id": "my-draw-78c3a",
+    "storage_bucket": "my-draw-78c3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720402280323:android:975240a2aaf987ef2790b6",
+        "android_client_info": {
+          "package_name": "l.d"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720402280323-jg2hjb4pfoimtgs9q0f8cs1gt6ti2h22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoM92YUK9sP8Tc3XnnHP3_Jx7lGmehpqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720402280323-jg2hjb4pfoimtgs9q0f8cs1gt6ti2h22.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -49,7 +49,7 @@ const DrawParticipants = (props) => {
         return;
       }
       setLoading(true);
-      await AsyncStorage.removeItem('saved_participants');
+      //await AsyncStorage.removeItem('saved_participants');
       axios.get(`${baseURL}participants/draw/${item.id}/1`,{headers: {Authorization: `Bearer ${_token || token}`}})
       .then((resp) => {setParticipants(resp.data);setNewParticipants(resp.data);setLoading(false);setRefreshing(false);})
       .catch((error) => {setLoading(false);setRefreshing(false);})
@@ -76,15 +76,14 @@ const DrawParticipants = (props) => {
   },[]))
 
   const rowFn = (cnt,item,userFound) =>{
-    return (<View key={item.id} style={{   flexDirection: "row",   padding: 10,   
-    backgroundColor: userFound ? '#f0d8bf' : (cnt % 2 == 0 ?  '#E8E8E8': ''),
-    height:70 }}>
+    userFound = userId === item._id ? {backgroundColor : constants.COLOR_ORANGE_LIGHT} : {};
+    return (<View key={item.id} style={[appstyles.flatListRow,userFound]}>
                 <View style={{ flex: 1,flexDirection:"row" }}>
                   <View style={{justifyContent:"center",marginRight:20}}>
-                    <Image style={{height:50,width:50,borderRadius:100}} source={item.image!=="" ? { uri: item.image } : require("../../assets/user-icon.png")} />
+                    <Image style={{height:40,width:40,borderRadius:100}} source={item.image!=="" ? { uri: item.image } : require("../../assets/user-icon.png")} />
                   </View>
                   <View style={{justifyContent:"center"}}>
-                      <Text style={styles.textValue}>{item.name}</Text>
+                      <Text style={[styles.textValue,{textTransform: "capitalize"}]}>{item.name}</Text>
                   </View>
                 </View>
     </View>);
@@ -173,11 +172,11 @@ const DrawParticipants = (props) => {
             onRefresh={onRefresh}
           />
         }
-        ListHeaderComponent={
+        /* ListHeaderComponent={
           <View style={appstyles.header}>
             <Text style={{}}>Displaying {participants.length} Participants</Text>
           </View>
-        }
+        } */
         ListFooterComponent={
           <View style={appstyles.footer}>
             {loadingMore &&

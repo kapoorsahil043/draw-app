@@ -48,7 +48,7 @@ const Banner = () => {
       <View style={styles.container}>
         <View style={styles.swiper}>
           {bannerData && bannerData.length > 0 && 
-          <Swiper style={{ height: width / 1.5 }} showButtons={false} autoplay={true} autoplayTimeout={3}>
+          <Swiper style={{ height: width / 1.6 }} showButtons={false} autoplay={true} autoplayTimeout={3}>
             {bannerData.map((item) => {
               return (
                 <Image key={item} style={styles.imageBanner} resizeMode="contain" source={{ uri: item }}/>
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     backgroundColor: "gainsboro",
   },
   swiper: {
-    width: width,
+    /* width: width, */
     alignItems: "center",
     marginTop: 10,
   },
   imageBanner: {
-    height: width / 1.5,
+    height: width / 1.6,
     width: width - 40,
     borderRadius: 10,
     marginHorizontal: 20,

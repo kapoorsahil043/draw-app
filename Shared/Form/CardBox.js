@@ -5,7 +5,7 @@ var { width } = Dimensions.get('window');
 
 const CardBox = (props) => {
     return (
-        <View style={[{backgroundColor: "white",padding: 10, margin: 5, borderRadius:5,flexDirection:"column"},props.styles]}>
+        <View style={[styles.container,props.styles]}>
             {props.children}
         </View>
     )
@@ -13,14 +13,16 @@ const CardBox = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 30,
-        marginBottom: 400,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: "white",
+        padding: 10,
+        marginLeft: 5, 
+        marginRight: 5, 
+        marginBottom: 3, 
+        marginTop:3,
+        borderRadius:5,
+        flexDirection:"column"
     },
-    title: {
-        fontSize: 30,
-    }
+    
 })
 
 export default CardBox;

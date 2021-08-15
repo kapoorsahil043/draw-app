@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { StyleSheet, View, Text } from 'react-native'
 
 const Label = (props) => {
-    const [styles,setStyles] = useState({color:"grey",fontSize:15});
+    const [styles,setStyles] = useState({color:"grey",fontSize:14});
     const [isLoaded,setLoaded] = useState(true);
 
     const applyStyles = async (type)  => { 

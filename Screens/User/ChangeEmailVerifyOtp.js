@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, StatusBar } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import baseURL from "../../assets/common/baseUrl";
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import * as constants from "../../assets/common/constants";
 
 const ChangeEmailVerifyOtp = (props) => {
   const param = props.route.params;
@@ -78,6 +79,7 @@ const ChangeEmailVerifyOtp = (props) => {
 
   return (
     <>
+      <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
       <Spinner status={loading}></Spinner>
       <FormContainer title={""}>
         <Input

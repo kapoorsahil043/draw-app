@@ -21,13 +21,13 @@ const RankTable = (props) => {
       <FlatList
         contentContainerStyle={appstyles.list}
         ListHeaderComponent={
-        <View style={{ flex: 1, flexDirection: "row", alignContent: "space-around", padding: 10, backgroundColor: "#E8E8E8",}}>
+        <View style={{  flexDirection: "row", alignContent: "space-around", padding: 10, backgroundColor: constants.COLOR_WHITE_SMOKE,}}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.textLabel}>#Rank</Text>
+            <Text style={styles.textLabel}>Rank</Text>
           </View>
-          <View style={{ flex: 1 }}>
+       {/*    <View style={{ flex: 1 }}>
             <Text style={styles.textLabel}>*Amount</Text>
-          </View>
+          </View> */}
           <View style={{ flex: 1 }}>
             <Text style={styles.textLabel}>Name</Text>
           </View>
@@ -37,7 +37,7 @@ const RankTable = (props) => {
         </View>
         }
         ListFooterComponent={
-          <View style={appstyles.footer}>
+          loadingMore && <View style={appstyles.footer}>
             {loadingMore &&
               <Text style={appstyles.footerText}>loading...</Text>
             }
@@ -54,24 +54,24 @@ const RankTable = (props) => {
           return (
             <React.Fragment key={index}>
               <TouchableOpacity onPress={()=>{props.navigation.navigate('Description',{item:item})}}>
-                <View key={item.rankStart} style={{   flexDirection: "row",   height: 70,   backgroundColor: index % 2 == 0 ?  '#E8E8E8': '',alignItems:"center",padding: 10, }} >
-                <View style={{ flex: 1, }}>
-                  <Text style={styles.textValue}> 
-                    {item.rankStart == item.rankEnd ? "#" + item.rankStart : "#" + item.rankStart + " - " + item.rankEnd}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.textValue}>{item.rankPrice}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.textValue}>{item.rankType}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Image
-                    style={{ height: 50, width: 50, borderRadius: 100 }}
-                    source={{ uri: item.rankImage }}
-                  />
-                </View>
+                <View key={item.rankStart}  style={appstyles.flatListRow} >
+                  <View style={{ flex: 1, }}>
+                    <Text style={styles.textValue}> 
+                      {item.rankStart == item.rankEnd ? "#" + item.rankStart : "#" + item.rankStart + " - " + item.rankEnd}
+                    </Text>
+                  </View>
+                  {/* <View style={{ flex: 1 }}>
+                    <Text style={styles.textValue}>{item.rankPrice}</Text>
+                  </View> */}
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.textValue}>{item.rankType}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Image
+                      style={{ height: 50, width: 50, borderRadius: 100 }}
+                      source={{ uri: item.rankImage }}
+                    />
+                  </View>
               </View>
               </TouchableOpacity>
             </React.Fragment>
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     },
     textValue:{
       fontSize:12,
-      color:"black"
     }
 })
 

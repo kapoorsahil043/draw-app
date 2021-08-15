@@ -26,6 +26,10 @@ import AsyncStorage from "@react-native-community/async-storage";
 //context
 import AuthGlobal from "./Context/store/AuthGlobal";
 
+import Spinner from "./Shared/Spinner";
+import ModalScreen from "./Screens/Draws/ModalScreen";
+import GlobalSpinner from "./Shared/GlobalSpinner";
+
 LogBox.ignoreAllLogs(true);
 
 // this is for ForeGround Alert
@@ -59,10 +63,11 @@ export default function App() {
       })
       .then(() => {
         return Notifications.getExpoPushTokenAsync();
+        //return Notifications.getDevicePushTokenAsync();
       })
       .then((res)=>{
-        console.log(res.data);
-        AsyncStorage.setItem("push_id",token);
+        //console.log(res.data);
+        AsyncStorage.setItem("push_id",res.data);
       })
       .catch((err) => {
         return null;
@@ -160,8 +165,6 @@ async function sendPushNotification(expoPushToken) {
     //await sendPushNotification(expoPushToken);
   };
 
-  
-
   const gotoProfileHandler = () =>{
     console.log('gotoProfileHandler');
     navigationRef.current?.navigate('Me');
@@ -174,6 +177,7 @@ async function sendPushNotification(expoPushToken) {
   return (
     <Auth>
       <Provider store={store}>
+        <GlobalSpinner/>
         <NavigationContainer ref={navigationRef} onReady={onReadyHandler}>
           <Header wallet={gotoWalletHandler} profile={gotoProfileHandler} alert={gotoAlertHandler}/>
           <Main />

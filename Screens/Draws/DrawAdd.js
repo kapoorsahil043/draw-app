@@ -173,7 +173,7 @@ const DrawAdd = (props) => {
       axios
         .post(`${baseURL}draws`, req, config)
         .then((res) => {
-          setLoading(true)
+          setLoading(false)
           if (res.status == 200 || res.status == 201) {
             Toast.show({
               topOffset: 60,
@@ -195,7 +195,7 @@ const DrawAdd = (props) => {
             text1: "Something went wrong",
             text2: "Please try again",
           });
-          setLoading(true)
+          setLoading(false)
         });
     }
   };

@@ -5,11 +5,12 @@ import {
   StyleSheet,
   Text,
   ScrollView,
-  Button,
   Pressable,
   AsyncStorage,
+  StatusBar,
+  Alert
 } from "react-native";
-import { Left, Right, Container, H1 } from "native-base";
+import { Left, Right, Container, H1, H2 } from "native-base";
 import Toast from "react-native-toast-message";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
 import TrafficLight from "../../Shared/StyledComponents/TrafficLight";
@@ -28,6 +29,9 @@ import baseURL from "../../assets/common/baseUrl";
 import { connect } from "react-redux";
 import * as actions from '../../Redux/Actions/headerActions';
 import CardBox from "../../Shared/Form/CardBox";
+import Label from "../../Shared/Label";
+import { Button } from "native-base";
+
 
 const DrawDetails = (props) => {
   const context = useContext(AuthGlobal);
@@ -171,101 +175,181 @@ const DrawDetails = (props) => {
     }
   }
 
+  const loginAlert = () => {
+    console.log("context.stateUser.user", context.stateUser.user);
+    Alert.alert("Login Required", "Proceed to Login ?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => props.navigation.navigate("SignIn") },
+    ]);
+  };
+
+  const joinHanlder = (drawId) => {
+    console.log("join draw container", drawId);
+    if (context.stateUser.user.userId == null) {
+      loginAlert();
+      return;
+    }
+
+    joinContest(drawId);
+  };
+
+  const joinContest = (drawId) => {
+    setLoading(true);
+    const req = {
+      draw: drawId,
+    };
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios.post(`${baseURL}participants`, req, config)
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          setLoading(false);
+          Toast.show({topOffset: 60,type: "success",text1: "Contest joined successfully",text2: "",});
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("Error:", error.response.data);
+        let msg = error.response.data.message ? error.response.data.message : "Something went wrong";
+        Toast.show({topOffset: 60,type: "error",text1: msg,text2: "",});
+        if(error.response?.data?.redirect){
+          redirectAlert(error.response.data.error);
+        }
+      });
+  };
+
+  const StatusBox = ()=>{
+    return (
+      <View style={{ flexDirection: "row"}}>
+                {item && 
+                <View>
+                  {(item.status === constants.statuses.active) && item.totalSpots === item.joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5,fontSize:11}}>
+                      Full
+                  </Text>}
+                  {(item.status === constants.statuses.live || item.status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:11}}>
+                      Live
+                  </Text>}
+                  {item.status === constants.statuses.active && item.totalSpots !== item.joined && 
+                  <TouchableOpacity onPress={()=>{joinHanlder(item.id)}}>
+                    <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,fontSize:11,paddingLeft:20,paddingRight:20,padding:5,fontWeight:"bold"}}>
+                        Join
+                    </Text>
+                  </TouchableOpacity>
+                  }
+                  {item.status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:11}}>
+                      Paused
+                  </Text>}
+                  {item.status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5,fontSize:11}}>
+                      Completed
+                  </Text>}
+                  {item.status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5,fontSize:11}}>
+                        Cancelled
+                  </Text>}
+                </View>}
+              </View>
+    )
+  }
+
+  const BottomBox = ()=>{
+    return (
+      <View style={[styles.bottomContainer,{ 
+        backgroundColor:constants.COLOR_WHITE_SMOKE,
+        borderBottomRightRadius:5,borderBottomLeftRadius:5,
+        padding:5,
+        marginRight:5,
+        marginLeft:5,
+        }]}>
+        <Text style={{ flex:1,fontSize: 12,color:"grey" }}>Winning {item.winnersPct}%</Text>
+        <Text style={{ flex:1,color: constants.COLOR_RED, fontSize: 12 }}>{formatSpotLeft(item)}</Text>
+        <Text style={{ fontSize: 12, color:"grey" }}>{item.totalSpots}&nbsp;spots</Text>
+      </View>
+    )
+  }
+
+  const CompletionPctBox = () =>{
+    return (
+      item.status === constants.statuses.live || item.status === constants.statuses.started && 
+      <View style={{flex:1,alignItems:"center",justifyContent:"center",}}>
+        <Text style={{fontSize:12,color:"black",fontWeight:"bold",zIndex:10}}>{ parseFloat(((item.totalSpots -  item.drawCount) / item.totalSpots) * 100).toFixed(2) }%</Text>
+        <View style={{position:"absolute"}}>
+          <Image source={require("../../assets/animation1.gif")} style={{height: 70, width: 70 }}/>
+        </View>
+      </View>
+    )
+  }
+
+  const TimerBox = ()=>{
+    return (
+      timer!==0 && item.status === constants.statuses.active &&  
+        <View style={{flexDirection:"row"}}>
+              <View>
+                <TouchableOpacity onPress={()=>Toast.show({topOffset: 60,type: "info",text1: "Draw date extended!!",text2: ""})}><View style={{paddingRight:3}}>{item.extendCount && item.extendCount > 0 ? (<Text style={{fontSize:8,color:constants.COLOR_RED,borderColor:constants.COLOR_RED,borderWidth:1,borderRadius:100,textAlign:"center",paddingLeft:3,paddingRight:3}}>E</Text>) : ( null)}</View></TouchableOpacity>
+              </View>
+              <Text style={{fontSize:11,color:"black"}}>{timer}</Text>
+        </View>
+    )
+  }
+
   return (
     <>
+    <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
     <Spinner status={loading}></Spinner>
     <Container style={styles.container}>
      {item && 
-     <View style={{height:"50%"}}>
-       {/* image box */}
-       <View> 
-         {/* completion % */}
-         {item.status === constants.statuses.live || item.status === constants.statuses.started && 
-         <View style={{position:"absolute",flex:1,elevation:20,marginTop:'20%',backgroundColor:"lightgrey",justifyContent:"center",alignSelf:"center",shadowColor: "#000",shadowOffset: {    width: 0,  height: 2,},shadowOpacity: 0.25,shadowRadius: 3.84,}}>
-           <View>
-               <Text style={{fontSize:25,color:"black",padding:5}}>{ Math.round(((item.totalSpots -  item.drawCount) / item.totalSpots) * 100) }% Completed</Text>
-           </View>
-         </View>
-         }
-         {/* <Image source={{uri: item.image ? item.image : constants.DEFAULT_IMAGE_URL,}} resizeMode="contain" style={styles.image}/> */}
-       </View>
+     <View>
+        <CardBox styles={{alignItems:"center",justifyContent:"center"}}>
+          <H2 style={styles.contentHeader}>{item.name}</H2>
+        </CardBox>
        
-       {/* draw name */}
-       <View style={styles.contentContainer}>
-         <H1 style={styles.contentHeader}>{item.name}</H1>
-       </View>
-       
-       {/* details box */}
-       <View>
-          <View style={{ flexDirection: "row", padding: 10, backgroundColor: "white", marginBottom: 20, borderRadius:5,alignContent:"center"}}>
-         <View style={{ flexDirection: "column", flex: 1}}>
-           <Text>Pool Price</Text>
-           <Text style={styles.contentText}>
-             <Icon name="rupee" size={15} />
-             {item.totalAmtAvlForDistribution}
-           </Text>
-           <View style={{ flexDirection: "row"}}>
-             {item && 
-             <View>
-               {(item.status === constants.statuses.active) && item.totalSpots === item.joined && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
-                   Full
-               </Text>}
-               {(item.status === constants.statuses.live || item.status === constants.statuses.started) && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                   Live
-               </Text>}
-               {item.status === constants.statuses.active && item.totalSpots !== item.joined && <Text style={{color:statusStyle.color,backgroundColor:"green",borderRadius:5,padding:5}}>
-                   Available
-               </Text>}
-               {item.status === constants.statuses.stopped && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                   Paused
-               </Text>}
-               {item.status === constants.statuses.completed && <Text style={{color:statusStyle.color,backgroundColor:"orange",borderRadius:5,padding:5}}>
-                   Completed
-               </Text>}
-               {item.status === constants.statuses.cancelled && <Text style={{color:statusStyle.color,backgroundColor:constants.COLOR_RED,borderRadius:5,padding:5}}>
-                    Cancelled
-               </Text>}
-             </View>}
-           </View>
-         </View>
-         <View style={{ flexDirection: "column",alignItems:"flex-end" }}>
-           <Text >Entry</Text>
-           <Text style={styles.contentText}>
-             <Icon name="rupee" size={15} />
-             {item.entryPrice}
-           </Text>
-           {timer!==0 && item.status === constants.statuses.active && 
-            <View style={{flexDirection:"row"}}>
-                  <TouchableOpacity onPress={()=>Toast.show({topOffset: 60,type: "info",text1: "Draw date extended!!",text2: ""})}><View style={{paddingRight:3}}>{item.extendCount && item.extendCount > 0 ? (<Text style={{fontSize:8,color:constants.COLOR_RED,borderColor:constants.COLOR_RED,borderWidth:1,borderRadius:100,textAlign:"center",paddingLeft:3,paddingRight:3}}>E</Text>) : ( null)}</View></TouchableOpacity>
-                  <Text style={{fontSize:12,color:"black"}}>{timer}</Text>
-            </View>
-           }
-         </View>
-       </View>
-       
-          <View style={[styles.bottomContainer,{ width: "100%", justifyContent: "space-between",backgroundColor:constants.COLOR_WHITE_SMOKE,borderBottomRightRadius:5,borderBottomLeftRadius:5,padding:6 },]}>
-          <View>
-            <Text style={{ fontSize: 12,color:"grey" }}>Winning {item.winnersPct}%</Text>
-          </View>
-          <View>
-            <Text style={{ color: constants.COLOR_RED, fontSize: 12 }}>
-              {formatSpotLeft(item)}
-            </Text>
-          </View>
-          <View>
-            <Text style={{ fontSize: 12, color:"grey" }}>
-              {item.totalSpots}&nbsp;spots
-            </Text>
-          </View>
-        </View>
+        <View>
+          <CardBox>
+            <View style={{ flexDirection: "row", marginBottom: 20,justifyContent:"space-between"}}>
+              <View style={{flex:1}}>
+                <View style={{ flexDirection: "column"}}>
+                  <Label text="Pool Price" type="form"/>
+                  <Text style={styles.contentText}>
+                    <Icon name="rupee" size={15} />{item.totalAmtAvlForDistribution}
+                  </Text>
+                  <StatusBox/>
+                </View>
+              </View>
 
-       </View>
-     </View>
-     }
+              <View style={{flex: 1}}>
+                <CompletionPctBox/>
+              </View>
+
+              <View style={{flex:1}}>
+                <View style={{ flexDirection: "column",alignItems:"flex-end" }}>
+                  <View>
+                    <Label text="Entry" type="form"/>
+                    <Text style={styles.contentText}>
+                      <Icon name="rupee" size={15} />
+                      {item.entryPrice}
+                    </Text>
+                  </View>
+                  <TimerBox/>
+                </View>
+              </View>
+              
+              
+            </View>
+          </CardBox>
+          <BottomBox/>
+        </View>
+      </View>}
+
      {item && 
-     <View style={{ height:"25%",padding:  1, backgroundColor: "white", marginTop: 5, borderRadius:5, marginBottom:5,flex:1 }}>
+     <CardBox styles={{ padding:  1, flex:1, }}>
         <RankNavigator item={item}></RankNavigator> 
-     </View>
+     </CardBox>
      }
    </Container>
     </>
@@ -288,8 +372,7 @@ const styles = StyleSheet.create({
   },
   contentHeader: {
     fontWeight: "bold",
-    marginBottom: 20,
-    textTransform: "capitalize",
+    //textTransform: "capitalize",
   },
   contentText: {
     fontSize: 18,

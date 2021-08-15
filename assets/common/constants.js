@@ -8,10 +8,14 @@ export const DEFAULT_IMAGE_URL_LOGO = HOSTNAME_RESOURCE_SERVER + "/public/upload
 export const DEFAULT_IMAGE_URL = HOSTNAME_RESOURCE_SERVER + "/public/uploads/default/box-960_720.png";
 export const DEFAULT_USER_IMAGE_URL = HOSTNAME_RESOURCE_SERVER + "/public/uploads/default/user-icon.png";
 
+export const COLOR_GREY = "grey";
 export const COLOR_WHITE_SMOKE = "#F5F5F5";
 export const COLOR_RED = "#f40105";
 export const COLOR_RED_LIGHT = "#FF7F7F";
 export const COLOR_GREEN = "green";
+export const COLOR_BLACK = "black";
+
+export const COLOR_ORANGE_LIGHT = "#fffaf0";
 
 export const statuses = {
     inactive: 0,

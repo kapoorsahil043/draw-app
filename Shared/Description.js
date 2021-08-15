@@ -82,7 +82,7 @@ const Description = (props) => {
 
  useFocusEffect( 
    useCallback(() => {
-     console.log('Description',item.rankImageId)
+     console.log('Description',item.rankImageId,item)
       props.hideHeader({hide:true});
 
     AsyncStorage.getItem("jwt")

@@ -133,10 +133,10 @@ const NotificationAdd = (props) => {
             <Input placeholder={"Enter title"} name={"title"} id={"title"} value={title} onChangeText={(text) => setTitle(text)}/>
 
             <Label text="Message" type="form"/>
-            <Input multiline ={true} placeholder={"Enter message"} name={"message"} id={"message"} value={message} onChangeText={(text) => setMessage(text)}/>
+            <Input multiline ={true} placeholder={"Enter message"} name={"message"} id={"message"} value={message} onChangeText={(text) => setMessage(text)} styles={{height:150}}/>
 
         </CardBox>
-        <View style={{alignContent:"center"}}>
+        <View style={{alignSelf:"center"}}>
           <EasyButton large primary onPress={() => handleSubmit()}>
             <Text style={styles.buttonText}>Add</Text>
           </EasyButton>

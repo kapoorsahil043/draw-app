@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState, useContext} from "react"
-import { StyleSheet, View, Text, Image, AsyncStorage, ScrollView, FlatList,RefreshControl } from 'react-native'
+import { StyleSheet, View, Text, Image, AsyncStorage, ScrollView, FlatList,RefreshControl, TouchableOpacity } from 'react-native'
 import axios from "axios";
 import baseURL from "../../assets/common/baseUrl";
 import AuthGlobal from "../../Context/store/AuthGlobal";
@@ -121,6 +121,50 @@ const DrawWinners = (props) => {
     initWinners(token);
   };
 
+  const loadRankImage = (winnerItem) =>{
+    if(!winnerItem || !winnerItem.draw || !winnerItem.draw.ranks){
+      return constants.DEFAULT_IMAGE_URL;
+    }
+    let img = constants.DEFAULT_IMAGE_URL;
+    winnerItem.draw.ranks.forEach((rank)=>{
+      if(winnerItem.rank >=rank.rankStart && winnerItem.rank <= rank.rankEnd){
+        img = rank.rankImage;
+        return;
+      }
+    });
+    return img;
+  }
+
+  const rowFn = (_item,isUserFound,props) => {
+    isUserFound = _item.user._id === userId ? {backgroundColor : constants.COLOR_ORANGE_LIGHT} : {};
+    return (
+      <TouchableOpacity onPress={()=>{props.navigation.navigate('Description',{item:_item.draw.ranks[0]})}}>
+        <View key={_item.rank} style={[appstyles.flatListRow,isUserFound]}>
+            <View style={{ flex: 1}}>
+              <View style={{flexDirection:"row"}}>
+                <View style={{justifyContent:"center", padding:5}}>
+                  <Text style={styles.textValue}>#{_item.rank}</Text>
+                </View>
+                <View style={{}}>
+                  <Image style={{height:40,width:40,borderRadius:100}} source={ _item?.draw?.ranks ? { uri: loadRankImage(_item)} : require("../../assets/box-960_720.png") } />
+                </View>
+              </View>
+            </View>
+            <View style={{ flex: 1,flexDirection:"row"}}>
+              <View style={{}}>
+                <Image style={{height:40,width:40,borderRadius:100}} source={_item.user.image ? {uri: _item.user.image} : require("../../assets/user-icon.png") }/>
+              </View>
+              <View style={{justifyContent:"center", padding:5}}>
+                <Text style={styles.textValue}>{_item.user.name}</Text>
+                {_item.remarks && _item.remarks.indexOf('Winn')>-1 && <Text style={{color:"green",fontSize:10}}>{_item.remarks}</Text>}
+                {_item.remarks && _item.remarks.indexOf('Winn')< 0 && <Text style={{color:"grey",fontSize:10}}>{_item.remarks}</Text>}
+              </View>
+            </View>
+          </View>
+      </TouchableOpacity>
+         
+     )
+  }
 
   return (
       <>
@@ -134,12 +178,12 @@ const DrawWinners = (props) => {
         />
       }
       ListHeaderComponent={
-        <View style={{flex: 1,flexDirection: "row",alignContent: "space-around",padding: 10,backgroundColor: "#E8E8E8",}}>
+        <View style={{flex: 1,flexDirection: "row",alignContent: "space-around",padding: 10,backgroundColor: constants.COLOR_WHITE_SMOKE,}}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.textLabel}>#Rank</Text>
+            <Text style={styles.textLabel}>Rank</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.textLabel}>Name (Displaying {winners.length} winners)</Text>
+            <Text style={styles.textLabel}>Name</Text>
           </View>
         </View>
       } 
@@ -160,62 +204,13 @@ const DrawWinners = (props) => {
         renderItem={({ item, index }) => {
           return (
             <React.Fragment key={index}>
-              {rowFn(item,false)}
+              {rowFn(item,false,props)}
             </React.Fragment>
           )
         }}
       />
       </>
     );
-}
-
-const loadRankImage = (winnerItem) =>{
-  if(!winnerItem || !winnerItem.draw || !winnerItem.draw.ranks){
-    return constants.DEFAULT_IMAGE_URL;
-  }
-  let img = constants.DEFAULT_IMAGE_URL;
-  winnerItem.draw.ranks.forEach((rank)=>{
-    if(winnerItem.rank >=rank.rankStart && winnerItem.rank <= rank.rankEnd){
-      img = rank.rankImage;
-      return;
-    }
-  });
-  return img;
-}
-
-const rowFn = (_item,isUserFound)=>{
-  return (
-       <View
-          key={_item.rank}
-          style={{
-            flexDirection: "row",
-            padding: 5,
-            backgroundColor: isUserFound ? '#f0d8bf' : (_item.rank % 2 == 0 ?  '#E8E8E8': ''),
-            height:70
-          }}
-        >
-          <View style={{ flex: 1}}>
-            <View style={{flex:1,flexDirection:"row"}}>
-              <View style={{justifyContent:"center", padding:5}}>
-                <Text style={styles.textValue}>#{_item.rank}</Text>
-              </View>
-              <View style={{}}>
-                <Image style={{height:50,width:50,borderRadius:100}} source={ _item?.draw?.ranks ? { uri: loadRankImage(_item)} : require("../../assets/box-960_720.png") } />
-              </View>
-            </View>
-          </View>
-          <View style={{ flex: 1,flexDirection:"row"}}>
-            <View style={{}}>
-              <Image style={{height:50,width:50,borderRadius:100}} source={_item.user.image ? {uri: _item.user.image} : require("../../assets/user-icon.png") }/>
-            </View>
-            <View style={{justifyContent:"center", padding:5}}>
-              <Text style={styles.textValue}>{_item.user.name}</Text>
-              {_item.remarks && _item.remarks.indexOf('Winn')>-1 && <Text style={{color:"green",fontSize:10}}>{_item.remarks}</Text>}
-              {_item.remarks && _item.remarks.indexOf('Winn')< 0 && <Text style={{color:"grey",fontSize:10}}>{_item.remarks}</Text>}
-            </View>
-          </View>
-        </View>
-   )
 }
 
 const styles = StyleSheet.create({

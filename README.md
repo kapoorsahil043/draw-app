@@ -29,3 +29,20 @@ git push --set-upstream origin master
 
 # expo cmd
 expo build:android
+
+# FCM
+https://docs.expo.io/push-notifications/using-fcm/
+
+
+# loader animation
+https://www.npmjs.com/package/react-native-animated-loader
+npm install react-native-animated-loader --save
+
+
+# Status code
+200 - success
+404 - resource not found
+400 - bad request
+201 - created
+401 - unauthorised
+500 - server error

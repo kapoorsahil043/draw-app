@@ -89,6 +89,11 @@ const Register = (props) => {
     
     return (()=>{
       setLoading();
+      setEmail()
+      setError()
+      setName()
+      setPassword()
+      setPhone()
     });
 
   },[]));

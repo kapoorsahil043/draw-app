@@ -131,7 +131,7 @@ export const loginUser = async (user, dispatch,succussCallBack,errorCallBack) =>
     await AsyncStorage.getItem("push_id")
     .then((data) => {
         user.pushId = data;
-        console.log('push_id',data);
+        //console.log('push_id',data);
     })
     .catch((error) => [console.log(error)]);
 

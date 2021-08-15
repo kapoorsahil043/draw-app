@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
-import { View, Text, StyleSheet, Button, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, Alert, StatusBar } from "react-native";
 import FormContainer from "../../Shared/Form/FormContainer";
 import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
@@ -86,6 +86,7 @@ const Profile = (props) => {
 
   return (
     <>
+      <StatusBar animated={true} backgroundColor={constants.COLOR_RED_LIGHT} barStyle="light-content" showHideTransition="slide" hidden={false} />
       <Spinner status={loading}></Spinner>
       <Container style={{ backgroundColor: "gainsboro" }}>
      { userProfile &&  <ScrollView style={{ backgroundColor: "gainsboro" }}>

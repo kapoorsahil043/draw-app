@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput, StyleSheet } from 'react-native'
+import * as constants from "../../assets/common/constants";
 
 const Input = (props) => {
     return (
@@ -26,10 +27,11 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: 'white',
         margin: 10,
-        borderRadius: 10,
+        borderRadius: 7,
         padding: 10,
-        borderWidth: 1,
-        borderColor: 'red'
+        borderWidth: .0,
+        borderBottomWidth: 1,
+        borderBottomColor: constants.COLOR_GREY,
     },
 });
 

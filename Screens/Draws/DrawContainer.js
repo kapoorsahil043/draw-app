@@ -10,7 +10,8 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
-  RefreshControl
+  RefreshControl,
+  StatusBar
 } from "react-native";
 import { Container, Header, Icon, Item, Input, Text } from "native-base";
 import { useFocusEffect } from "@react-navigation/native";
@@ -250,12 +251,9 @@ const DrawContainer = (props) => {
         onPress={() => modalHandler(true)}>
         <Text style={styles.textStyle}>Show Modal</Text>
     </Pressable> */}
-      <ModalScreen
-        modalVisible={modalVisible}
-        modalHandler={modalHandler}
-      ></ModalScreen>
+      <ModalScreen modalVisible={modalVisible} modalHandler={modalHandler}></ModalScreen>
       <Spinner status={loading}></Spinner>
-      <Container style={{backgroundColor: "gainsboro",}}>
+      <Container style={{backgroundColor: "gainsboro"}}>
         <ScrollView
           refreshControl={
           <RefreshControl
