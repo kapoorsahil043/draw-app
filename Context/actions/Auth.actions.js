@@ -134,8 +134,7 @@ export const loginUser = async (user, dispatch,succussCallBack,errorCallBack) =>
         //console.log('push_id',data);
     })
     .catch((error) => [console.log(error)]);
-
-    console.log('user',user);
+    //console.log('user',user);
 
     fetch(`${baseURL}users/login`, {
         method: "POST",

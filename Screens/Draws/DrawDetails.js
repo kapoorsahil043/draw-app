@@ -175,7 +175,7 @@ const DrawDetails = (props) => {
     }, 5000);
 
     return () => {
-      props.hideHeader({hide:false});
+      //props.hideHeader({hide:false});
       setToken();
       setTimer();
       clearInterval(timee);

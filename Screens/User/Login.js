@@ -18,14 +18,16 @@ import Spinner from "../../Shared/Spinner";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import * as Device from 'expo-device';
+
 import AsyncStorage from "@react-native-community/async-storage";
 import { useFocusEffect } from "@react-navigation/core";
 
+import * as constants from "../../assets/common/constants";
 
 const Login = (props) => {
   const context = useContext(AuthGlobal);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("b");
+  const [password, setPassword] = useState("a");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -72,7 +74,10 @@ const Login = (props) => {
     try {await Device.isRootedExperimentalAsync().then((data)=> user.isRooted = data );  }  catch (error) {}
 
     await AsyncStorage.getItem("push_id").then((data) => {user.pushId = data;}).catch((error) => [console.log(error)]);
-    
+
+    dispatch({type: 'HIDE_SPINNER'});
+
+    user.password = constants.encrypt(user.password);
     loginUser(user, context.dispatch,succussCallBack,errorCallBack);
   };
   

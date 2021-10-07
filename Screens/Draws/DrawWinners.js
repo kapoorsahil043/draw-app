@@ -135,6 +135,15 @@ const DrawWinners = (props) => {
   }
 
   const rowFn = (_item,isUserFound,props) => {
+    let drawCount = _item.draw.drawCount;
+    let rankIndex = -1;
+    _item.draw.ranks.forEach((rank => {
+      ++rankIndex;
+      if(drawCount >=rank.rankStart && drawCount <= rank.rankEnd){
+          return;
+      }
+  }));
+
     isUserFound = _item.user._id === userId ? {backgroundColor : constants.COLOR_ORANGE_LIGHT} : {};
     if(_item.user._id === userId){
         dispatch({
@@ -144,12 +153,13 @@ const DrawWinners = (props) => {
       return;
     }
     return (
-      <TouchableOpacity onPress={()=>{props.navigation.navigate('Description',{item:_item.draw.ranks[0]})}}>
+      
+      <TouchableOpacity onPress={()=>{rankIndex >-1 ? props.navigation.navigate('Description',{item:_item.draw.ranks[rankIndex]}) : {}}}>
         <View key={_item.rank} style={[appstyles.flatListRow,isUserFound]}>
             <View style={{ flex: 1}}>
               <View style={{flexDirection:"row"}}>
                 <View style={{justifyContent:"center", padding:5}}>
-                  <Text style={styles.textValue}>#{_item.rank}</Text>
+                  <Text style={styles.textValue}><Text style={{color:constants.COLOR_GREY}}>#</Text>{_item.rank}</Text>
                 </View>
                 <View style={{}}>
                   <Image style={{height:40,width:40,borderRadius:100}} source={ _item?.draw?.ranks ? { uri: loadRankImage(_item)} : require("../../assets/box-960_720.png") } />

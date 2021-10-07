@@ -5,6 +5,7 @@ expo install expo-localization
 expo install expo-device
 expo install @react-native-community/datetimepicker
 
+
 # create a new repository on the command line
 git init
 git add README.md
@@ -46,3 +47,6 @@ npm install react-native-animated-loader --save
 201 - created
 401 - unauthorised
 500 - server error
+
+# crypto dependency
+npm install react-native-rsa

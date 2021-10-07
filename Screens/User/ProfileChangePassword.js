@@ -44,9 +44,9 @@ const ProfileChangePassword = (props) => {
 
   const callChangePassword = () =>{
     let req = {
-      password,
-      newPassword,
-      reEnterPassword
+      password : constants.encrypt(password),
+      newPassword : constants.encrypt(newPassword),
+      reEnterPassword : constants.encrypt(reEnterPassword)
     }
 
     axios.put(`${baseURL}users/profile/changePassword`, req, {headers: { Authorization: `Bearer ${token}` }})

@@ -10,6 +10,7 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import { changePassword } from "../../Context/actions/Auth.actions";
 import Spinner from "../../Shared/Spinner";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import * as constants from "../../assets/common/constants";
 
 const ChangePassword = (props) => {
   const param = props.route.params;
@@ -53,8 +54,8 @@ const ChangePassword = (props) => {
 
     const user = {
       email:param.email,
-      password:password,
-      repassword:password
+      password:constants.encrypt(password),
+      repassword:constants.encrypt(repassword)
     };
 
     if (!password || !repassword || password === "" || repassword === "") {

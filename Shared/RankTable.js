@@ -13,6 +13,12 @@ const RankTable = (props) => {
   const loadMoreResults = async info => {
     console.log('loadMoreResults',info)
   }
+
+  const HashSymbol = () =>{
+    return (
+      <Text style={{color:constants.COLOR_GREY}}>#</Text>
+    )
+  }
   
   return (
 
@@ -57,7 +63,7 @@ const RankTable = (props) => {
                 <View key={item.rankStart}  style={appstyles.flatListRow} >
                   <View style={{ flex: 1, }}>
                     <Text style={styles.textValue}> 
-                      {item.rankStart == item.rankEnd ? "#" + item.rankStart : "#" + item.rankStart + " - " + item.rankEnd}
+                      {item.rankStart == item.rankEnd ? <Text><HashSymbol/>{item.rankStart}</Text> : <Text><HashSymbol/>{item.rankStart}&nbsp;-&nbsp;{item.rankEnd}</Text>}
                     </Text>
                   </View>
                   {/* <View style={{ flex: 1 }}>

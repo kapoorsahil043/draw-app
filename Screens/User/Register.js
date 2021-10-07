@@ -15,6 +15,7 @@ import { useFocusEffect } from "@react-navigation/core";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as Device from 'expo-device';
 
+import * as constants from "../../assets/common/constants";
 
 const Register = (props) => {
   const [email, setEmail] = useState("");
@@ -61,7 +62,7 @@ const Register = (props) => {
     let user = {
       name: name,
       email: email,
-      password: password,
+      password: constants.encrypt(password),
       phone: phone,
       pushId:'',
       osName: Device.osName,
@@ -77,7 +78,7 @@ const Register = (props) => {
 
     axios.post(`${baseURL}users/register`, user).then((res) => {
         if (res.status == 200) {
-          Toast.show({topOffset: 60,type: "success",text1: "Registration Succeeded",text2: "Please Login into your account",});
+          Toast.show({topOffset: 60,type: "success",text1: "Registration Succeeded",text2: "Please login into your account",});
           setTimeout(() => {props.navigation.navigate("Login");}, 500);
         }
         setLoading(false);

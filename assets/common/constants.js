@@ -1,3 +1,4 @@
+import RSAKey from 'react-native-rsa';
 import hostname from "./hostname";
 import resourceServerHostname from "./hostnameResourceServer";
 
@@ -14,8 +15,16 @@ export const COLOR_RED = "#f40105";
 export const COLOR_RED_LIGHT = "#FF7F7F";
 export const COLOR_GREEN = "green";
 export const COLOR_BLACK = "black";
-
 export const COLOR_ORANGE_LIGHT = "#fffaf0";
+
+export const PUBLIC_KEY = `{"n":"9d0d28ae3c64c17a0ca253239b8a3b348af7fed6bf36821ada8c590ced6412973276337de2367e6cadfa645cfc2900e065ee310cf92c6e16af3ef59eacf6146f6437880508695e65bad0271dcbb3e53421c7a479dc48294029678e99f6543da18b6d14e7ccec809c62b0feef97c14f70639fb72f738a1f68f24dd1f2f40eda5f","e":"10001"}`;
+
+export const encrypt = (toEncrypt) => {
+    let rsa = new RSAKey();
+    rsa.setPublicString(`${PUBLIC_KEY}`);
+    let encrypted = rsa.encrypt(toEncrypt); // decrypted == originText
+    return encrypted.toString('base64')
+};
 
 export const statuses = {
     inactive: 0,
